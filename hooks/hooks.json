@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/migrate_legacy.py\" --hook --json",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/migrate_legacy.py\" --hook",
             "timeout": 10
           }
         ]
