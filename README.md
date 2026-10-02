@@ -24,6 +24,10 @@ Après une mise à jour du repository, utilise le gestionnaire `/plugin` pour ra
 
 Le plugin garde sa configuration projet dans `.gearbox/` et ses données temporaires de run dans `.gearbox/runs/`.
 
+### Migration depuis l’ancien Steelthread
+
+Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande `/gearbox:*`, Gearbox détecte un ancien dossier `.steelthread/`. Si `.gearbox/` n’existe pas et qu’aucun ancien run n’est encore verrouillé, il migre automatiquement le dossier vers `.gearbox/` et adapte les références de chemins internes. Les run IDs, branches, issues, PR et preuves existantes sont conservés. Si `.steelthread/` et `.gearbox/` existent tous les deux, Gearbox bloque la migration au lieu de fusionner silencieusement deux états potentiellement divergents.
+
 ## Quel point d'entrée utiliser ?
 
 | Situation | Commande recommandée |
