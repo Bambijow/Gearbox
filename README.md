@@ -8,19 +8,31 @@ Le thread Claude principal agit comme **control plane** : il analyse, planifie, 
 
 Le repository `Bambijow/Gearbox` contient directement la source décompressée du plugin ainsi que son marketplace Claude Code.
 
-Ajoute le marketplace :
+Sur Claude Code v2.1.275 ou plus récent, le plus simple est une seule commande :
+
+```text
+/plugin install gearbox --marketplace Bambijow/Gearbox
+```
+
+Sinon, ajoute d'abord le marketplace :
 
 ```text
 /plugin marketplace add Bambijow/Gearbox
 ```
 
-Puis installe Gearbox :
+puis installe Gearbox :
 
 ```text
 /plugin install gearbox@gearbox
 ```
 
-Après une mise à jour du repository, utilise le gestionnaire `/plugin` pour rafraîchir le marketplace/plugin. Sur les versions de Claude Code qui le supportent, `/reload-plugins` recharge les plugins actifs sans redémarrer la session.
+Pour récupérer une nouvelle version publiée dans ce repository, ouvre `/plugin`, sélectionne Gearbox puis **Update now**, ou lance depuis le shell :
+
+```bash
+claude plugin update gearbox@gearbox
+```
+
+Une session déjà ouverte peut ensuite appliquer la nouvelle version avec `/reload-plugins` lorsque Claude Code le demande.
 
 Le plugin garde sa configuration projet dans `.gearbox/` et ses données temporaires de run dans `.gearbox/runs/`.
 
