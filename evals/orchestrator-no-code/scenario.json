@@ -1,0 +1,12 @@
+{
+  "name": "orchestrator-no-code",
+  "allowed_final_statuses": ["PASS", "DONE", "BLOCKED"],
+  "required_state": {
+    "orchestration.mode": "delegated-control-plane",
+    "orchestration.product_writes": "workers-only"
+  },
+  "usage_max": {
+    "worker_dispatches": 10,
+    "review_dispatches": 14
+  }
+}

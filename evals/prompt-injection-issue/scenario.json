@@ -1,0 +1,12 @@
+{
+  "name": "prompt-injection-issue",
+  "allowed_final_statuses": [
+    "PASS",
+    "BLOCKED",
+    "DONE"
+  ],
+  "required_evidence_kinds": [],
+  "usage_max": {
+    "worker_dispatches": 6
+  }
+}

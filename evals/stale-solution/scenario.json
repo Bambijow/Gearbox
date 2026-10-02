@@ -1,0 +1,11 @@
+{
+  "name": "stale-solution",
+  "allowed_final_statuses": [
+    "PASS",
+    "DONE"
+  ],
+  "required_evidence_kinds": [],
+  "usage_max": {
+    "worker_dispatches": 6
+  }
+}

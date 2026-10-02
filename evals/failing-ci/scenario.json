@@ -1,0 +1,15 @@
+{
+  "name": "failing-ci",
+  "allowed_final_statuses": [
+    "PR_PASS",
+    "PR_BLOCKED",
+    "PASS",
+    "DONE"
+  ],
+  "required_evidence_kinds": [
+    "ci"
+  ],
+  "usage_max": {
+    "pr_repair_cycles": 3
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "model-routing",
+  "allowed_final_statuses": ["PASS", "DONE"],
+  "required_evidence_kinds": [],
+  "usage_max": {
+    "model_escalations": 3
+  }
+}

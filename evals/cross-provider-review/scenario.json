@@ -1,0 +1,14 @@
+{
+  "name": "cross-provider-review",
+  "allowed_final_statuses": [
+    "PASS",
+    "DONE"
+  ],
+  "required_evidence_kinds": [
+    "review"
+  ],
+  "usage_max": {
+    "review_dispatches": 14,
+    "codex_dispatches": 12
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "conflicting-workers",
+  "allowed_final_statuses": [
+    "PASS",
+    "BLOCKED",
+    "DONE"
+  ],
+  "required_evidence_kinds": [
+    "review"
+  ],
+  "usage_max": {
+    "worker_dispatches": 8
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "spec-clarification-block",
+  "allowed_final_statuses": ["BLOCKED"],
+  "required_state": {
+    "phase": "SPEC",
+    "blocker.code": "SPEC_BLOCKED",
+    "clarification.status": "NEEDS_INPUT"
+  },
+  "usage_max": {
+    "worker_dispatches": 0,
+    "codex_dispatches": 0,
+    "review_dispatches": 0,
+    "model_escalations": 0
+  },
+  "required_evidence_kinds": []
+}

@@ -1,0 +1,13 @@
+{
+  "name": "codex-worker-failure",
+  "allowed_final_statuses": [
+    "PASS",
+    "BLOCKED",
+    "BUDGET_EXHAUSTED",
+    "DONE"
+  ],
+  "required_evidence_kinds": [],
+  "usage_max": {
+    "codex_dispatches": 6
+  }
+}

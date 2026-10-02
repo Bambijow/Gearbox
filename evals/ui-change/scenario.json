@@ -1,0 +1,14 @@
+{
+  "name": "ui-change",
+  "allowed_final_statuses": [
+    "PASS",
+    "DONE"
+  ],
+  "required_evidence_kinds": [
+    "test",
+    "ui"
+  ],
+  "usage_max": {
+    "worker_dispatches": 8
+  }
+}

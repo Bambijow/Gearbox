@@ -1,0 +1,44 @@
+{
+  "name": "gearbox",
+  "owner": {
+    "name": "Bambijow"
+  },
+  "description": "Gearbox Claude Code engineering plugin marketplace.",
+  "plugins": [
+    {
+      "name": "gearbox",
+      "source": "./",
+      "description": "Gearbox: resumable Claude Code engineering loops with delegated Claude/Codex work, cross-provider review, Ponytail simplification, verification evidence, PR reporting, and durable solution memory.",
+      "category": "engineering",
+      "keywords": [
+        "engineering",
+        "github",
+        "tdd",
+        "codex",
+        "multi-agent",
+        "ponytail",
+        "code-review",
+        "token-efficient",
+        "adaptive-review",
+        "engineering-loop",
+        "spec-to-issue",
+        "conditional-learning",
+        "brainstorm",
+        "brainstorm-to-spec",
+        "solution-hygiene",
+        "knowledge-maintenance",
+        "resumable",
+        "evidence-ledger",
+        "ci-repair",
+        "model-routing",
+        "risk-budget",
+        "spec-to-issues",
+        "spec-clarification",
+        "cross-provider-review",
+        "control-plane",
+        "delegated-execution",
+        "hook-guardrails"
+      ]
+    }
+  ]
+}

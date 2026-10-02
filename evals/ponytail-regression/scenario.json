@@ -1,0 +1,14 @@
+{
+  "name": "ponytail-regression",
+  "allowed_final_statuses": [
+    "PASS",
+    "BLOCKED",
+    "DONE"
+  ],
+  "required_evidence_kinds": [
+    "test"
+  ],
+  "usage_max": {
+    "review_dispatches": 5
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "pr-critical-code-report",
+  "purpose": "A substantive code PR may not ship with prose-only important-code bullets; its technical report must include source-backed excerpts.",
+  "invariants": [
+    "Runtime-changing PR reports contain at least one exact code excerpt.",
+    "Each excerpt is tied to an exact file and line range.",
+    "Each excerpt states why it matters and what the reviewer should inspect.",
+    "Prose-only path summaries fail the report guard."
+  ]
+}

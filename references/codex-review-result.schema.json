@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["success", "failed"]
+    },
+    "summary": {"type": "string"},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["blocker", "important", "minor"]
+          },
+          "location": {"type": "string"},
+          "evidence": {"type": "string"},
+          "consequence": {"type": "string"},
+          "fix": {"type": "string"}
+        },
+        "required": ["severity", "location", "evidence", "consequence", "fix"]
+      }
+    },
+    "verification_gaps": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "residual_risks": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "required": ["status", "summary", "findings", "verification_gaps", "residual_risks"]
+}
