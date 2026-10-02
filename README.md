@@ -206,4 +206,4 @@ Les scripts Python font partie du plugin et sont volontairement versionnés. Seu
 
 ## Licence et inspirations
 
-Gearbox est publié sous licence MIT. Le design s'inspire de plusieurs projets publics d'ingénierie agentique, notamment les skills de Matt Pocock, Compound Engineering, Superpowers et Ponytail. Voir `NOTICE.md` pour les attributions et la manière dont ces idées sont réinterprétées dans Gearbox.
+Gearbox est publié sous licence MIT.
