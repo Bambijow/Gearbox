@@ -95,6 +95,11 @@ def main() -> int:
         except Exception:
             repo = Path(args.repo)
     result = migrate(repo, args.dry_run)
+    if args.hook:
+        if result["status"] == "blocked":
+            print(f"Gearbox migration blocked: {result.get('reason','unknown reason')}", file=sys.stderr)
+            return 2
+        return 0
     if args.json:
         print(json.dumps(result, indent=2))
     else:
