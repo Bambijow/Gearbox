@@ -14,6 +14,16 @@
     ],
     "UserPromptExpansion": [
       {
+        "matcher": "(?:gearbox:)?(?:setup|brainstorm|shape|spec-to-issue|spec-to-issues|issue|loop|flow|plan|build|debug|simplify|review|learn|clean-solutions|ship|resume|continue-pr)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/migrate_legacy.py\" --hook --json",
+            "timeout": 10
+          }
+        ]
+      },
+      {
         "matcher": "(?:gearbox:)?(?:issue|loop|flow|brainstorm|resume|continue-pr)",
         "hooks": [
           {
