@@ -21,7 +21,7 @@ jobs:
       - name: Rebuild archive
         shell: bash
         run: |
-          cat .bootstrap/v3-part-*.b64 | base64 -d > /tmp/gearbox.tar.gz
+          cat .bootstrap/part-*.b64 | base64 -d > /tmp/gearbox.tar.gz
           mkdir -p /tmp/gearbox-src
           tar -xzf /tmp/gearbox.tar.gz -C /tmp/gearbox-src
 
