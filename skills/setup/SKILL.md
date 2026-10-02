@@ -6,6 +6,10 @@ disable-model-invocation: true
 ---
 # Configure Gearbox for this repository
 
+## Legacy migration
+
+Before reading project configuration, Gearbox automatically checks for the former `.steelthread/` project directory. If `.gearbox/` does not exist and no legacy run lock is active, the plugin renames `.steelthread/` to `.gearbox/` and rewrites only internal path references from `.steelthread/` to `.gearbox/`. Do not ask the user to rename it manually. Branch names, issue/PR identifiers, evidence, and historical run IDs are preserved. If both directories already exist, stop and ask the user which one is authoritative instead of merging them silently.
+
 Read repository instructions, build/CI manifests and existing docs. Reuse conventions rather than creating a parallel bureaucracy.
 
 Detect specs/ADR/runbook locations, repository-native tests/lint/typecheck/build/e2e commands, GitHub remote/base branch, UI evidence tooling, `codex`, and Ponytail availability. Keep `docs/solutions/` canonical.
