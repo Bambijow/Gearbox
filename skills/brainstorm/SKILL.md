@@ -18,8 +18,6 @@ Read:
 - `references/spec-clarification.md` for the final decision-completeness gate;
 - `references/domain-modeling.md` for canonical vocabulary and qualifying ADR decisions;
 - `references/research.md` when a product decision depends on current external facts;
-- `/shape` discipline for the final specification;
-- `/spec-to-issue` discipline for the tracker handoff;
 - `references/control-plane.md` for the parent/worker boundary;
 - `references/engineering-loop.md` only once the spec is accepted and implementation begins.
 
@@ -104,7 +102,7 @@ If a material product decision remains open, keep the conversation in brainstorm
 
 ## 5. Materialize the accepted spec
 
-Use `/shape` discipline to transform the compressed ledger plus verified repository facts into a decision-complete, compact spec.
+Transform the compressed ledger plus verified repository facts into a decision-complete, compact spec using the specification content and clarification gates defined in this skill plus `references/spec-clarification.md`.
 
 On convergence, save or update the accepted spec canonically under:
 
@@ -122,7 +120,7 @@ Without `--auto`, if the user has not already clearly approved the converged beh
 
 ## 6. Spec -> issue without lossy round-tripping
 
-Apply `/spec-to-issue` semantics to create a concise issue body that points back to the accepted spec.
+Create a concise issue body that points back to the accepted spec. Include Why, Outcome, In scope, Out of scope, checkable Acceptance criteria, material Constraints/invariants, expected Verification/evidence, and the Source spec pointer. Do not include the implementation DAG.
 
 Always create the issue draft in the brainstorm run directory.
 
