@@ -35,9 +35,9 @@ def die(msg,code=2):
     print("run-state:",msg,file=sys.stderr)
     raise SystemExit(code)
 
-def default_plan_approval():
+def default_plan_approval(required=True):
     return {
-        "required":False,
+        "required":required,
         "status":"UNSET",
         "plan_path":None,
         "plan_resolved":None,
@@ -55,9 +55,13 @@ def normalize(d):
     if "clarification" not in d:
         d["clarification"]={"status":"UNSET","round":0,"questions":[],"answers":{}}; changed=True
     if "plan_approval" not in d:
-        d["plan_approval"]=default_plan_approval(); changed=True
+        beyond_plan=d.get("phase") in {"IMPLEMENT","INTEGRATE","SIMPLIFY","REVIEW","VERIFY","LEARN","SHIP","POST_PR","DONE"} or bool(d.get("github",{}).get("pr"))
+        d["plan_approval"]=default_plan_approval(required=not beyond_plan)
+        if beyond_plan:
+            d["plan_approval"]["status"]="LEGACY_NOT_REQUIRED"
+        changed=True
     else:
-        defaults=default_plan_approval()
+        defaults=default_plan_approval(required=d["plan_approval"].get("required",True))
         for k,v in defaults.items():
             if k not in d["plan_approval"]:
                 d["plan_approval"][k]=v; changed=True
@@ -103,7 +107,7 @@ def init(run,run_id):
         "orchestration":{"mode":"delegated-control-plane","product_writes":"workers-only"},
         "repair_findings":{"policy":{"same_strategy_limit":2,"max_attempts_per_finding":5},"items":{}},
         "clarification":{"status":"UNSET","round":0,"questions":[],"answers":{}},
-        "plan_approval":default_plan_approval(),
+        "plan_approval":default_plan_approval(required=True),
         "blocker":None,
         "learning":{},
         "last_error":None,
@@ -146,7 +150,7 @@ def plan_gate_problem(d):
     return None
 
 def mark_plan_stale(d,reason):
-    pa=d.setdefault("plan_approval",default_plan_approval())
+    pa=d.setdefault("plan_approval",default_plan_approval(required=True))
     pa["status"]="PENDING"
     pa["approved_at"]=None
     pa["approved_by"]=None
@@ -159,7 +163,7 @@ def mark_plan_stale(d,reason):
 def set_plan_approval(d,plan,auto=False):
     digest,resolved=digest_file(plan)
     now=int(time.time())
-    pa=default_plan_approval()
+    pa=default_plan_approval(required=not auto)
     pa.update({
         "required":not auto,
         "status":"AUTO_APPROVED" if auto else "PENDING",
@@ -225,6 +229,8 @@ def self_test():
         plan=root/"dag.yaml"
         plan.write_text("tasks: [A]\n",encoding="utf-8")
         d=init(run,"test")
+        assert d["plan_approval"]["required"] is True
+        assert plan_gate_problem(d)
         set_plan_approval(d,str(plan),auto=False)
         assert d["status"]=="AWAITING_APPROVAL"
         assert d["plan_approval"]["status"]=="PENDING"
