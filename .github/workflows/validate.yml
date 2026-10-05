@@ -69,3 +69,44 @@ jobs:
         run: python3 scripts/retro_bundle.py --self-test
       - name: Gearbox repository solution audit
         run: python3 scripts/solutions_audit.py --dir docs/solutions --strict --check-index --allow-missing
+      - name: Package plugin ZIP
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(python3 -c 'import json; print(json.load(open(".claude-plugin/plugin.json"))["version"])')"
+          mkdir -p dist
+          ARCHIVE="dist/gearbox-${VERSION}.zip"
+          git archive --format=zip --output="${ARCHIVE}" HEAD
+
+          python3 - "${ARCHIVE}" <<'PY'
+          import sys
+          import zipfile
+
+          archive = sys.argv[1]
+          required = {
+              ".claude-plugin/plugin.json",
+              "hooks/hooks.json",
+              "README.md",
+          }
+          with zipfile.ZipFile(archive) as zf:
+              names = set(zf.namelist())
+              bad = [name for name in names if name.startswith(".git/")]
+          missing = sorted(required - names)
+          if missing:
+              raise SystemExit(f"package missing required files: {missing}")
+          if bad:
+              raise SystemExit(f"package unexpectedly contains git metadata: {bad[:5]}")
+          print(f"validated {archive}: {len(names)} entries")
+          PY
+
+          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "archive=${ARCHIVE}" >> "${GITHUB_OUTPUT}"
+
+      - name: Upload plugin ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: gearbox-${{ steps.package.outputs.version }}
+          path: ${{ steps.package.outputs.archive }}
+          if-no-files-found: error
+          retention-days: 30
