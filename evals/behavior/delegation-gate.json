@@ -1,0 +1,17 @@
+{
+  "name": "auxiliary delegation must pay",
+  "context_files": [
+    "references/delegation-gate.md"
+  ],
+  "prompt": "The parent already has two 60-line files in context and needs to compare one condition between them. Should it dispatch a repository-research subagent just to read those files? Answer with the decision and the gate reason.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(do not dispatch|don't dispatch|no dispatch|keep.*current|current.*context)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2200
+    }
+  ]
+}
