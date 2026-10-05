@@ -1,0 +1,25 @@
+{
+  "name": "final review goes full on auth boundary",
+  "context_files": [
+    "references/final-review-routing.md"
+  ],
+  "prompt": "Task review gates passed. The final diff is only 25 executable lines but changes an authorization check on a public API. What final review mode? Explain whether small size can downgrade it.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)\\bfull\\b"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(auth|permission)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(cannot|does not|never).{0,40}(downgrade|lite|size|line)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2400
+    }
+  ]
+}
