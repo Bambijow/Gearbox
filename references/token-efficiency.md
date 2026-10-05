@@ -46,13 +46,17 @@ These are targets, not correctness limits. Exceed them only when omitting inform
 
 Prefer paths, symbols, commit/base refs, and commands over pasted file bodies. State the intended model for each dispatch; use a capable but cheaper bounded model for task review/ordinary simplification, and reserve the session's strongest model for orchestration or final review when the risk warrants it. Let a worker inspect its local worktree when it needs source detail.
 
+### Dispatch only when delegation pays
+
+Apply `references/delegation-gate.md` to auxiliary agents. A dispatch needs one concrete payoff: flood protection, independent judgment, true parallel work, or a genuinely selectable model. Product mutation workers and configured role gates remain mandatory; this rule removes decorative analysis agents, not execution ownership.
+
 ### Isolate research legwork
 
 When a decision depends on external/current facts, give one question to `researcher`. Store the note in the run directory and return a pointer. The parent should not spend its main context browsing documentation for facts a subagent can isolate.
 
 ### Ready-frontier concurrency
 
-Use `references/frontier-scheduling.md`. Dispatch ready tasks as soon as dependencies integrate instead of waiting for artificial batches. Frontier state is metadata; computing it should not require reopening task bodies.
+Use `references/frontier-scheduling.md`. Batch qualifying low-risk same-shape micro-work into one worker/review unit, and dispatch ready tasks as soon as dependencies integrate instead of waiting for artificial waves. Frontier state is metadata; computing it should not require reopening task bodies.
 
 ### Pre-flight the plan once
 
@@ -112,7 +116,7 @@ Start with the smallest context and reviewer topology that can safely decide the
 
 ### Repair loops consume deltas, not history
 
-When `/loop` or `/issue` enters a repair cycle, reuse the existing spec, repo facts, DAG and accepted task evidence. Create only the repair packet required by the failed gate. Review prior validated findings plus the repair diff rather than repasting the entire issue history.
+When `/loop` or `/issue` enters a repair cycle, reuse the existing spec, repo facts, DAG and accepted task evidence. Track stable finding ids with `scripts/repair_findings.py`; do not spend a third dispatch on the same failed strategy. Create only the repair packet required by the failed gate. Review prior validated findings plus the repair diff rather than repasting the entire issue history.
 
 Do not rerun broad architecture reconnaissance, full Ponytail, or both final reviewers after a tiny local correction unless the repair changed the corresponding risk surface. Always run full-enough verification again before PASS.
 
