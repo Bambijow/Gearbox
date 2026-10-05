@@ -19,7 +19,7 @@ Do not outsource final judgment to any reviewer.
 
 ## Finding standard
 
-Apply `references/review-calibration.md` and `references/test-credibility.md`. A material finding must be actionable and supported by a concrete reachable failure path, requirement mismatch, credible verification gap, or maintainability hazard with real future cost. Avoid generic style commentary.
+Apply `references/review-calibration.md`, `references/test-credibility.md`, and `references/evidence-reuse.md`. A material finding must be actionable and supported by a concrete reachable failure path, requirement mismatch, credible verification gap, or maintainability hazard with real future cost. Avoid generic style commentary.
 
 Classify findings:
 
@@ -38,6 +38,6 @@ For Codex review, use a fresh `--ephemeral` read-only run and require structured
 
 ## Verification audit
 
-Map every acceptance criterion to tests/manual evidence. Distinguish "not tested" from "tested at another seam". Verify UI/UX evidence when visible behavior changed.
+Map every acceptance criterion to tests/manual evidence. Distinguish "not tested" from "tested at another seam". Valid exact-SHA evidence is a proof to inspect, not a reason to rerun the same suite. Rerun only when freshness/scope/legibility is insufficient or a finding challenges the evidence seam. Verify UI/UX evidence when visible behavior changed.
 
 If there are no material findings, say so and still state what was inspected and what could not be verified.
