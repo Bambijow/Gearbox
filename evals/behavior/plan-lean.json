@@ -1,0 +1,26 @@
+{
+  "name": "plan stays decision oriented",
+  "context_files": [
+    "skills/plan/SKILL.md",
+    "references/frontier-scheduling.md"
+  ],
+  "prompt": "Plan a bounded change to an existing CLI: add a --json flag to the list command. The existing formatter already exposes formatRows(rows) and formatJson(rows); tests can invoke the CLI. Return only the plan, not code.",
+  "assertions": [
+    {
+      "type": "contains",
+      "value": "Review Focus"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(interface|signature|assert)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)ready frontier"
+    },
+    {
+      "type": "max_chars",
+      "value": 7000
+    }
+  ]
+}
