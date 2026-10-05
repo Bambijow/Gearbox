@@ -44,7 +44,7 @@ Do not deep-read the whole corpus by default.
 4. Deep-read only the suspect notes plus the minimum current code/tests/specs/ADRs needed to establish truth.
 5. For very large corpora, work in bounded batches and leave a compact summary of what was and was not audited.
 
-Do not spawn a reviewer swarm for documentation hygiene. One orchestrator pass is normally enough. Use another agent only when a contradiction is genuinely hard to resolve.
+Do not spawn a reviewer swarm for documentation hygiene. One orchestrator pass is normally enough. Before any auxiliary agent, apply `references/delegation-gate.md`; use another agent only when independent judgment or flood protection genuinely pays for the dispatch.
 
 ## Classification
 
