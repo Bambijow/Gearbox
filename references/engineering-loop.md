@@ -188,3 +188,19 @@ Cycle 0 pays for broad understanding once. Repair cycles consume deltas:
 - keep successful logs on disk and propagate status plus log paths;
 - do not rerun broad discovery or duplicate final reviewers unless the repair changed the risk surface;
 - stop at the cycle limit instead of burning context indefinitely.
+
+
+## Retrospective recommendation
+
+Do not run a retrospective automatically. At the end of PASS, BLOCKED, or MAX_CYCLES, recommend `/gearbox:retro <run-id>` only when the run contains evidence that the **agent environment** should improve, such as:
+
+- two or more repair cycles caused by the same class of mistake;
+- a model/provider escalation that exposed a bad initial routing rule;
+- repeated worker or reviewer failure caused by missing context/tool access;
+- task packets that forced broad repository exploration to rediscover stable information;
+- overlapping task ownership or a DAG split that repeatedly caused integration repair;
+- final review discovering a rule that task review or a deterministic check should have caught;
+- missing/flaky verification that caused avoidable CI repair;
+- meaningful token/dispatch waste caused by repeated navigation or duplicated checks.
+
+A clean routine run should normally end with `retro: not needed`. This keeps retrospectives high-signal and token-efficient.
