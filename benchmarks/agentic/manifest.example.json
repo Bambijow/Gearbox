@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "name": "gearbox-agentic-example",
+  "repo": {
+    "path": "/absolute/path/to/pinned-fixture-repo",
+    "commit": "0123456789abcdef0123456789abcdef01234567"
+  },
+  "arms": {
+    "baseline": {
+      "plugin_dir": "/absolute/path/to/Gearbox-baseline"
+    },
+    "candidate": {
+      "plugin_dir": "/absolute/path/to/current/Gearbox"
+    }
+  },
+  "models": [
+    "sonnet"
+  ],
+  "runs": 3,
+  "tasks": [
+    {
+      "id": "bounded-feature",
+      "prompt": "Use the available engineering workflow to implement the benchmark ticket in BENCHMARK.md. Do not merge or deploy.",
+      "correctness_command": "python3 benchmark_checks.py correctness",
+      "safety_command": "python3 benchmark_checks.py safety",
+      "timeout_seconds": 900,
+      "score_timeout_seconds": 120
+    }
+  ]
+}
