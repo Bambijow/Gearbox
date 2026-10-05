@@ -62,7 +62,8 @@ def prepare_workspace(repo:dict, dest:Path) -> str:
     return sha
 
 def diff_stats(ws:Path) -> dict:
-    out=run_cmd(["git","diff","--numstat","HEAD"],ws).stdout
+    run_cmd(["git","add","-A"],ws)
+    out=run_cmd(["git","diff","--cached","--numstat","HEAD"],ws).stdout
     added=deleted=src_added=files=0
     for line in out.splitlines():
         parts=line.split("\t")
@@ -70,10 +71,38 @@ def diff_stats(ws:Path) -> dict:
         a,d,path=parts
         try: ai,di=int(a),int(d)
         except ValueError: continue
+        if path.startswith(".gearbox/") or path.startswith("benchmarks/agentic/runs/"):
+            continue
         added+=ai; deleted+=di; files+=1
         if Path(path).suffix.lower() in CODE_EXT and not any(x in path.lower() for x in ("/test/","/tests/","_test.","test_")):
             src_added+=ai
     return {"changed_files":files,"added_lines":added,"deleted_lines":deleted,"source_added_lines":src_added}
+
+
+def gearbox_metrics(ws:Path) -> dict:
+    runs=ws/".gearbox"/"runs"
+    if not runs.exists():
+        return {}
+    states=sorted(runs.glob("*/state.json"),key=lambda p:p.stat().st_mtime,reverse=True)
+    if not states:
+        return {}
+    try:
+        state=json.loads(states[0].read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    usage=state.get("usage") if isinstance(state.get("usage"),dict) else {}
+    final_review=state.get("final_review") if isinstance(state.get("final_review"),dict) else {}
+    return {
+        "gearbox_status":state.get("status"),
+        "gearbox_phase":state.get("phase"),
+        "gearbox_cycle":state.get("cycle"),
+        "worker_dispatches":usage.get("worker_dispatches"),
+        "codex_dispatches":usage.get("codex_dispatches"),
+        "review_dispatches":usage.get("review_dispatches"),
+        "model_escalations":usage.get("model_escalations"),
+        "pr_repair_cycles":usage.get("pr_repair_cycles"),
+        "final_review_mode":final_review.get("mode"),
+    }
 
 def runner_payload(task:dict, arm_name:str, arm:dict, model:str, run_index:int, ws:Path) -> dict:
     plugin=arm.get("plugin_dir")
@@ -130,11 +159,12 @@ def run_cell(manifest:dict, task:dict, arm_name:str, model:str, idx:int, out:Pat
     correctness=check_command(task["correctness_command"],ws,int(task.get("score_timeout_seconds",120)))
     safety=check_command(task["safety_command"],ws,int(task.get("score_timeout_seconds",120)))
     metrics=diff_stats(ws)
+    gearbox=gearbox_metrics(ws)
     record={
         "task":task["id"],"arm":arm_name,"model":model,"run":idx,"base_sha":base_sha,
         "runner_ok":bool(result.get("runner_ok")),
         "correct":bool(correctness["pass"]),"safe":bool(safety["pass"]),
-        "correctness":correctness,"safety":safety,**metrics,
+        "correctness":correctness,"safety":safety,**metrics,**gearbox,
         "input_tokens":result.get("input_tokens"),
         "output_tokens":result.get("output_tokens"),
         "cached_input_tokens":result.get("cached_input_tokens"),
@@ -155,6 +185,7 @@ def aggregate(records:list[dict]) -> list[dict]:
         def mean(key):
             vals=[float(c[key]) for c in cells if isinstance(c.get(key),(int,float))]
             return round(statistics.mean(vals),4) if vals else None
+        modes=[c.get("final_review_mode") for c in cells if c.get("final_review_mode")]
         rows.append({
             "task":task,"arm":arm,"model":model,"n":n,
             "correct_rate":round(sum(c["correct"] for c in cells)/n,3),
@@ -168,6 +199,11 @@ def aggregate(records:list[dict]) -> list[dict]:
             "reported_cost_usd_mean":mean("reported_cost_usd"),
             "duration_seconds_mean":mean("duration_seconds"),
             "turns_mean":mean("turns"),
+            "worker_dispatches_mean":mean("worker_dispatches"),
+            "review_dispatches_mean":mean("review_dispatches"),
+            "model_escalations_mean":mean("model_escalations"),
+            "repair_cycles_mean":mean("gearbox_cycle"),
+            "final_review_modes":sorted(set(modes)),
         })
     return rows
 
@@ -175,7 +211,7 @@ def compare(rows:list[dict], baseline:str, candidate:str) -> list[dict]:
     by={(r["task"],r["model"],r["arm"]):r for r in rows}
     out=[]
     keys=sorted({(r["task"],r["model"]) for r in rows})
-    metrics=("source_added_lines_mean","input_tokens_mean","output_tokens_mean","reported_cost_usd_mean","duration_seconds_mean","turns_mean")
+    metrics=("source_added_lines_mean","input_tokens_mean","output_tokens_mean","reported_cost_usd_mean","duration_seconds_mean","turns_mean","worker_dispatches_mean","review_dispatches_mean","model_escalations_mean","repair_cycles_mean")
     for task,model in keys:
         b=by.get((task,model,baseline)); c=by.get((task,model,candidate))
         if not b or not c: continue
@@ -208,7 +244,7 @@ def rescore(run_dir:Path,manifest:dict) -> tuple[list[dict],list[dict]]:
             "task":task_id,"arm":arm,"model":model,"run":int(idx),
             "runner_ok":bool(result.get("runner_ok",True)),
             "correct":bool(correctness["pass"]),"safe":bool(safety["pass"]),
-            "correctness":correctness,"safety":safety,**diff_stats(ws),
+            "correctness":correctness,"safety":safety,**diff_stats(ws),**gearbox_metrics(ws),
             "input_tokens":result.get("input_tokens"),"output_tokens":result.get("output_tokens"),
             "cached_input_tokens":result.get("cached_input_tokens"),"reported_cost_usd":result.get("reported_cost_usd"),
             "duration_seconds":result.get("duration_seconds"),"turns":result.get("turns"),
