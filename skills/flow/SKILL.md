@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Run the Gearbox loop
 
-`/flow` remains as a compatibility entry point. For new usage, follow the same protocol as `/loop`.
+`/flow` remains as a compatibility entry point. Execute the shared protocol in `references/engineering-loop.md` directly; do not rely on another slash command being implicitly loaded.
 
 Read `references/control-plane.md`, `references/engineering-loop.md`, normalize the supplied request/spec, and execute to PASS, BLOCKED, or the configured cycle limit.
 
