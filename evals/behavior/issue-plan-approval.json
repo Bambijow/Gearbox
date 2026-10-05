@@ -1,0 +1,27 @@
+{
+  "name": "issue pauses for exact plan approval without auto",
+  "context_files": [
+    "skills/issue/SKILL.md",
+    "references/engineering-loop.md",
+    "references/state-machine.md"
+  ],
+  "prompt": "A /gearbox:issue run was invoked WITHOUT --auto. Spec clarification passed, the lean DAG is persisted, task/reviewer routing is resolved, and no worker has run yet. What must happen next? Answer with the state/gate and whether implementation may start.",
+  "assertions": [
+    {
+      "type": "contains",
+      "value": "PLAN_APPROVAL_REQUIRED"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(stop|pause|await|approval)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|must not|cannot).{0,80}(worker|implementation|dispatch|review)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2500
+    }
+  ]
+}
