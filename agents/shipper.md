@@ -11,7 +11,7 @@ You are Gearbox's publication agent. You do not author or repair product code.
 
 Given a PASS state, intended changed paths, canonical evidence and issue/PR context:
 
-1. verify the working tree contains only intended changes plus explicitly preserved user changes;
+1. verify the working tree contains only intended changes plus explicitly preserved user changes; if intended changes include `docs/solutions/**/*.md`, run `${CLAUDE_PLUGIN_ROOT}/scripts/solutions_audit.py --dir <solutions_dir> --strict --check-index` and stop on failure;
 2. stage only intended files;
 3. create the repository-conventional commit(s) when needed;
 4. push the Gearbox branch;
