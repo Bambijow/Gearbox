@@ -8,7 +8,11 @@ import sys
 from typing import Any
 
 REPLACEMENT = "<redacted>"
-_SENSITIVE_KEY_RE = re.compile(r"(?i)^(?:password|passwd|pwd|secret|token|api[_-]?key|access[_-]?key|private[_-]?key|client[_-]?secret|cookie|session)$")
+SENSITIVE_KEYS = (
+    r"password|passwd|pwd|secret|token|api[_-]?key|access[_-]?key|"
+    r"private[_-]?key|client[_-]?secret|cookie|session[_-]?(?:token|cookie)"
+)
+_SENSITIVE_KEY_RE = re.compile(rf"(?i)^(?:{SENSITIVE_KEYS})$")
 
 _PATTERNS = [
     re.compile(r"(?i)\b(authorization\s*:\s*bearer\s+)([^\s]+)"),
@@ -16,19 +20,14 @@ _PATTERNS = [
     re.compile(r"\b(gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b"),
     re.compile(r"\b(AKIA[0-9A-Z]{16})\b"),
     re.compile(r"(?i)([?&](?:token|api[_-]?key|key|signature|sig|secret|access[_-]?token)=)([^&#\s]+)"),
-    re.compile(r"(?i)\b((?:password|passwd|pwd|secret|token|api[_-]?key|access[_-]?key|private[_-]?key|client[_-]?secret|cookie|session)\s*[:=]\s*)([^\s,;]+)"),
+    re.compile(rf"(?i)\b((?:{SENSITIVE_KEYS})\s*[:=]\s*)([^\s,;]+)"),
+    re.compile(rf"""(?i)(["']?(?:{SENSITIVE_KEYS})["']?\s*:\s*["'])([^"'\r\n]+)(["'])"""),
     re.compile(r"(?i)(https?://[^\s:/]+:)([^@\s]+)(@)"),
 ]
+
 _PRIVATE_KEY = re.compile(
     r"-----BEGIN(?: [A-Z0-9]+)? PRIVATE KEY-----.*?-----END(?: [A-Z0-9]+)? PRIVATE KEY-----",
     re.DOTALL,
-)
-
-_SECRET_HINT = re.compile(
-    r"(?i)(authorization\s*:\s*bearer\s+\S+|"
-    r"\bgh[pousr]_[A-Za-z0-9]{20,}\b|\bgithub_pat_[A-Za-z0-9_]{20,}\b|"
-    r"-----BEGIN(?: [A-Z0-9]+)? PRIVATE KEY-----|"
-    r"\b(?:password|passwd|pwd|secret|token|api[_-]?key|access[_-]?key|client[_-]?secret)\s*[:=]\s*\S+)"
 )
 
 def redact_text(text: str) -> str:
@@ -49,11 +48,14 @@ def redact_obj(value: Any) -> Any:
     if isinstance(value, list):
         return [redact_obj(v) for v in value]
     if isinstance(value, dict):
-        return {k: (REPLACEMENT if _SENSITIVE_KEY_RE.match(str(k)) else redact_obj(v)) for k, v in value.items()}
+        return {
+            k: (REPLACEMENT if _SENSITIVE_KEY_RE.match(str(k)) else redact_obj(v))
+            for k, v in value.items()
+        }
     return value
 
 def contains_secret_like(text: str) -> bool:
-    return bool(_SECRET_HINT.search(text))
+    return redact_text(text) != text
 
 def self_test() -> int:
     cases = {
@@ -62,11 +64,15 @@ def self_test() -> int:
         "https://user:pass123@example.com/x": "https://user:<redacted>@example.com/x",
         "github_pat_abcdefghijklmnopqrstuvwxyz0123456789": "<redacted>",
         '{"token":"supersecretvalue"}': '{"token":"<redacted>"}',
+        '{"client_secret": "abc123xyz"}': '{"client_secret": "<redacted>"}',
     }
     for raw, expected in cases.items():
         got = redact_text(raw)
         if got != expected:
             raise SystemExit(f"redaction self-test failed: {raw!r} -> {got!r}")
+    obj = redact_obj({"token": "abc", "nested": {"password": "xyz"}, "safe": "value"})
+    if obj["token"] != REPLACEMENT or obj["nested"]["password"] != REPLACEMENT or obj["safe"] != "value":
+        raise SystemExit(f"redaction object self-test failed: {obj!r}")
     print("PASS: redaction self-test")
     return 0
 
