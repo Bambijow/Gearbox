@@ -11,6 +11,8 @@ tags: [postgres, cache, transactions]
 areas: [src/cache/**, src/write/**]
 verified_against: <git-sha>
 last_verified: 2026-10-01
+# optional: only for externally/version-conditioned guidance
+retire_when: upstream cache client bug is fixed in a released version; verify via upstream issue + release notes
 ---
 ```
 
@@ -19,3 +21,6 @@ The index contains one line per current note: title, tags/areas, path and verifi
 Normal issue intake reads/searches the index first and deep-reads only the most relevant solution notes, normally 1-3. `/learn` updates the index after creating/updating a note. `/clean-solutions` regenerates/repairs it after refresh/merge/delete operations.
 
 Use `scripts/solutions_index.py` to regenerate deterministically when possible.
+
+
+`retire_when` is a targeted invalidation hint, not an expiry date. `/clean-solutions` checks the named condition before refresh/delete decisions. Use `scripts/solutions_audit.py` for deterministic frontmatter/index validation.
