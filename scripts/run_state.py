@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse, json, os, socket, subprocess, sys, time
 from pathlib import Path
 
-SCHEMA_VERSION=3
+SCHEMA_VERSION=4
 DEFAULT_BUDGETS={"max_cycles":3,"max_worker_dispatches":10,"max_codex_dispatches":12,"max_review_dispatches":14,"max_model_escalations":3,"max_pr_repair_cycles":3}
 
 def load(p): return json.loads(p.read_text()) if p.exists() else None
@@ -17,6 +17,7 @@ def normalize(d):
  if 'clarification' not in d: d['clarification']={"status":"UNSET","round":0,"questions":[],"answers":{}}; changed=True
  if 'blocker' not in d: d['blocker']=None; changed=True
  if 'orchestration' not in d: d['orchestration']={'mode':'delegated-control-plane','product_writes':'workers-only'}; changed=True
+ if 'repair_findings' not in d: d['repair_findings']={'policy':{'same_strategy_limit':2,'max_attempts_per_finding':5},'items':{}}; changed=True
  d.setdefault('budgets',{})
  for k,v in DEFAULT_BUDGETS.items():
   if k not in d['budgets']: d['budgets'][k]=v; changed=True
@@ -31,7 +32,7 @@ def init(run, run_id):
   d=load(p); d,changed=normalize(d)
   if changed: d['updated_at']=int(time.time()); save(p,d)
   return d
- d={"schema_version":SCHEMA_VERSION,"run_id":run_id,"status":"ACTIVE","phase":"INTAKE","cycle":0,"source":{},"git":{"base_sha":None,"head_sha":None,"branch":None},"github":{"issue":None,"pr":None,"technical_comment_id":None},"completed":{},"pending":[],"worktrees":[],"budgets":DEFAULT_BUDGETS.copy(),"usage":{"worker_dispatches":0,"codex_dispatches":0,"review_dispatches":0,"model_escalations":0,"pr_repair_cycles":0},"model_policy":{},"model_assignments":{},"orchestration":{"mode":"delegated-control-plane","product_writes":"workers-only"},"clarification":{"status":"UNSET","round":0,"questions":[],"answers":{}},"blocker":None,"learning":{},"last_error":None,"updated_at":int(time.time())}
+ d={"schema_version":SCHEMA_VERSION,"run_id":run_id,"status":"ACTIVE","phase":"INTAKE","cycle":0,"source":{},"git":{"base_sha":None,"head_sha":None,"branch":None},"github":{"issue":None,"pr":None,"technical_comment_id":None},"completed":{},"pending":[],"worktrees":[],"budgets":DEFAULT_BUDGETS.copy(),"usage":{"worker_dispatches":0,"codex_dispatches":0,"review_dispatches":0,"model_escalations":0,"pr_repair_cycles":0},"model_policy":{},"model_assignments":{},"orchestration":{"mode":"delegated-control-plane","product_writes":"workers-only"},"repair_findings":{"policy":{"same_strategy_limit":2,"max_attempts_per_finding":5},"items":{}},"clarification":{"status":"UNSET","round":0,"questions":[],"answers":{}},"blocker":None,"learning":{},"last_error":None,"updated_at":int(time.time())}
  save(p,d); return d
 
 def read_json_file(path):
