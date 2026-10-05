@@ -83,3 +83,26 @@ When a task needs independent review, do not paste its diff into the reviewer di
 ## Incomplete work
 
 If a worker cannot complete the task, report the blocker or partial state. The parent must dispatch a repair/replacement worker. It must not take over implementation itself.
+
+
+## Integration synchronization
+
+Each implementation worker starts from the integration SHA in its packet. Before reporting done, synchronize the latest integration tip into the task branch/worktree and rerun focused checks.
+
+Return:
+
+- `integration_base_sha`: integration tip successfully synchronized before handoff;
+- `head_sha`: final task head;
+- changed paths;
+- task commit when created;
+- focused verification/evidence.
+
+This is part of the completion criterion. If synchronization conflicts, report the conflict while the worker still owns the task context rather than hiding it.
+
+## Context pointers
+
+Packets should point to glossary, ADR, research, solution and source artifacts rather than paste them wholesale. Read only the pointers relevant to the assigned slice.
+
+## Secret safety
+
+Worker results, logs and evidence are potentially publishable. Follow `references/secret-redaction.md`; never return raw credentials, tokens, cookies, private keys or signed URLs.
