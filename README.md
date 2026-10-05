@@ -50,6 +50,7 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | J'ai un run interrompu | `/gearbox:resume <run-id-ou-issue>` |
 | J'ai déjà une PR avec CI/reviews à traiter | `/gearbox:continue-pr <PR>` |
 | Je veux nettoyer la mémoire technique | `/gearbox:clean-solutions` |
+| Je veux améliorer les prochains runs après une session pénible | `/gearbox:retro [run-id]` |
 
 Pour une issue classique, le mode autonome habituel est :
 
@@ -63,7 +64,7 @@ Pour continuer également après l'ouverture de la PR :
 /gearbox:issue https://github.com/acme/foo/issues/123 --auto --ship --follow-pr
 ```
 
-## Les 18 commandes
+## Les 19 commandes
 
 | Commande | Quand l'utiliser | Ce qu'elle fait exactement |
 | --- | --- | --- |
@@ -82,6 +83,7 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:review [diff-ou-PR]` | Pour une review indépendante | Vérifie conformité à la spec, correctness, sécurité, régressions, tests, risque opérationnel et architecture post-simplification. En mode `hybrid`, les tâches sont déjà revues par le fournisseur opposé ; cette commande sert aussi de review globale. |
 | `/gearbox:learn <leçon>` | Après une découverte non évidente qui mérite d'être conservée | Écrit ou réconcilie la connaissance canonique dans `docs/solutions/`. Cherche d'abord les doublons et contradictions, puis choisit création, refresh, merge ou suppression de l'ancienne vérité. Les solutions durables restent courtes et pointent vers les preuves/code pertinents. |
 | `/gearbox:clean-solutions [scope]` | Maintenance périodique de `docs/solutions/` | Confronte la mémoire technique au code, tests, specs et solutions plus récentes. Classe chaque note en `KEEP`, `REFRESH`, `MERGE`, `DELETE` ou `BLOCKED`. `--dry-run` montre le plan sans modifier les fichiers. |
+| `/gearbox:retro [run-id|issue|PR|session]` | Après un run coûteux, confus ou riche en corrections | Analyse les artefacts du run et cherche comment améliorer **l’environnement de l’agent**, pas le code de la feature : navigation, checks déterministes, standards de review, `CLAUDE.md`/`AGENTS.md`, tooling, packets, routing modèles, vérification et qualité du DAG. Les recommandations sont classées par sévérité et restent read-only tant que tu ne demandes pas explicitement de les appliquer. |
 | `/gearbox:ship` | Quand le code est prêt à être publié | Vérifie les gates, délègue commit/push, crée ou met à jour la PR et son commentaire technique. La description de PR est compréhensible par un non-tech ; le commentaire technique contient les checks, reviews, changements Ponytail, screenshots UI/UX et 1 à 5 vrais extraits de code critique avec fichier:lignes, justification et focus de review. |
 | `/gearbox:resume <run-id/issue/PR>` | Après fermeture/crash/interruption | Recharge `state.json`, réconcilie git, locks, worktrees, budgets et preuves, puis reprend exactement au bon endroit sans relancer les workers déjà terminés et encore valides. Si le run était `SPEC_BLOCKED`, ressort les questions en attente. |
 | `/gearbox:continue-pr <PR>` | Après création de la PR, quand CI ou un reviewer humain a parlé | Charge uniquement les nouveaux checks/commentaires, valide les findings au lieu de les accepter aveuglément, construit un repair DAG borné, corrige via workers, repousse sur la même branche et met à jour le même commentaire technique sans rejouer toute l'issue. |
@@ -152,6 +154,14 @@ docs/solutions/
 `docs/solutions/index.md` sert d'index léger pour éviter de relire tout le corpus à chaque issue. `/learn` écrit seulement quand la découverte est suffisamment non évidente et réutilisable ; `/clean-solutions` supprime ou réconcilie ce qui n'est plus vrai.
 
 La philosophie est simple : **Git conserve l'histoire ; `docs/solutions/` représente la vérité technique active que le prochain agent doit croire.**
+
+## Retrospective d'environnement
+
+`/gearbox:retro` ferme une boucle différente de `/learn`. `/learn` conserve une vérité technique sur le système ; `/retro` cherche pourquoi **l'agent** a perdu du temps, du contexte ou de la fiabilité pendant un run et propose une amélioration durable de son environnement.
+
+La rétro s'appuie d'abord sur les artefacts Gearbox (`state.json`, DAG, evidence, résultats workers/reviews et repair cycles) plutôt que de relire aveuglément toute la conversation. Elle privilégie les garde-fous déterministes pour les erreurs mécaniques, garde les standards de jugement côté review, et évite de gonfler `CLAUDE.md` / `AGENTS.md` avec des détails qui devraient vivre ailleurs.
+
+Gearbox ne lance pas une rétro automatiquement sur chaque ticket. Il peut la recommander lorsqu'un run présente des signaux coûteux : repair cycles répétés, escalade de modèle, mauvais routage, packet insuffisant, règle découverte trop tard par la review ou check manquant.
 
 ## État, reprise et preuves
 
