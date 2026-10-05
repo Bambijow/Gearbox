@@ -5,3 +5,4 @@ __pycache__/
 .gearbox/runs/
 .gearbox/evals/
 .gearbox/diagnostics/
+benchmarks/agentic/runs/
