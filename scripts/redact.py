@@ -8,6 +8,7 @@ import sys
 from typing import Any
 
 REPLACEMENT = "<redacted>"
+_SENSITIVE_KEY_RE = re.compile(r"(?i)^(?:password|passwd|pwd|secret|token|api[_-]?key|access[_-]?key|private[_-]?key|client[_-]?secret|cookie|session)$")
 
 _PATTERNS = [
     re.compile(r"(?i)\b(authorization\s*:\s*bearer\s+)([^\s]+)"),
@@ -48,7 +49,7 @@ def redact_obj(value: Any) -> Any:
     if isinstance(value, list):
         return [redact_obj(v) for v in value]
     if isinstance(value, dict):
-        return {k: redact_obj(v) for k, v in value.items()}
+        return {k: (REPLACEMENT if _SENSITIVE_KEY_RE.match(str(k)) else redact_obj(v)) for k, v in value.items()}
     return value
 
 def contains_secret_like(text: str) -> bool:
@@ -60,6 +61,7 @@ def self_test() -> int:
         "token=supersecretvalue": "token=<redacted>",
         "https://user:pass123@example.com/x": "https://user:<redacted>@example.com/x",
         "github_pat_abcdefghijklmnopqrstuvwxyz0123456789": "<redacted>",
+        \'{"token":"supersecretvalue"}\': \'{"token":"<redacted>"}\',
     }
     for raw, expected in cases.items():
         got = redact_text(raw)
