@@ -31,3 +31,22 @@ When sources conflict, prefer in this order:
 6. Comments and stale prose
 
 Never silently rewrite history to hide a contradiction. Surface it and resolve it. When an old solution is conclusively superseded and no unique current lesson remains, deleting the stale working-tree note is preferred to leaving contradictory searchable guidance; git history remains the historical record.
+
+
+## Research and domain artifacts
+
+Transient external/local research belongs under:
+
+```text
+.gearbox/runs/<run-id>/research/<slug>.md
+```
+
+It is a context pointer for the run, not product documentation by default.
+
+Canonical domain artifacts are different:
+
+- `GLOSSARY.md` / `GLOSSARY-MAP.md`: project language;
+- `docs/adr/`: qualifying hard-to-reverse decisions;
+- `docs/solutions/`: reusable technical discoveries.
+
+Do not move transient research into durable docs unless the repository/user intentionally wants to maintain it.
