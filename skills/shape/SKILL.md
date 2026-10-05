@@ -7,13 +7,13 @@ disable-model-invocation: true
 
 # Shape the work before planning it
 
-Produce a specification that is precise enough to plan without pretending implementation decisions are already settled. For a genuinely conversational exploration where the user wants to talk through alternatives before a spec exists, `/brainstorm` is the preferred front door and uses this shaping discipline only after the product/domain decisions converge.
+Produce a specification that is precise enough to plan without pretending implementation decisions are already settled. If the destination itself is clear but the route is hidden behind multiple unresolved decision clusters that cannot reasonably converge in one shaping session, stop and recommend `/gearbox:wayfinder` instead of manufacturing a giant speculative spec. For a genuinely conversational exploration where the user wants to talk through alternatives before a spec exists, `/brainstorm` is the preferred front door and uses this shaping discipline only after the product/domain decisions converge.
 
 ## First, ground yourself
 
 If the input is a GitHub issue URL or number, resolve it with `gh issue view` and treat the issue body/comments as the requested outcome and constraints. Verify claims against the current repository before turning them into the spec. This is the explicit issue-to-spec path when the user wants shaping without running the full `/issue` loop.
 
-Read `.gearbox/config.md` when present. Read relevant repository instructions. Inspect the existing code paths, tests, schemas, APIs, and configuration touched by the request. Search for existing terminology before inventing new names.
+Read `.gearbox/config.md` when present. Read relevant repository instructions. Inspect the existing code paths, tests, schemas, APIs, and configuration touched by the request. Apply `references/domain-modeling.md`: read the relevant glossary context when present and use its canonical terms before inventing new names.
 
 Separate three buckets:
 
@@ -21,13 +21,13 @@ Separate three buckets:
 - **Requested**: outcomes the user explicitly wants.
 - **Open**: decisions that materially change scope, UX, compatibility, data shape, safety, or rollout.
 
-Do not interrogate the user about things the repository can answer. Apply `references/spec-clarification.md`: classify gaps as DEDUCED, low-risk/reversible ASSUMED, or blocking QUESTION. Ask only for genuinely consequential unknowns. For issue/non-conversational shaping, prefer one coherent batch of independent blocking questions over a long drip of trivial confirmations. `--auto` never authorizes inventing product semantics.
+Do not interrogate the user about things the repository can answer. When a material decision depends on current external facts rather than product preference, dispatch `researcher` using `references/research.md`; carry the conclusion and note path into shaping instead of browsing broadly in the parent context. Apply `references/spec-clarification.md`: classify gaps as DEDUCED, low-risk/reversible ASSUMED, or blocking QUESTION. Ask only for genuinely consequential unknowns. For issue/non-conversational shaping, prefer one coherent batch of independent blocking questions over a long drip of trivial confirmations. `--auto` never authorizes inventing product semantics.
 
 ## Shape the domain
 
 Make terms explicit. If two words appear to mean the same thing, resolve the vocabulary. If one word hides two concepts, split it. Reuse the repository's existing language unless it is demonstrably causing confusion.
 
-When `GLOSSARY.md` or an equivalent domain document exists, update it only for terms that became materially clearer during the shaping session.
+When a canonical term becomes materially clearer, delegate the smallest glossary edit to `domain-curator` after the decision is settled. If a hard-to-reverse, surprising architecture choice with real alternatives is resolved, the same curator may record a compact ADR. Do not turn every implementation choice into an ADR.
 
 ## Specification content
 
