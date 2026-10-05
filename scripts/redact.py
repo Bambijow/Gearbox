@@ -61,7 +61,7 @@ def self_test() -> int:
         "token=supersecretvalue": "token=<redacted>",
         "https://user:pass123@example.com/x": "https://user:<redacted>@example.com/x",
         "github_pat_abcdefghijklmnopqrstuvwxyz0123456789": "<redacted>",
-        \'{"token":"supersecretvalue"}\': \'{"token":"<redacted>"}\',
+        '{"token":"supersecretvalue"}': '{"token":"<redacted>"}',
     }
     for raw, expected in cases.items():
         got = redact_text(raw)
