@@ -14,6 +14,19 @@ Ask high-leverage product/domain questions only. Let the repository answer repos
 
 If the brainstorm creates a GitHub issue from the spec and immediately enters the loop, use the accepted spec directly as requirements input and the issue as tracker context. Never pay for an immediate spec → issue → spec reconstruction.
 
+### Context pointers before copied context
+
+Prefer a short pointer to authoritative material over copying it into prompts. A pointer should say what the material contains and when this task needs it.
+
+Examples:
+
+- `GLOSSARY.md#Payments` instead of pasting the whole domain vocabulary;
+- `.gearbox/runs/<id>/research/oauth.md` instead of pasting source notes;
+- a symbol/file path instead of a copied implementation;
+- an ADR path instead of restating the decision history.
+
+Shared behavior between Gearbox skills belongs in `references/` or agents/scripts. Do not assume merely naming another slash command loads its behavior.
+
 ### Read once, distill once
 
 The orchestrator reads the issue, repository instructions, relevant architecture, and plan. It then writes compact run artifacts under the self-ignored `.gearbox/runs/` workspace. Workers receive a task packet, not the parent conversation and not the whole issue history.
@@ -32,6 +45,14 @@ These are targets, not correctness limits. Exceed them only when omitting inform
 - reviewer report: findings only, with at most 6 material findings by default.
 
 Prefer paths, symbols, commit/base refs, and commands over pasted file bodies. State the intended model for each dispatch; use a capable but cheaper bounded model for task review/ordinary simplification, and reserve the session's strongest model for orchestration or final review when the risk warrants it. Let a worker inspect its local worktree when it needs source detail.
+
+### Isolate research legwork
+
+When a decision depends on external/current facts, give one question to `researcher`. Store the note in the run directory and return a pointer. The parent should not spend its main context browsing documentation for facts a subagent can isolate.
+
+### Ready-frontier concurrency
+
+Use `references/frontier-scheduling.md`. Dispatch ready tasks as soon as dependencies integrate instead of waiting for artificial batches. Frontier state is metadata; computing it should not require reopening task bodies.
 
 ### Pre-flight the plan once
 
