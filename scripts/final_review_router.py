@@ -85,9 +85,9 @@ def route(args: argparse.Namespace) -> FinalReviewRoute:
 
 def parser() -> argparse.ArgumentParser:
     p=argparse.ArgumentParser(description="Route Gearbox final integrated review by failure consequence.")
-    p.add_argument("--risk",choices=sorted(RISKS),required=True)
-    p.add_argument("--failure-visibility",choices=sorted(VISIBILITY),required=True)
-    p.add_argument("--task-review-gates",choices=sorted(TASK_GATES),required=True)
+    p.add_argument("--risk",choices=sorted(RISKS))
+    p.add_argument("--failure-visibility",choices=sorted(VISIBILITY))
+    p.add_argument("--task-review-gates",choices=sorted(TASK_GATES))
     p.add_argument("--hybrid",action="store_true")
     p.add_argument("--shared-seam",action="store_true")
     p.add_argument("--integration-repair",action="store_true")
@@ -133,6 +133,9 @@ def main() -> int:
     args=p.parse_args()
     if args.self_test:
         self_test(); return 0
+    missing=[name for name in ("risk","failure_visibility","task_review_gates") if getattr(args,name) is None]
+    if missing:
+        p.error("required arguments missing: " + ", ".join("--"+x.replace("_","-") for x in missing))
     try:
         result=route(args)
     except ValueError as exc:
