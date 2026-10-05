@@ -1,6 +1,7 @@
 ---
 name: retro
 description: "Retrospect on a Gearbox coding run or session and suggest concrete improvements to the agent environment: navigation, deterministic checks, coding standards, steering files, tooling, model routing, task packets, evidence and review placement. Does not re-review the feature code."
+argument-hint: "[run-id|issue|PR|session] [--bundle]"
 disable-model-invocation: true
 ---
 
@@ -12,7 +13,7 @@ A retro studies the primary evidence of a session/run and asks:
 
 > What made the agent slower, less reliable, more expensive, or more confused than it needed to be, and what durable change to the environment would prevent that next time?
 
-Do not turn this into another code review. Do not invent findings from vibes. Every recommendation needs evidence from the run.
+Do not turn this into another code review. Do not invent findings from vibes. Every recommendation needs evidence from the run. Cite the smallest useful source location as `path:line` for text or `path#json-pointer` / exact artifact field for structured data; do not write uncited forensic conclusions.
 
 ## Input
 
@@ -175,6 +176,32 @@ Route the durable fix correctly:
 
 Do not fix terminology drift by copying the same definition into every prompt.
 
+### 10. Forensic execution signals
+
+Build a compact timeline from durable artifacts rather than memory. Specifically inspect, when present:
+
+- **plan adherence** — where implementation materially diverged and whether a ruling existed;
+- **repeated work** — rediscovery, duplicate tests/reviews, repeated repair strategy, repeated file reads;
+- **stumbles** — tool/worker failures, lost child results, flaky checks, missing access;
+- **request conflicts** — user/spec/plan/reviewer instructions pulling in different directions;
+- **cost/time proxies** — dispatch counts, model escalations, repair attempts, broad-suite repetitions and host-reported usage. Never invent dollar/token numbers the artifacts do not contain;
+- **quality evidence** — findings that escaped task review into final review/CI;
+- **similar runs** — compare another recent run only when the current evidence suggests recurrence. Do not sweep session history by default.
+
+Use `references/delegation-gate.md` before dispatching any analysis subagent: retro analysis usually belongs in the current context unless flood protection or independent judgment is genuinely needed.
+
+## Optional scrubbed bundle
+
+Only when the user supplied `--bundle`, create a shareable forensic directory with:
+
+```bash
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/retro_bundle.py" --run-dir ".gearbox/runs/<run-id>"
+```
+
+Add `--zip` only when an archive was explicitly requested. Report the output path and remind the user that deterministic redaction is defense-in-depth and the bundle should be reviewed before external sharing.
+
+Without `--bundle`, retro remains read-only and creates no diagnostic package.
+
 ## Severity
 
 Rank candidates by expected future cost:
@@ -189,7 +216,7 @@ Do not list speculative or one-off trivia just to fill the report.
 
 Present the findings in severity order. For each finding include:
 
-- **Evidence**: exact run artifact, event, retry, review finding, path or measured symptom;
+- **Evidence**: exact `path:line`, structured artifact field/JSON pointer, event, retry, or measured symptom;
 - **Why it matters**: the recurring failure/cost it creates;
 - **Class**: navigation | deterministic-check | judgement-standard | steering | tooling | routing | verification | DAG | domain-modeling | agent-writing;
 - **Change**: the smallest durable improvement;
@@ -208,7 +235,7 @@ Give at most 5 actions, ordered by leverage. Prefer deterministic/environment fi
 
 ## Mutation policy
 
-By default, **do not edit anything**. A retro is a diagnosis and proposal.
+By default, **do not edit product/environment files**. A retro is a diagnosis and proposal. `--bundle` is the explicit exception permitting only transient `.gearbox/diagnostics/` output.
 
 If the user asks to apply selected recommendations, do that as a separate explicit step. Do not silently change routing, CI, hooks, `CLAUDE.md`, `AGENTS.md`, or coding standards during the retro itself.
 
