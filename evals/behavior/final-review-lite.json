@@ -1,0 +1,21 @@
+{
+  "name": "final review stays lite for loud local bounded change",
+  "context_files": [
+    "references/final-review-routing.md"
+  ],
+  "prompt": "Task review gates passed. The final diff is medium risk, changes one internal formatter, failure is loud and local, no public/auth/data/concurrency/production boundary is touched. What final review mode and how many fresh model reviewers?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)\\blite\\b"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(0|zero|no).{0,35}(fresh|new|model).{0,25}review"
+    },
+    {
+      "type": "max_chars",
+      "value": 2200
+    }
+  ]
+}
