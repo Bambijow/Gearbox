@@ -4,7 +4,7 @@ import argparse,json,shutil,subprocess,sys,time
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 SCHEMAS={"implementation":ROOT/'references/codex-implementation-result.schema.json',"review":ROOT/'references/codex-review-result.schema.json'}
-REQUIRED={"implementation":{"status","summary","changed_files","verification","risks","notes"},"review":{"status","summary","findings","verification_gaps","residual_risks"}}
+REQUIRED={"implementation":{"status","summary","integration_base_sha","head_sha","changed_files","verification","risks","notes"},"review":{"status","summary","findings","verification_gaps","residual_risks"}}
 def die(m,c=2): print('codex-worker:',m,file=sys.stderr); raise SystemExit(c)
 def main():
  p=argparse.ArgumentParser(description='Run one isolated stateless Codex worker.'); p.add_argument('--worktree',required=True,type=Path); p.add_argument('--prompt',required=True,type=Path); p.add_argument('--result',required=True,type=Path); p.add_argument('--events',type=Path); p.add_argument('--meta',type=Path); p.add_argument('--kind',choices=('implementation','review'),default='implementation'); p.add_argument('--schema',type=Path); p.add_argument('--codex-bin',default='codex'); p.add_argument('--sandbox',choices=('workspace-write','read-only')); p.add_argument('--model'); p.add_argument('--effort',choices=('none','minimal','low','medium','high','xhigh','max')); p.add_argument('--ignore-user-config',action='store_true'); a=p.parse_args()
