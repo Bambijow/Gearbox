@@ -57,9 +57,11 @@ budget:
   max_review_dispatches: 14
   max_model_escalations: 3
   max_pr_repair_cycles: 3
+  max_total_tokens: null          # optional; only from measured/reported usage
+  max_reported_cost_usd: null     # optional; no built-in pricing guesses
 ```
 
-Every worker, reviewer, and model escalation increments usage in `state.json`. On exhaustion, stop with `BUDGET_EXHAUSTED`; do not silently exceed the budget.
+Every worker, reviewer, and model escalation increments usage in `state.json`. When provider/host token or cost telemetry exists, record it through `scripts/usage_ledger.py` under `references/usage-accounting.md`. Optional token/reported-cost caps apply only to actual telemetry or an explicit next-dispatch estimate; Gearbox never invents pricing. On exhaustion, stop with `BUDGET_EXHAUSTED`; do not silently exceed the budget.
 
 Budgets are guardrails, not targets. A small issue should use far less.
 
