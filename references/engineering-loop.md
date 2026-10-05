@@ -118,8 +118,8 @@ On explicit approval, reacquire the run lock and call `run_state.py plan-approve
 9. After the task review gate passes, delegate mechanical integration to `integrator`. Integration conflicts become repair tasks.
 10. After each accepted integration, delegate affected focused checks to `verifier`, but query reusable exact-SHA evidence first so identical valid checks are not rerun. Update task status, recompute the ready frontier, and immediately dispatch any newly-ready non-conflicting tasks.
 11. Run the post-integration `ponytail-simplifier` gate.
-12. Run final independent cross-model review on the simplified integrated diff. This is integration-level review and does not replace the per-task opposite-provider gate.
-13. Delegate full-enough repository-native verification and required UI/UX evidence to `verifier`.
+12. Route the simplified integrated diff through `references/final-review-routing.md` and `scripts/final_review_router.py`, then persist the selected mode in `state.final_review`. `lite` buys no new model reviewer; `focused` buys exactly one fresh adversarial integration review; `full` buys the comprehensive spine and, in hybrid, an independent cross-provider peer. Required task-level review gates must already be satisfied.
+13. Delegate full-enough repository-native verification and required UI/UX evidence to `verifier` regardless of final-review mode.
 
 Record reusable surprises as compact learning candidates while they are fresh. Do not invoke `/learn` yet just because something was interesting.
 
@@ -170,7 +170,7 @@ For each repair:
 6. Inspect the repair diff centrally without editing it. In `hybrid`, use the opposite provider for a **scoped re-review** of the finding + delta, not the entire original task.
 7. Validate the re-review. Delegate accepted integration to `integrator`, then affected checks to `verifier`.
 8. Re-run Ponytail only when the repair materially changed structure/duplication/abstractions/control flow.
-9. Run another broad final review only when the repair changed architecture, public contracts, security/data boundaries, or a substantial part of the integrated diff.
+9. Re-run `final_review_router.py` only when the repair changes failure consequence/risk surface. Keep the previous `lite/focused/full` mode when its inputs remain valid; do not automatically re-enter the expensive review spine.
 10. Run full-enough final verification before PASS, reusing exact-SHA evidence where `references/evidence-reuse.md` permits it.
 
 The per-finding breaker is an additional guardrail; the global `max_cycles`/dispatch budgets may stop the run sooner. Never loop because a reviewer has a subjective preference, and never ask a reviewer to review another reviewer.
