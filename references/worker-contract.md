@@ -39,13 +39,13 @@ REPOSITORY CONVENTIONS
 Only relevant confirmed rules.
 
 TDD / VERIFY
-Commands and expected behavior.
+Commands and expected behavior. For behavior-bearing tests, use `references/test-credibility.md`.
 
 CONSTRAINTS
 No pushes, no secrets, no unrelated refactors, no weakening tests. A local task commit is allowed/encouraged when the packet requests it; never publish it.
 
 SELF-REVIEW
-Before reporting, compare the diff to the assigned spec slice, check for scope growth, and record RED/GREEN evidence when TDD applies.
+Before reporting, compare the diff to the assigned spec slice, check for scope growth, record RED/GREEN evidence when TDD applies, and state the mutation story for any new behavior-bearing test.
 
 OUTPUT
 Return JSON matching the provided schema. Keep it compact. The orchestrator will inspect your actual diff and task logs.
@@ -106,3 +106,10 @@ Packets should point to glossary, ADR, research, solution and source artifacts r
 ## Secret safety
 
 Worker results, logs and evidence are potentially publishable. Follow `references/secret-redaction.md`; never return raw credentials, tokens, cookies, private keys or signed URLs.
+
+
+## Batch tasks
+
+A batch task is one dispatch/review unit containing low-risk same-shape `batch_members`. The packet must list every member with its owned paths and expected change/evidence. The worker may not silently drop a member or broaden the batch.
+
+The result reports member coverage explicitly. Cross-provider review checks every member against its acceptance slice before the batch can integrate.
