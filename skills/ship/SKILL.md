@@ -17,7 +17,7 @@ Invoking `/ship` authorizes normal source-control actions needed to publish the 
 
 Read repository instructions and `.gearbox/config.md`. Inspect `git status`, relevant diff, branch/upstream state, and recent commits. Never include unrelated user changes.
 
-Check for secrets, debug artifacts, temporary orchestration files, accidental generated output, and unexpected binaries. Read persistent `state.json` and canonical `evidence.json`; shipping is idempotent and must reuse a recorded PR.
+Check for secrets, debug artifacts, temporary orchestration files, accidental generated output, and unexpected binaries. Apply `references/secret-redaction.md`; PR body and technical comment must contain no raw secret-like values. Read persistent `state.json` and canonical `evidence.json`; shipping is idempotent and must reuse a recorded PR.
 
 ## Final verification
 
@@ -37,7 +37,9 @@ Use the repository's PR template when present, but preserve the two-audience con
 
 ### Main PR description
 
-Write primarily for a non-technical stakeholder. Explain the problem, observable change, scope boundaries, confidence/verification, rollout caveats, and linked issue in plain language. Avoid implementation internals.
+Write primarily for a non-technical stakeholder using the `references/pr-reporting.md` contract: Summary, observable change, scope boundary, concrete Before/After Evidence, and Merge Danger (`Door` + `Blast Radius`). Add one small visual only when it clarifies the change better than prose. Avoid implementation internals.
+
+Before creating/updating the PR, persist the main body as `.gearbox/runs/<run-id>/pr-body.md` and validate it with `scripts/pr_body_guard.py`. A failed guard blocks publication; fix the report, not the product code.
 
 ### Technical evidence comment
 
