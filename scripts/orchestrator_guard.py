@@ -18,7 +18,8 @@ APPROVED_SCRIPTS = {
     "run_state.py", "model_router.py", "review_router.py", "codex_worker.py",
     "evidence.py", "worktree_manager.py", "orchestrator_guard.py", "migrate_legacy.py",
     "redact.py", "pr_report_guard.py", "pr_body_guard.py",
-    "plan_guard.py", "repair_findings.py", "finding_registry.py", "solutions_audit.py", "retro_bundle.py",\n    "child_jobs.py", "usage_ledger.py"
+    "plan_guard.py", "repair_findings.py", "finding_registry.py", "solutions_audit.py", "retro_bundle.py",
+    "child_jobs.py", "usage_ledger.py"
 }
 READ_COMMANDS = {"pwd", "ls", "rg", "grep", "head", "tail", "cat", "wc", "stat", "realpath"}
 SHELL_META = re.compile(r"(?:\n|\r|;|&&|\|\||(?<!\\)[|<>`]|\$\()")
