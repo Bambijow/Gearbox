@@ -50,7 +50,7 @@ Do not restart the entire workflow after a failed gate. Later cycles operate on 
 
 Report exactly one final loop state:
 
-- `PASS`: convergence achieved. State cycle count, acceptance evidence, checks, simplification, review, learning result and shipping state.
+- `PASS`: convergence achieved. State cycle count, acceptance evidence, checks, simplification, review, learning result, shipping state, and whether `/gearbox:retro` is recommended.
 - `BLOCKED`: state the concrete blocker, completed evidence, current branch/worktree state and the smallest decision/action needed to resume.
 - `MAX_CYCLES`: state unresolved validated findings and evidence. Do not claim success and do not ship.
 
