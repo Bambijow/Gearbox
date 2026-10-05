@@ -121,6 +121,36 @@ Un test vert ne compte comme preuve que s'il exerce un vrai seam, possède une a
 
 Chaque finding réparable reçoit un id stable. Deux tentatives avec la même stratégie sont permises ; une troisième identique est bloquée et force re-diagnostic/split/changement de stratégie. Cinq tentatives totales forcent une adjudication du contrôleur si le budget global n'a pas arrêté la boucle avant.
 
+## Plomberie intelligente
+
+Gearbox 1.4 ajoute une couche de contrôle qui cherche surtout à éviter les dépenses silencieuses et les régressions de prompts.
+
+### Prompt budgets
+
+Chaque `skills/*/SKILL.md` a un plafond de bytes dans `prompt-budgets.json`. `scripts/prompt_budget.py` fait échouer le CI si un skill regrossit au-delà de son ratchet. Le détail conditionnel doit aller dans `references/`, et la mécanique déterministe dans `scripts/`.
+
+### Behavioral evals
+
+`evals/behavior/` couvre les comportements que les validateurs de fichiers ne peuvent pas voir : plan qui recommence à transcrire du code, brainstorm qui transforme un spike en spec, délégation auxiliaire inutile, review trop défensive, etc.
+
+Le CI normal valide les scénarios et le harness seulement. Il **ne lance jamais Claude/Codex et ne dépense aucun token modèle**. Les campagnes comportementales se lancent explicitement/localement avec `scripts/behavior_eval.py`.
+
+### Findings canoniques
+
+CI, reviewer humain et review modèle peuvent signaler le même défaut. Gearbox normalise d'abord le failure path puis `finding_registry.py` regroupe les sources sous un seul finding stable. Une root cause = une repair history, pas trois workers parallèles sur le même problème.
+
+### Evidence reuse
+
+`evidence.py reuse` permet de réutiliser une preuve valide au **même SHA exact**, même commande/scope, tant qu'elle n'est ni invalidée, volatile ni expirée. Un reviewer frais n'a donc plus le droit de relancer une suite lourde uniquement pour se rassurer.
+
+### Child reconciliation
+
+Les enfants/background workers peuvent être enregistrés dans `children.json`. Gearbox privilégie les retours event-driven, travaille pendant l'attente, puis fait une reconciliation bornée plutôt que du polling serré. Un artifact présent peut récupérer un worker dont le message de retour s'est perdu.
+
+### Usage accounting
+
+Quand le host/provider expose réellement tokens ou coût, `usage_ledger.py` les enregistre dans `usage.json`. Gearbox ne contient aucune grille tarifaire figée et n'invente jamais un coût absent. Des plafonds optionnels `max_total_tokens` et `max_reported_cost_usd` peuvent être configurés.
+
 ## Wayfinding, recherche et modèle de domaine
 
 Gearbox sépare maintenant trois problèmes qui se mélangeaient facilement :
@@ -211,6 +241,8 @@ Un run substantiel garde son état temporaire ici :
 .gearbox/runs/<run-id>/
 ├── state.json
 ├── evidence.json
+├── children.json
+├── usage.json          # seulement si télémétrie disponible
 ├── spec.md
 ├── repo-facts.md
 ├── dag.yaml
@@ -218,7 +250,7 @@ Un run substantiel garde son état temporaire ici :
 └── tasks/
 ```
 
-`state.json` rend le run reprenable et borné par budgets. `evidence.json` est la source des affirmations de vérification : tests, lint, typecheck, build, reviews et screenshots ne sont pas annoncés comme réussis s'ils n'ont pas été enregistrés sur le bon état du code.
+`state.json` rend le run reprenable et borné par budgets. `evidence.json` est la source des affirmations de vérification et peut réutiliser une preuve au SHA exact sans rerun inutile. `children.json` sert à réconcilier les travaux délégués et `usage.json` ne contient que la télémétrie réellement rapportée par les providers/hosts.
 
 ## PR générées par Gearbox
 
