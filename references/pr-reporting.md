@@ -4,13 +4,15 @@ Gearbox uses two layers so a PR is understandable to both non-technical stakehol
 
 ## Main PR description
 
-Write this for someone who understands the product/problem but not the code.
+Write this for someone who understands the product/problem but does not need to know the implementation.
 
-Recommended shape:
+Use this shape:
 
 ```markdown
-## Why this change
-<plain-language problem>
+## Summary
+<2-5 lines: problem + observable result>
+
+<optional smallest useful visual: pseudocode, call tree, shallow file/component tree, Mermaid, or diff-sketch>
 
 ## What changes
 <observable behavior and who benefits>
@@ -18,8 +20,14 @@ Recommended shape:
 ## What does not change
 <important scope boundary>
 
-## Confidence
-<plain-language verification, including UI/manual evidence if relevant>
+## Evidence
+**Before:** <failing scenario/output/screenshot or verified old behavior>
+**After:** <passing scenario/output/screenshot or verified new behavior>
+
+## Merge Danger
+**Door:** <one-way|two-way>
+**Blast Radius:** <short scope label>
+<one or two lines explaining rollback/irreversibility and plausible affected surface>
 
 ## Rollout / caveats
 <only when needed>
@@ -27,11 +35,27 @@ Recommended shape:
 Closes #123
 ```
 
-Do not dump file names or internal implementation terminology into this section unless a stakeholder truly needs it.
+The visual is optional. Use one only when it makes the shape of the change easier to understand than prose. Pick the smallest representation that makes the key point clear; do not dump implementation detail into the stakeholder description.
+
+**Door**:
+
+- `two-way`: cheap/safe to revert without irreversible state loss;
+- `one-way`: destructive migration, irreversible external side effect, contract/state transition, or other decision that cannot be cheaply walked back.
+
+**Blast Radius** describes what could be affected if the change is wrong: one form, one endpoint, all consumers of an API, persisted data, auth flows, etc.
+
+Before creating/updating the PR, write this body to `.gearbox/runs/<run-id>/pr-body.md` and run:
+
+```bash
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/pr_body_guard.py" \
+  --body ".gearbox/runs/<run-id>/pr-body.md"
+```
+
+A failed body guard blocks publication. Do not invent “before” evidence that was never observed; say `not captured` with the reason when the old state cannot be reproduced.
 
 ## First technical comment
 
-Start with the hidden marker `<!-- gearbox-report:v1 -->` so later `/continue-pr` runs update the same report instead of spamming comments. Build verification/review claims from `evidence.json` and run state.
+Start with the hidden marker `<!-- gearbox-report:v1 -->` so later `/continue-pr` runs update the same report instead of spamming comments. Build verification/review claims from `evidence.json` and run state. Both PR body and technical report are potentially public: apply `references/secret-redaction.md`; guards reject obvious secret-like material.
 
 This is the engineer's control panel, not a prose recap of filenames.
 
