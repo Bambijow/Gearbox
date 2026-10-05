@@ -16,6 +16,8 @@ Read:
 - `references/artifact-contract.md` for durable/transient artifact locations;
 - `references/token-efficiency.md` for context budgets;
 - `references/spec-clarification.md` for the final decision-completeness gate;
+- `references/domain-modeling.md` for canonical vocabulary and qualifying ADR decisions;
+- `references/research.md` when a product decision depends on current external facts;
 - `/shape` discipline for the final specification;
 - `/spec-to-issue` discipline for the tracker handoff;
 - `references/control-plane.md` for the parent/worker boundary;
@@ -53,6 +55,10 @@ Keep the ledger compact, normally under about 800 words. Rewrite/compress it as 
 
 If the input is an existing spec path, treat the brainstorm as an amendment session: preserve accepted requirements, discuss only the requested or newly discovered deltas, and update the same spec rather than creating a near-duplicate.
 
+## Wayfinder boundary
+
+If the desired destination is understandable but reaching a spec requires several decision-sized investigations with dependencies/fog that cannot fit comfortably in this session, do not force the brainstorm to absorb the entire initiative. Explain the boundary and hand the user to `/gearbox:wayfinder`. Brainstorm is for converging one spec; Wayfinder is for discovering the route to one.
+
 ## 2. Talk, do not interrogate
 
 Start from what the user already gave you. Ask the **highest-leverage unresolved question** next.
@@ -65,7 +71,7 @@ Good questions distinguish between materially different outcomes, for example:
 - what is explicitly out of scope;
 - which of two materially different UX/domain semantics is intended.
 
-Do not ask the user for facts the repository can answer. When repository knowledge can resolve a question, inspect the relevant code/tests/docs once and summarize the fact into `decisions.md`.
+Do not ask the user for facts the repository can answer. If a consequential choice depends on a current external fact, dispatch `researcher` and keep only its conclusion + note pointer in the decision ledger. When repository knowledge can resolve a question, inspect the relevant code/tests/docs once and summarize the fact into `decisions.md`.
 
 Prefer one focused question at a time during genuine product exploration. Bundle a few independent yes/no details only when doing so is clearly cheaper and does not hide a decision.
 
@@ -74,6 +80,8 @@ When there are meaningful alternatives, present at most 2-3 concrete options wit
 ## 3. Consult existing knowledge only when relevant
 
 Once the problem/domain is clear enough to search intelligently, check relevant `docs/solutions/` notes and repository terminology. Pull only directly relevant facts or warnings into the decision ledger.
+
+Use canonical terms from the relevant glossary when one exists. If the conversation genuinely resolves a domain term or a qualifying hard-to-reverse trade-off, delegate the minimal glossary/ADR update to `domain-curator` after user acceptance.
 
 Historical solutions are evidence, not requirements. If a prior solution conflicts with the user's intended behavior, surface the conflict rather than silently inheriting the old choice.
 
