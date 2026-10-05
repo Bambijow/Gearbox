@@ -1,6 +1,6 @@
 # Risk and execution budgets
 
-Gearbox scales review and model spend with concrete risk.
+Gearbox scales review and model spend with concrete risk. Review severity/action is calibrated by `references/review-calibration.md`; plausible failure cost, not maximal defensiveness, determines what blocks integration.
 
 ## Risk classes
 
@@ -62,3 +62,8 @@ budget:
 Every worker, reviewer, and model escalation increments usage in `state.json`. On exhaustion, stop with `BUDGET_EXHAUSTED`; do not silently exceed the budget.
 
 Budgets are guardrails, not targets. A small issue should use far less.
+
+
+## Repair breaker
+
+Repair dispatches are additionally bounded per finding by `references/repair-findings.md` and `scripts/repair_findings.py`. The default allows two attempts with one material strategy before mandatory re-diagnosis and five total attempts before controller adjudication. Global cycle/dispatch budgets still win when they are lower.
