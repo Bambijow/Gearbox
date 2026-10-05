@@ -1,8 +1,8 @@
 {
   "name": "gearbox",
   "displayName": "Gearbox",
-  "version": "1.1.0",
-  "description": "Claude Code engineering orchestration with resumable issue/spec loops, delegated Claude/Codex workers, opposite-provider reviews, Ponytail simplification, evidence-backed verification, durable docs/solutions memory, and human-readable PR reporting.",
+  "version": "1.2.0",
+  "description": "Claude Code engineering orchestration with wayfinding, isolated research, resumable issue/spec loops, delegated Claude/Codex workers, opposite-provider reviews, Ponytail simplification, evidence-backed verification, durable domain/solution memory, and human-readable PR reporting.",
   "author": {
     "name": "Bambijow"
   },
@@ -37,10 +37,18 @@
     "control-plane",
     "delegated-execution",
     "hook-guardrails",
-    "retrospective"
+    "retrospective",
+    "wayfinding",
+    "research",
+    "glossary",
+    "adr",
+    "ready-frontier",
+    "context-pointers",
+    "secret-redaction"
   ],
   "skills": [
     "./skills/setup",
+    "./skills/wayfinder",
     "./skills/brainstorm",
     "./skills/shape",
     "./skills/plan",
