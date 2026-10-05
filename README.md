@@ -2,7 +2,7 @@
 
 Gearbox est un plugin Claude Code d'orchestration d'ingénierie. Il transforme une idée, une spec ou une issue GitHub en boucle de développement contrôlée : clarification proportionnée, plan lean, DAG/ready frontier, routage Claude/Codex, workers isolés, batching des micro-tâches, tests crédibles, optimisation mesurée, dogfooding produit, hardening par mutations/propriétés, audits sécurité ciblés, hygiène des skills, reviews croisées calibrées par le coût réel d'un échec, Ponytail, vérification, mémoire durable et PR documentée pour humains.
 
-Le thread Claude principal agit comme **control plane** : il analyse, planifie, route, inspecte et arbitre, mais il ne modifie pas le code produit pendant un run orchestré. Les changements sont délégués à des workers et agents spécialisés, puis revus par le fournisseur opposé en mode `hybrid`.
+Le thread Claude principal agit comme **control plane** : il analyse, planifie, route, inspecte et arbitre, mais il ne modifie pas le code produit pendant un run orchestré. Les changements sont délégués à des workers et agents spécialisés, puis revus par le fournisseur opposé en mode `hybrid`. Un worker n'est candidat que s'il possède les MCP/outils externes requis par sa tâche.
 
 ## Installation depuis GitHub
 
@@ -281,6 +281,14 @@ Cette discipline augmente le parallélisme sans cacher les conflits à l'intégr
 Les règles destinées aux agents suivent une hiérarchie de contexte : instructions indispensables inline, référence conditionnelle derrière un pointeur, mécanique vérifiable dans lint/test/CI/hooks. `CLAUDE.md` et `AGENTS.md` doivent rester des cartes, pas des encyclopédies.
 
 Gearbox ne suppose pas qu'écrire « utilise /gearbox:foo » dans un autre skill charge magiquement ce skill : le comportement partagé vit dans `references/`, les actions déléguées dans `agents/`, et les mécanismes déterministes dans `scripts/`.
+
+## Capability-aware execution
+
+Chaque tâche du DAG déclare `required_capabilities`, y compris `[]`. Gearbox élimine d'abord les providers qui n'ont pas les outils externes requis, puis choisit modèle/effort selon risque, ambiguïté, coût et vérifiabilité.
+
+Pour Codex, `/setup` inventorie `codex mcp list --json` sans persister commandes, URLs, variables d'environnement ou secrets. Juste avant chaque dispatch, Gearbox refait un preflight live. Avec `required-only`, `codex_worker.py --prune-mcp` conserve la config globale mais désactive pour ce worker tous les MCP non demandés.
+
+Chaque dispatch reçoit aussi un fingerprint stable (base SHA + packet + provider + modèle + effort + capacités). `children.json` bloque un doublon encore vivant/réutilisable et force une reconciliation. Les métadonnées Codex enregistrent aussi CLI/version, hashes du contexte, ensemble MCP actif et fingerprint d'environnement.
 
 ## Routing des modèles
 

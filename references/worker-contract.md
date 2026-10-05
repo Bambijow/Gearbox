@@ -28,6 +28,9 @@ Facts produced by prerequisite tasks.
 INTERFACES
 Inputs/contracts this task consumes and outputs/contracts it must provide to dependent tasks.
 
+REQUIRED CAPABILITIES
+External tools/MCPs this task requires. Use an explicit empty list when none; do not smuggle convenience tools into this field.
+
 OWNERSHIP
 You may modify:
 - path/**
@@ -51,7 +54,7 @@ OUTPUT
 Return JSON matching the provided schema. Keep it compact. The orchestrator will inspect your actual diff and task logs.
 ```
 
-Include relevant symbol names and paths discovered by reconnaissance. Do not paste the whole chat, full plan, successful command logs, or huge files when the worker can read them in its worktree. Use the task packet as the sole handoff whenever possible.
+Include relevant symbol names and paths discovered by reconnaissance. Before dispatch, apply `references/capability-routing.md`: capability-gate providers, preflight the selected provider, fingerprint the invocation, and register that fingerprint with the child lifecycle. Do not paste the whole chat, full plan, successful command logs, or huge files when the worker can read them in its worktree. Use the task packet as the sole handoff whenever possible.
 
 ## Write isolation
 

@@ -16,7 +16,7 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/child_jobs.py" register \
   --timeout-seconds 3600
 ```
 
-Use the provider/harness child handle as the id when stable; otherwise choose a deterministic task/role id.
+Use the provider/harness child handle as the id when stable; otherwise choose a deterministic task/role id. Before registration, compute the dispatch fingerprint from `references/capability-routing.md`; pass `--fingerprint`, `--workspace`, and `--base-sha`. Registration refuses a reusable duplicate so `/resume` cannot accidentally pay for the same child twice.
 
 ## Waiting policy
 
@@ -43,6 +43,6 @@ Mark the child completed/failed/cancelled when the host result is known. Child l
 
 ## Resume
 
-On `/resume`, reconcile `children.json` before redispatching pending work. A non-empty expected artifact may prove a child finished even if the previous controller died before recording its return.
+On `/resume`, reconcile `children.json` and query the stored dispatch fingerprint before redispatching pending work. A non-empty expected artifact may prove a child finished even if the previous controller died before recording its return.
 
 This registry does not replace provider-native process supervision. It gives Gearbox a durable reconciliation surface across harnesses.

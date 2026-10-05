@@ -8,7 +8,7 @@
     {
       "name": "gearbox",
       "source": "./",
-      "description": "Gearbox: economical Claude Code engineering orchestration with human plan approval, consequence-based review, measured optimization, product dogfooding, test hardening, security auditing, skill hygiene, isolated agentic benchmarks, ready-frontier workers, evidence reuse, and durable memory.",
+      "description": "Gearbox: capability-aware Claude/Codex engineering orchestration with per-worker MCP pruning, stateless workers, dispatch deduplication, consequence-based review, agentic benchmarks, evidence reuse, and durable memory.",
       "category": "engineering",
       "keywords": [
         "engineering",
@@ -66,7 +66,12 @@
         "mutation-testing",
         "property-testing",
         "security-audit",
-        "skill-doctor"
+        "skill-doctor",
+        "capability-routing",
+        "mcp-preflight",
+        "mcp-pruning",
+        "invocation-fingerprint",
+        "dispatch-dedup"
       ]
     }
   ]

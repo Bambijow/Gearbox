@@ -12,7 +12,11 @@ Before reading project configuration, Gearbox automatically checks for the forme
 
 Read repository instructions, build/CI manifests and existing docs. Reuse conventions rather than creating a parallel bureaucracy.
 
-Detect specs/ADR/runbook locations, existing `GLOSSARY.md` / `GLOSSARY-MAP.md` contexts, any established research-note convention, repository-native tests/lint/typecheck/build/e2e commands, GitHub remote/base branch, UI evidence tooling, `codex`, and Ponytail availability. Do not create glossary/ADR/research docs during setup merely because Gearbox supports them. Keep `docs/solutions/` canonical.
+Detect specs/ADR/runbook locations, existing `GLOSSARY.md` / `GLOSSARY-MAP.md` contexts, any established research-note convention, repository-native tests/lint/typecheck/build/e2e commands, GitHub remote/base branch, UI evidence tooling, `codex`, external capabilities/MCPs, and Ponytail availability. Do not create glossary/ADR/research docs during setup merely because Gearbox supports them. Keep `docs/solutions/` canonical.
+
+## Capability preflight
+
+Read `references/capability-routing.md`. If Codex exists, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/capabilities.py" inventory`; persist only `available` names, never raw MCP config/secrets. Claude capabilities are recorded only when explicit; live preflight wins.
 
 ## Model preflight
 
@@ -50,6 +54,11 @@ codex_models:
   frontier: gpt-6-astra
 allow_codex_default_model: false
 codex_frontier_policy: escalation-or-exceptional
+capability_routing: enabled
+capability_preflight: live
+codex_mcp_policy: required-only
+codex_capabilities: []
+claude_capabilities: []
 hybrid_review_policy: opposite-provider
 budget:
   max_worker_dispatches: 10

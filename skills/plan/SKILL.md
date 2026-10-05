@@ -28,6 +28,7 @@ Each unit should have:
 - interfaces consumed and produced;
 - owned write surface plus known shared seams;
 - context pointers (glossary/ADR/research/solution/source) needed by this task, without copied bulk context;
+- `required_capabilities`: external tool/MCP names needed by the task; use `[]` when none so Codex can prune unrelated MCPs;
 - exact or well-supported likely touch points;
 - implementation notes limited to decisions the capable implementer cannot safely choose alone; prefer exact signatures/values/assertions over function bodies;
 - tests or verification proving completion, including the `references/test-credibility.md` seam when behavior-bearing tests are planned;
@@ -52,6 +53,7 @@ Before finalizing, challenge the plan:
 - Do adjacent tasks agree on their interfaces?
 - Would any reviewer immediately reject something the plan itself requires?
 - Are tasks right-sized to earn one meaningful test cycle and one useful review unit, with trivial same-shape work batched instead of fragmented?
+- Can at least one provider satisfy every task's explicit external capabilities before model routing?
 - Does `## Review Focus` contain at most five plausible failure modes implied by the requested behavior, each owned by a task/check when testable?
 - Is the plan proportionate to the spec, or has it started writing implementation bodies the worker can derive?
 

@@ -31,7 +31,7 @@ Batching changes the dispatch/review unit, not traceability: every original memb
 
 Dispatch as many frontier tasks in parallel as the configured worker budget safely allows. Apply `references/delegation-gate.md` only to optional auxiliary analysis agents; implementation workers remain mandatory under the control-plane contract.
 
-Every worker starts from the current integration-branch tip (or exact integration SHA recorded in its packet).
+Every worker starts from the current integration-branch tip (or exact integration SHA recorded in its packet). Its packet also carries explicit `required_capabilities` (use `[]` when none); capability preflight and duplicate-fingerprint reconciliation happen before consuming a worker slot.
 
 Before reporting done, the worker synchronizes the latest integration tip into its branch/worktree and reruns its focused verification. Its result records:
 

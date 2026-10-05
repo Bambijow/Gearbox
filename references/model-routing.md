@@ -18,6 +18,14 @@ Recommended choices:
 
 Do not ask repeatedly once a repository policy is stored unless the user requests it or configured models are unavailable.
 
+## Capability gate before model choice
+
+Read `references/capability-routing.md`. Every task records `required_capabilities`, including an explicit empty list. Capability eligibility is a hard gate before risk/cost/model scoring: a provider that cannot supply a required external capability is not a candidate, however cheap or capable its model is.
+
+Use `scripts/capabilities.py route` when the candidate capability sets are known. Codex MCP availability comes from a sanitized setup snapshot for planning and a live `codex mcp list --json` preflight immediately before dispatch. If exactly one provider satisfies the requirements, route there; if both do, continue with the normal risk/cost policy; if neither does, stop with `CAPABILITY_BLOCKED` instead of spending a worker to discover the missing tool.
+
+For Codex dispatches, pass every required MCP as `--required-capability <name>` and use `--prune-mcp` under the default `required-only` policy. The wrapper disables other configured MCP servers only for that invocation, while retaining the user's Codex config and credentials. A task with `required_capabilities: []` therefore gets no MCP tool schemas unless the run explicitly overrides the policy.
+
 ## Preferred Codex registry
 
 Use only three configured Codex model slots by default:
@@ -185,9 +193,13 @@ Claude task reviewers have effort-specific profiles (`task-reviewer-low`, `task-
 
 Record the requested route and, when runtime tooling exposes it, the observed route. Never claim an effort was actually used if it cannot be observed.
 
+## Dispatch fingerprint and deduplication
+
+Before any long-lived/background worker dispatch, compute a stable fingerprint from the exact base SHA, task packet/prompt, provider, model, effort, kind and required capability set with `scripts/invocation_fingerprint.py`. Register it in `children.json`. If `scripts/child_jobs.py register --fingerprint ...` reports `DUPLICATE_INVOCATION`, do not launch another worker: reconcile the existing child/worktree/artifact first. This is not blind result caching; implementation reuse is valid only when the recorded worktree/branch/artifact still proves the prior worker's output.
+
 ## Codex workers
 
-Pass the concrete router-selected model and effort to `scripts/codex_worker.py`. The wrapper maps effort to Codex `model_reasoning_effort` and writes a metadata file containing requested settings. It keeps the normal Codex user/project configuration loaded by default so configured MCP servers and other capabilities remain available, while forcing Codex memory off for the worker with `features.memories=false`, `memories.use_memories=false`, `memories.generate_memories=false`, and `memories.dedicated_tools=false`. Together with `--ephemeral`, this makes each Codex worker cognitively stateless without amputating its configured tool layer. `--ignore-user-config` remains an explicit hard-isolation escape hatch, not the default. Some managed Codex configurations can override one-off config values; therefore requested effort is evidence of intent, not proof of effective runtime effort unless Codex exposes/records it.
+Pass the concrete router-selected model and effort to `scripts/codex_worker.py`. The wrapper maps effort to Codex `model_reasoning_effort`, performs live capability preflight, optionally prunes unrelated MCPs, and writes metadata with route settings plus base/prompt/schema hashes, Codex version, active capabilities, dispatch/invocation/environment fingerprints, and memory policy. It keeps the normal Codex user/project configuration loaded by default so configured MCP servers and other capabilities remain available, while forcing Codex memory off for the worker with `features.memories=false`, `memories.use_memories=false`, `memories.generate_memories=false`, and `memories.dedicated_tools=false`. Together with `--ephemeral`, this makes each Codex worker cognitively stateless without amputating its configured tool layer. `--ignore-user-config` remains an explicit hard-isolation escape hatch, not the default. Some managed Codex configurations can override one-off config values; therefore requested effort is evidence of intent, not proof of effective runtime effort unless Codex exposes/records it.
 
 If a configured Codex slot is unavailable, do not silently invoke Codex with its default model when `allow_codex_default_model: false`. In `hybrid`, fall back to the corresponding Claude route and record the fallback. In `codex-heavy`, block and request a valid model mapping.
 

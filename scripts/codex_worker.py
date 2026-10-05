@@ -2,12 +2,16 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
 import subprocess
 import sys
 import time
 from pathlib import Path
+
+from capabilities import preflight, prune_overrides, run_codex_mcp_inventory, usable_names
+from invocation_fingerprint import canonical_payload, fingerprint, sha256_file
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = {
@@ -34,9 +38,6 @@ REQUIRED = {
     },
 }
 
-# Gearbox intentionally keeps the user's Codex config loaded so workers can use
-# configured MCP servers and other capabilities. Only cross-run cognitive memory
-# is disabled for every worker.
 MEMORY_OVERRIDES = (
     "features.memories=false",
     "memories.use_memories=false",
@@ -50,6 +51,36 @@ def die(message: str, code: int = 2) -> None:
     raise SystemExit(code)
 
 
+def command_output(argv: list[str], cwd: Path | None = None) -> str | None:
+    try:
+        proc = subprocess.run(
+            argv,
+            cwd=str(cwd) if cwd else None,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError:
+        return None
+    if proc.returncode != 0:
+        return None
+    value = proc.stdout.strip()
+    return value or None
+
+
+def codex_version(codex_bin: str) -> str | None:
+    return command_output([codex_bin, "--version"])
+
+
+def git_head(worktree: Path) -> str | None:
+    return command_output(["git", "rev-parse", "HEAD"], worktree)
+
+
+def stable_hash(payload: dict) -> str:
+    raw = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
 def build_command(
     *,
     codex_bin: str,
@@ -60,6 +91,7 @@ def build_command(
     ignore_user_config: bool = False,
     model: str | None = None,
     effort: str | None = None,
+    mcp_config_overrides: list[str] | None = None,
 ) -> list[str]:
     cmd = [
         codex_bin,
@@ -77,6 +109,8 @@ def build_command(
     ]
     for override in MEMORY_OVERRIDES:
         cmd += ["--config", override]
+    for override in mcp_config_overrides or []:
+        cmd += ["--config", override]
     if ignore_user_config:
         cmd.append("--ignore-user-config")
     if model:
@@ -85,6 +119,19 @@ def build_command(
         cmd += ["--config", f'model_reasoning_effort="{effort}"']
     cmd.append("-")
     return cmd
+
+
+def validate_result(path: Path, kind: str) -> dict:
+    if not path.is_file():
+        die(f"Codex completed without writing result: {path}")
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        die(f"result is not valid JSON: {exc}")
+    missing = sorted(REQUIRED[kind].difference(payload))
+    if missing:
+        die(f"{kind} result missing required keys: {', '.join(missing)}")
+    return payload
 
 
 def self_test() -> None:
@@ -96,11 +143,16 @@ def self_test() -> None:
         sandbox="workspace-write",
         model="test-model",
         effort="high",
+        mcp_config_overrides=[
+            'mcp_servers."blender".enabled=false',
+            'mcp_servers."context7".enabled=false',
+        ],
     )
     assert "--ephemeral" in cmd
     assert "--ignore-user-config" not in cmd
     for override in MEMORY_OVERRIDES:
         assert override in cmd
+    assert 'mcp_servers."blender".enabled=false' in cmd
     assert 'model_reasoning_effort="high"' in cmd
 
     isolated = build_command(
@@ -112,7 +164,20 @@ def self_test() -> None:
         ignore_user_config=True,
     )
     assert "--ignore-user-config" in isolated
-    print("PASS: codex-worker memory isolation self-test")
+
+    dispatch = canonical_payload(
+        base_sha="abc",
+        prompt_sha256="p",
+        provider="codex",
+        model="sol",
+        effort="medium",
+        kind="implementation",
+        capabilities=["godot"],
+        environment={"sandbox": "workspace-write", "mcp_policy": "required-only"},
+    )
+    assert len(fingerprint(dispatch)) == 64
+    assert len(stable_hash({"codex_version": "x", "active_mcp": ["godot"]})) == 64
+    print("PASS: codex-worker isolation/capability self-test")
 
 
 def main() -> int:
@@ -121,7 +186,7 @@ def main() -> int:
         return 0
 
     parser = argparse.ArgumentParser(
-        description="Run one isolated stateless Codex worker while preserving configured capabilities/MCPs."
+        description="Run one stateless Codex worker with capability preflight and minimal MCP exposure."
     )
     parser.add_argument("--worktree", required=True, type=Path)
     parser.add_argument("--prompt", required=True, type=Path)
@@ -137,10 +202,16 @@ def main() -> int:
         "--effort",
         choices=("none", "minimal", "low", "medium", "high", "xhigh", "max"),
     )
+    parser.add_argument("--required-capability", action="append", default=[])
+    parser.add_argument(
+        "--prune-mcp",
+        action="store_true",
+        help="Expose only required MCP servers for this worker. With no required capabilities, disable all configured MCP servers for this invocation.",
+    )
     parser.add_argument(
         "--ignore-user-config",
         action="store_true",
-        help="Explicit hard-isolation escape hatch. Not the default because it also removes configured MCP capabilities.",
+        help="Explicit hard-isolation escape hatch. Not the default because it removes configured MCP capabilities.",
     )
     args = parser.parse_args()
 
@@ -165,6 +236,118 @@ def main() -> int:
     events.parent.mkdir(parents=True, exist_ok=True)
     meta.parent.mkdir(parents=True, exist_ok=True)
 
+    version = codex_version(args.codex_bin)
+    base_sha = git_head(worktree)
+    if not base_sha:
+        die("unable to resolve worker base SHA")
+
+    inventory: list[dict] = []
+    capability_check = {
+        "ok": True,
+        "required": sorted(set(args.required_capability), key=str.casefold),
+        "resolved": [],
+        "missing": [],
+        "disabled": [],
+        "auth_blocked": [],
+        "available": [],
+    }
+    disabled_mcp: list[str] = []
+    mcp_overrides: list[str] = []
+
+    if args.required_capability or args.prune_mcp:
+        inventory = run_codex_mcp_inventory(args.codex_bin, worktree)
+        capability_check = preflight(inventory, args.required_capability)
+        if capability_check["ok"] and args.prune_mcp:
+            disabled_mcp, mcp_overrides = prune_overrides(
+                inventory,
+                capability_check["resolved"],
+            )
+
+    active_mcp = capability_check["resolved"] if args.prune_mcp else usable_names(inventory)
+    mcp_policy = "required-only" if args.prune_mcp else "configured"
+    memory_policy = {
+        "ephemeral_session": True,
+        "feature_enabled": False,
+        "use_memories": False,
+        "generate_memories": False,
+        "dedicated_tools": False,
+    }
+    environment = {
+        "sandbox": sandbox,
+        "mcp_policy": mcp_policy,
+        "memory_policy": memory_policy,
+    }
+    prompt_sha = sha256_file(prompt)
+    dispatch_payload = canonical_payload(
+        base_sha=base_sha,
+        prompt_sha256=prompt_sha,
+        provider="codex",
+        model=args.model or "default",
+        effort=args.effort or "default",
+        kind=args.kind,
+        capabilities=capability_check["resolved"] or args.required_capability,
+        environment=environment,
+    )
+    dispatch_fingerprint = fingerprint(dispatch_payload)
+    env_payload = {
+        "codex_version": version,
+        "active_mcp": sorted(active_mcp, key=str.casefold),
+        "memory_policy": memory_policy,
+        "sandbox": sandbox,
+    }
+    environment_fingerprint = stable_hash(env_payload)
+    invocation_payload = dict(dispatch_payload)
+    invocation_payload["provider_version"] = version
+    invocation_payload["environment"] = {
+        **environment,
+        "active_mcp": sorted(active_mcp, key=str.casefold),
+        "environment_fingerprint": environment_fingerprint,
+    }
+    invocation_fingerprint = fingerprint(invocation_payload)
+
+    metadata = {
+        "kind": args.kind,
+        "requested_model": args.model or "default",
+        "requested_effort": args.effort or "default",
+        "sandbox": sandbox,
+        "started_at": int(time.time()),
+        "effective_effort_verified": False,
+        "codex_version": version,
+        "base_sha": base_sha,
+        "prompt_sha256": prompt_sha,
+        "schema_sha256": sha256_file(schema),
+        "codex_user_config_loaded": not args.ignore_user_config,
+        "configured_capabilities_preserved": not args.ignore_user_config,
+        "memory_policy": memory_policy,
+        "capability_preflight": capability_check,
+        "mcp_policy": mcp_policy,
+        "mcp_inventory": inventory,
+        "active_mcp": sorted(active_mcp, key=str.casefold),
+        "disabled_mcp": disabled_mcp,
+        "dispatch_fingerprint": dispatch_fingerprint,
+        "environment_fingerprint": environment_fingerprint,
+        "invocation_fingerprint": invocation_fingerprint,
+    }
+
+    if not capability_check["ok"]:
+        metadata["status"] = "CAPABILITY_BLOCKED"
+        metadata["finished_at"] = int(time.time())
+        meta.write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        die(
+            "required Codex capabilities unavailable: "
+            + json.dumps(
+                {
+                    "missing": capability_check["missing"],
+                    "disabled": capability_check["disabled"],
+                    "auth_blocked": capability_check["auth_blocked"],
+                },
+                ensure_ascii=False,
+            ),
+            7,
+        )
+
+    meta.write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
     cmd = build_command(
         codex_bin=args.codex_bin,
         worktree=worktree,
@@ -174,26 +357,8 @@ def main() -> int:
         ignore_user_config=args.ignore_user_config,
         model=args.model,
         effort=args.effort,
+        mcp_config_overrides=mcp_overrides,
     )
-
-    metadata = {
-        "kind": args.kind,
-        "requested_model": args.model or "default",
-        "requested_effort": args.effort or "default",
-        "sandbox": sandbox,
-        "started_at": int(time.time()),
-        "effective_effort_verified": False,
-        "codex_user_config_loaded": not args.ignore_user_config,
-        "configured_capabilities_preserved": not args.ignore_user_config,
-        "memory_policy": {
-            "ephemeral_session": True,
-            "feature_enabled": False,
-            "use_memories": False,
-            "generate_memories": False,
-            "dedicated_tools": False,
-        },
-    }
-    meta.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
 
     with events.open("w", encoding="utf-8") as event_file:
         proc = subprocess.run(
@@ -208,24 +373,15 @@ def main() -> int:
 
     metadata["finished_at"] = int(time.time())
     metadata["exit_code"] = proc.returncode
-    meta.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
+    metadata["status"] = "COMPLETED" if proc.returncode == 0 else "FAILED"
+    meta.write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     if proc.stderr:
         sys.stderr.write(proc.stderr)
     if proc.returncode != 0:
         die(f"Codex exited with status {proc.returncode}", proc.returncode)
-    if not result.is_file():
-        die(f"Codex completed without writing result: {result}")
 
-    try:
-        payload = json.loads(result.read_text(encoding="utf-8"))
-    except Exception as exc:
-        die(f"result is not valid JSON: {exc}")
-
-    missing = sorted(REQUIRED[args.kind].difference(payload))
-    if missing:
-        die(f"{args.kind} result missing required keys: {', '.join(missing)}")
-
+    payload = validate_result(result, args.kind)
     print(json.dumps(payload, indent=2, ensure_ascii=False))
     return 0
 

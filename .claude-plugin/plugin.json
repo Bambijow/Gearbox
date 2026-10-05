@@ -1,8 +1,8 @@
 {
   "name": "gearbox",
   "displayName": "Gearbox",
-  "version": "1.6.1",
-  "description": "Claude Code engineering orchestration with explicit plan approval, consequence-routed lite/focused/full final review, isolated baseline-vs-candidate agentic benchmarks, lean prompt budgets, ready-frontier workers, evidence reuse, finding deduplication, child reconciliation, cross-provider task review, durable memory, and forensic retrospectives.",
+  "version": "1.7.0",
+  "description": "Claude Code engineering orchestration with capability-aware Claude/Codex routing, per-worker MCP pruning, stateless workers, invocation deduplication, consequence-routed review, agentic benchmarks, evidence reuse, durable memory, and forensic retrospectives.",
   "author": {
     "name": "Bambijow"
   },
@@ -68,7 +68,12 @@
     "mutation-testing",
     "property-testing",
     "security-audit",
-    "skill-doctor"
+    "skill-doctor",
+    "capability-routing",
+    "mcp-preflight",
+    "mcp-pruning",
+    "invocation-fingerprint",
+    "dispatch-dedup"
   ],
   "skills": [
     "./skills/setup",

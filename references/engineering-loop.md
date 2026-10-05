@@ -19,6 +19,10 @@ Every product mutation is delegated:
 
 The plugin `PreToolUse` guard enforces the main-thread boundary while orchestrated commands are active. If a worker is incomplete or a cherry-pick conflicts, dispatch a repair worker. The parent must never complete the code itself.
 
+## Capability-aware dispatch
+
+Read `references/capability-routing.md`. Each DAG task carries `required_capabilities`. Capability eligibility is resolved before model price/effort: do not dispatch a worker that cannot access a required external tool. For Codex, use a sanitized MCP inventory for planning and a live preflight immediately before launch; under the default policy expose only required MCPs to that worker. Before dispatch, fingerprint the exact base SHA + task packet + route + capability set and register it in `children.json`; a matching live/reusable child is reconciled rather than launched twice.
+
 ## Delegation economics
 
 Mandatory product-role delegation above is not optional. For **auxiliary** research/discovery/design/reviewer agents, apply `references/delegation-gate.md` first and record why the subagent pays for itself. Do not create an agent merely to summarize context the parent already owns.
