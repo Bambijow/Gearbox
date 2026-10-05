@@ -93,6 +93,9 @@ def validate_hooks() -> int:
     redactor = ROOT / "scripts" / "redact.py"
     if not redactor.exists():
         fail("missing scripts/redact.py")
+    for helper in ("plan_guard.py", "repair_findings.py", "solutions_audit.py", "retro_bundle.py"):
+        if not (ROOT / "scripts" / helper).exists():
+            fail(f"missing scripts/{helper}")
     return sum(len(v) for v in hooks.values() if isinstance(v, list))
 
 def main() -> int:
