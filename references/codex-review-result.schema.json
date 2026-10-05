@@ -5,9 +5,14 @@
   "properties": {
     "status": {
       "type": "string",
-      "enum": ["success", "failed"]
+      "enum": [
+        "success",
+        "failed"
+      ]
     },
-    "summary": {"type": "string"},
+    "summary": {
+      "type": "string"
+    },
     "findings": {
       "type": "array",
       "items": {
@@ -16,24 +21,71 @@
         "properties": {
           "severity": {
             "type": "string",
-            "enum": ["blocker", "important", "minor"]
+            "enum": [
+              "blocker",
+              "important",
+              "minor",
+              "advisory"
+            ]
           },
-          "location": {"type": "string"},
-          "evidence": {"type": "string"},
-          "consequence": {"type": "string"},
-          "fix": {"type": "string"}
+          "location": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "string"
+          },
+          "consequence": {
+            "type": "string"
+          },
+          "fix": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "repair",
+              "human",
+              "release",
+              "advisory"
+            ]
+          },
+          "failure_path": {
+            "type": "string"
+          },
+          "failure_cost": {
+            "type": "string"
+          }
         },
-        "required": ["severity", "location", "evidence", "consequence", "fix"]
+        "required": [
+          "severity",
+          "action",
+          "location",
+          "evidence",
+          "failure_path",
+          "failure_cost",
+          "consequence",
+          "fix"
+        ]
       }
     },
     "verification_gaps": {
       "type": "array",
-      "items": {"type": "string"}
+      "items": {
+        "type": "string"
+      }
     },
     "residual_risks": {
       "type": "array",
-      "items": {"type": "string"}
+      "items": {
+        "type": "string"
+      }
     }
   },
-  "required": ["status", "summary", "findings", "verification_gaps", "residual_risks"]
+  "required": [
+    "status",
+    "summary",
+    "findings",
+    "verification_gaps",
+    "residual_risks"
+  ]
 }
