@@ -12,7 +12,7 @@ Before reading project configuration, Gearbox automatically checks for the forme
 
 Read repository instructions, build/CI manifests and existing docs. Reuse conventions rather than creating a parallel bureaucracy.
 
-Detect specs/ADR/runbook locations, repository-native tests/lint/typecheck/build/e2e commands, GitHub remote/base branch, UI evidence tooling, `codex`, and Ponytail availability. Keep `docs/solutions/` canonical.
+Detect specs/ADR/runbook locations, existing `GLOSSARY.md` / `GLOSSARY-MAP.md` contexts, any established research-note convention, repository-native tests/lint/typecheck/build/e2e commands, GitHub remote/base branch, UI evidence tooling, `codex`, and Ponytail availability. Do not create glossary/ADR/research docs during setup merely because Gearbox supports them. Keep `docs/solutions/` canonical.
 
 ## Model preflight
 
