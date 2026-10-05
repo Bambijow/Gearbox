@@ -41,6 +41,8 @@ Create a transient run directory under `.gearbox/runs/<run-id>/` containing only
 - `repo-facts.md`: distilled repository facts read once by the orchestrator;
 - `dag.yaml`: dependency-aware work units;
 - `state.json`: current cycle, gate states, refs, unresolved findings and clarification blocker state;
+- `children.json`: durable delegated-child registry used for bounded waiting/resume reconciliation;
+- `usage.json`: provider/host-reported token/cost telemetry when available;
 - `spec-clarification.json`: compact deductions, reversible assumptions, blocking questions and answers when shaping is ambiguous;
 - `learning-candidates.md`: compact candidate ledger for `/learn`;
 - `tasks/<id>/...`: task packets, diffs, worker results and focused evidence;
@@ -80,11 +82,11 @@ Historical notes are evidence, not authority. Current code, tests, and accepted 
 
 ## Persistent state, model preflight, evidence and budgets
 
-Persistent run state is already initialized before clarification. After the spec clarification gate is RESOLVED, initialize/refresh `evidence.json`, classify task risk, and resolve the model policy from `references/model-routing.md`. The pre-flighted DAG records engine/model/effort/risk for every executable node. Consume dispatch/review/escalation budgets from `references/risk-budget-policy.md`.
+Persistent run state is already initialized before clarification. After the spec clarification gate is RESOLVED, initialize/refresh `evidence.json`, classify task risk, and resolve the model policy from `references/model-routing.md`. The pre-flighted DAG records engine/model/effort/risk for every executable node. Consume dispatch/review/escalation budgets from `references/risk-budget-policy.md`. Apply `references/usage-accounting.md` when provider/host usage telemetry exists; optional `max_total_tokens` / `max_reported_cost_usd` budgets are enforced from measured/reported values rather than a hard-coded price table.
 
 When model selection is unresolved, ask before the first worker dispatch. This is deliberately after DAG preflight so the user can see the proposed routing, but before implementation work begins. If a stored policy is valid, do not interrupt each run.
 
-All gate claims map to `evidence.json`. State and evidence, not chat history, make the loop resumable and make PR reporting auditable.
+All gate claims map to `evidence.json`. Apply `references/evidence-reuse.md` before repeating an expensive check: exact-SHA valid evidence with matching scope is current proof and should be read instead of rerun. State and evidence, not chat history, make the loop resumable and make PR reporting auditable.
 
 ## Cycle 0: build the change
 
@@ -92,12 +94,12 @@ All gate claims map to `evidence.json`. State and evidence, not chat history, ma
 2. Run the spec clarification gate; stop at `SPEC_BLOCKED` when required.
 3. Reconcile architecture facts once, reusing facts already gathered during clarification.
 4. Build and pre-flight the lean DAG once using `references/planning-contract.md`; include Review Focus and run `scripts/plan_guard.py` for persisted plans.
-5. Execute `references/frontier-scheduling.md`: batch qualifying low-risk same-shape micro-work, then dispatch bounded implementation workers continuously from the ready frontier. Every product edit, including tiny edits and test/doc changes, belongs to a worker.
+5. Execute `references/frontier-scheduling.md`: batch qualifying low-risk same-shape micro-work, then dispatch bounded implementation workers continuously from the ready frontier. For background/long-lived delegated work apply `references/worker-lifecycle.md`: register the child/artifact before dispatch and avoid tight polling. Every product edit, including tiny edits and test/doc changes, belongs to a worker.
 6. Workers use RED -> GREEN -> REFACTOR where the failing check provides real signal. Before returning they synchronize the latest integration tip into their task branch/worktree, rerun focused verification, and report `integration_base_sha`, `head_sha`, actual diff/evidence and preferably one local unpushed task commit.
 7. Inspect every worker diff centrally without editing it. In `hybrid`, resolve and run exactly one opposite-provider task review before integration: Claude implementation → Codex review; Codex implementation → Claude review. The review is task-scoped and returns SPEC then QUALITY verdicts.
 8. Validate review findings centrally. When repair is required, dispatch the same or a fresh implementation worker; the parent never patches the finding itself.
 9. After the task review gate passes, delegate mechanical integration to `integrator`. Integration conflicts become repair tasks.
-10. After each accepted integration, delegate affected focused checks to `verifier`, update task status, recompute the ready frontier, and immediately dispatch any newly-ready non-conflicting tasks.
+10. After each accepted integration, delegate affected focused checks to `verifier`, but query reusable exact-SHA evidence first so identical valid checks are not rerun. Update task status, recompute the ready frontier, and immediately dispatch any newly-ready non-conflicting tasks.
 11. Run the post-integration `ponytail-simplifier` gate.
 12. Run final independent cross-model review on the simplified integrated diff. This is integration-level review and does not replace the per-task opposite-provider gate.
 13. Delegate full-enough repository-native verification and required UI/UX evidence to `verifier`.
@@ -139,11 +141,11 @@ Stop instead of looping when any of these apply:
 
 Default `max_cycles` remains 3 convergence cycles after the initial implementation pass unless repository config overrides it. A cycle exists only when validated failed gates created actionable repair work.
 
-Apply `references/repair-findings.md`. Every validated repairable finding gets a stable id (for example `REV-004`) and is opened in `scripts/repair_findings.py` before dispatch.
+Apply `references/finding-dedup.md` before `references/repair-findings.md`. CI, reviewer, verifier and human signals that prove the same canonical failure collapse into one stable finding with multiple sources. Only then enter the finding-scoped repair breaker.
 
 For each repair:
 
-1. Convert only validated, non-advisory failed gates into finding-scoped repair tasks. Apply `references/review-calibration.md`; style preferences and advisory hardening do not create repair work.
+1. Convert only validated, non-advisory failed gates into canonical findings. Apply `references/review-calibration.md`, normalize each failure identity, and ingest it through `scripts/finding_registry.py`; style preferences and advisory hardening do not create repair work.
 2. Reuse the existing spec, repo facts, DAG knowledge and prior finding evidence. Do not redo broad reconnaissance.
 3. Before dispatch, call `repair_findings.py attempt` with a short material strategy id. If it returns `rediagnose`, do not send the same strategy a third time; re-diagnose, split, change evidence seam/provider/model/ownership, or adjudicate the finding. If it returns `adjudicate`, classify the residual as load-bearing, human-decision, advisory, or invalid/stale.
 4. Dispatch the smallest worker topology that can fix the finding. Run focused RED/GREEN checks and the test-credibility gate where applicable.
@@ -152,7 +154,7 @@ For each repair:
 7. Validate the re-review. Delegate accepted integration to `integrator`, then affected checks to `verifier`.
 8. Re-run Ponytail only when the repair materially changed structure/duplication/abstractions/control flow.
 9. Run another broad final review only when the repair changed architecture, public contracts, security/data boundaries, or a substantial part of the integrated diff.
-10. Run full-enough final verification before PASS.
+10. Run full-enough final verification before PASS, reusing exact-SHA evidence where `references/evidence-reuse.md` permits it.
 
 The per-finding breaker is an additional guardrail; the global `max_cycles`/dispatch budgets may stop the run sooner. Never loop because a reviewer has a subjective preference, and never ask a reviewer to review another reviewer.
 
@@ -206,6 +208,9 @@ Cycle 0 pays for broad understanding once. Repair cycles consume deltas:
 - scope worker packets to the repair task;
 - scope reviewer input to prior findings plus changed paths/diff;
 - keep successful logs on disk and propagate status plus log paths;
+- reuse valid exact-SHA verification evidence rather than rerunning identical checks;
+- reconcile delegated children after bounded waits/resume rather than polling them in short loops;
+- record provider-reported usage when available so `/retro` can distinguish measured waste from guesses;
 - do not rerun broad discovery or duplicate final reviewers unless the repair changed the risk surface;
 - stop at the cycle limit instead of burning context indefinitely.
 
