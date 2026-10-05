@@ -1,6 +1,6 @@
 # Stateless worker contract
 
-Gearbox workers receive a bounded context packet. Every dispatch is preceded by a recorded engine/model/effort/risk assignment from `references/model-routing.md`; and return structured evidence. They do not inherit the orchestrator's conversation and must not guess missing architecture. Read `references/control-plane.md`: workers, not the parent, own all product mutations in orchestrated runs.
+Gearbox workers receive a bounded context packet. Every dispatch is preceded by a recorded engine/model/effort/risk assignment from `references/model-routing.md`; and return structured evidence. They do not inherit the orchestrator's conversation and must not guess missing architecture. Codex workers additionally run with an ephemeral session and memory use/generation disabled, while normal Codex configuration remains loaded so repository instructions and configured MCP capabilities can still be used. Read `references/control-plane.md`: workers, not the parent, own all product mutations in orchestrated runs.
 
 ## Context packet
 

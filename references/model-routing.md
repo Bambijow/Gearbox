@@ -187,7 +187,7 @@ Record the requested route and, when runtime tooling exposes it, the observed ro
 
 ## Codex workers
 
-Pass the concrete router-selected model and effort to `scripts/codex_worker.py`. The wrapper maps effort to Codex `model_reasoning_effort` and writes a metadata file containing requested settings. Some managed Codex configurations can override one-off config values; therefore requested effort is evidence of intent, not proof of effective runtime effort unless Codex exposes/records it.
+Pass the concrete router-selected model and effort to `scripts/codex_worker.py`. The wrapper maps effort to Codex `model_reasoning_effort` and writes a metadata file containing requested settings. It keeps the normal Codex user/project configuration loaded by default so configured MCP servers and other capabilities remain available, while forcing Codex memory off for the worker with `features.memories=false`, `memories.use_memories=false`, `memories.generate_memories=false`, and `memories.dedicated_tools=false`. Together with `--ephemeral`, this makes each Codex worker cognitively stateless without amputating its configured tool layer. `--ignore-user-config` remains an explicit hard-isolation escape hatch, not the default. Some managed Codex configurations can override one-off config values; therefore requested effort is evidence of intent, not proof of effective runtime effort unless Codex exposes/records it.
 
 If a configured Codex slot is unavailable, do not silently invoke Codex with its default model when `allow_codex_default_model: false`. In `hybrid`, fall back to the corresponding Claude route and record the fallback. In `codex-heavy`, block and request a valid model mapping.
 
