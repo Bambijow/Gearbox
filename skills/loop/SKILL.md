@@ -13,7 +13,7 @@ Read `references/control-plane.md` and `references/engineering-loop.md`, `refere
 
 - GitHub issue: resolve it with `gh issue view`, then create the minimal issue-derived spec before planning.
 - Spec path: read and validate the spec against the current repository. Do not rewrite it unless code evidence reveals a contradiction or a decision is missing.
-- Free-form request: apply `/shape` just enough to make it decision-complete.
+- Free-form request: normalize it into the minimal decision-complete spec required by `references/spec-clarification.md`; do not assume another slash command is loaded.
 
 Use `.gearbox/config.md` when present. Default to `token_profile: efficient` and the configured cycle limit, otherwise 3.
 
