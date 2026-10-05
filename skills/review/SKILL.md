@@ -1,43 +1,47 @@
 ---
 name: review
-description: "Cross-review a diff, branch, PR, or completed plan for requirement coverage, correctness, security, regressions, tests, operational risk, and post-simplification architecture."
+description: "Review a diff, branch, PR, or completed plan for requirement coverage, correctness, security, regressions, tests, operational risk, and post-simplification architecture."
 argument-hint: "[diff, branch, PR, plan, or scope]"
 disable-model-invocation: true
 ---
 
-# Review the post-simplification change
+# Review the actual change
 
-Review the actual code and requirements, not a hypothetical implementation. For autonomous issue work, this phase runs after `/simplify`.
+Review code and requirements, not the implementation conversation.
 
-## Establish scope
+Read `references/review-calibration.md`, `references/test-credibility.md`, and `references/evidence-reuse.md`. For an orchestrated post-integration gate also read `references/final-review-routing.md` and obey the persisted `final_review` route.
 
-Read repository instructions, `.gearbox/config.md` when present, the originating spec/issue/plan, and the full relevant diff. Inspect surrounding code when changed behavior depends on it.
+## Scope
 
-If the change is substantial, launch Gearbox's read-only `cross-reviewer` agent. For any optional reviewer beyond mandatory configured gates, apply `references/delegation-gate.md`; independent judgment must justify the extra dispatch. For issue workflows, pair it with at most one independent read-only Codex worker as the different-model lens when the risk warrants it. Reconcile them centrally. The Claude reviewer should cover requirement compliance plus correctness/security/data-integrity/compatibility/tests/operations in one pass rather than spawning one reviewer per category.
+Read repository instructions, relevant spec/issue/plan, final diff, changed files, direct dependencies, Review Focus, and current evidence pointers. Expand only on a concrete suspicion.
 
-Do not outsource final judgment to any reviewer.
+For a **standalone user-invoked** `/review`, perform the review in the current context; optional extra reviewers still pass `references/delegation-gate.md`.
+
+For an **orchestrated final review**:
+
+- `lite`: do not dispatch another model reviewer. Inspect the integrated diff centrally and rely on accepted task reviews + verifier evidence.
+- `focused`: dispatch exactly one fresh adversarial integration reviewer against the silent/shared failure surface.
+- `full`: dispatch one fresh comprehensive reviewer; in hybrid add one independent cross-provider adversarial peer when available.
+
+No reviewer may edit the integration tree. Never ask a reviewer to review another reviewer.
 
 ## Finding standard
 
-Apply `references/review-calibration.md`, `references/test-credibility.md`, and `references/evidence-reuse.md`. A material finding must be actionable and supported by a concrete reachable failure path, requirement mismatch, credible verification gap, or maintainability hazard with real future cost. Avoid generic style commentary.
+A material finding needs a concrete reachable failure path, requirement mismatch, credible verification gap, or maintainability hazard with real future cost.
 
-Classify findings:
+Classify:
 
-- **Blocker**: likely correctness, security, data-loss, severe compatibility, or production-safety issue.
-- **Important**: meaningful bug/regression risk or material requirement gap.
-- **Minor**: directly relevant cleanup with modest impact.
-- **Advisory**: useful hardening/rollout/observation that does not make the change incorrect if left as-is.
+- **Blocker**: likely security/data-loss/severe correctness/compatibility/production-safety failure.
+- **Important**: concrete meaningful regression or material acceptance gap.
+- **Minor**: relevant localized cleanup with modest impact.
+- **Advisory**: hardening/rollout observation that does not make the change incorrect.
 
-For each finding include location, evidence/failure path, consequence/failure cost, smallest useful fix direction, and action ownership (`repair|human|release|advisory`).
+For each finding include location, evidence/failure path, consequence/failure cost, smallest useful remedy, and ownership (`repair|human|release|advisory`).
 
-## Cross-review behavior
-
-When running multiple reviewers, keep their prompts independent enough that one review does not anchor the others. Compare findings after they return. Agreement increases confidence but does not prove correctness; disagreement should be resolved against code, tests, and spec. Do not ask a reviewer to crawl the entire repository by default: start from the final requirements, diff, changed files, and direct dependencies, then expand only on a concrete suspicion.
-
-For Codex review, use a fresh `--ephemeral` read-only run and require structured findings, preferably via `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/codex_worker.py" --kind review ...`. Do not let the reviewer edit the integration tree. Pass compact requirements and refs/paths instead of replaying the implementation conversation or successful test logs.
+Reconcile multiple reviewers centrally against code/spec/evidence. Agreement is corroboration, not proof.
 
 ## Verification audit
 
-Map every acceptance criterion to tests/manual evidence. Distinguish "not tested" from "tested at another seam". Valid exact-SHA evidence is a proof to inspect, not a reason to rerun the same suite. Rerun only when freshness/scope/legibility is insufficient or a finding challenges the evidence seam. Verify UI/UX evidence when visible behavior changed.
+Map each acceptance criterion to executable/manual evidence. Valid exact-SHA evidence is proof to inspect, not a reason to rerun the same suite. Rerun only for a freshness/scope/legibility gap or when a finding challenges that evidence seam.
 
-If there are no material findings, say so and still state what was inspected and what could not be verified.
+If no material findings remain, say so and state what was inspected and what could not be verified.
