@@ -17,7 +17,8 @@ GUARDED_COMMANDS = {
 APPROVED_SCRIPTS = {
     "run_state.py", "model_router.py", "review_router.py", "codex_worker.py",
     "evidence.py", "worktree_manager.py", "orchestrator_guard.py", "migrate_legacy.py",
-    "redact.py", "pr_report_guard.py", "pr_body_guard.py"
+    "redact.py", "pr_report_guard.py", "pr_body_guard.py",
+    "plan_guard.py", "repair_findings.py", "solutions_audit.py", "retro_bundle.py"
 }
 READ_COMMANDS = {"pwd", "ls", "rg", "grep", "head", "tail", "cat", "wc", "stat", "realpath"}
 SHELL_META = re.compile(r"(?:\n|\r|;|&&|\|\||(?<!\\)[|<>`]|\$\()")
