@@ -82,7 +82,7 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:build <plan-ou-tâche>` | Pour implémenter manuellement un plan déjà approuvé | Exécute via workers délégués, RED → GREEN → REFACTOR et **Test Credibility Gate**. Les petites tâches indépendantes de même forme peuvent être batchées en un worker + une cross-review, tout en gardant la traçabilité de chaque membre. Dans un run orchestré, le parent n’a toujours aucune exception « petit edit ». |
 | `/gearbox:debug <symptôme>` | Bug, test rouge, incident ou comportement mystérieux | Construit une boucle red-capable, minimise, falsifie les hypothèses et protège par un test crédible. Après root cause, un scan ciblé cherche la même classe de bug : à **3+ occurrences** (ou risque catastrophique), Gearbox traite le motif systémique/défense plutôt que de jouer au whack-a-bug. |
 | `/gearbox:simplify [diff]` | Après intégration, pour réduire le code | Lance un agent frais de simplification. Utilise Ponytail s'il est installé ; sinon applique la discipline interne Gearbox : supprimer duplication, wrappers et abstractions inutiles, préférer stdlib/framework/existant, conserver validation, sécurité et accessibilité. Rejoue ensuite les checks nécessaires. |
-| `/gearbox:review [diff-ou-PR]` | Pour une review indépendante | Vérifie spec/correctness/sécurité/tests/opérations, mais calibre les findings par **failure path + failure cost**. Les observations non bloquantes deviennent `Advisory` au lieu de déclencher des repair loops ; les tests verts mais non crédibles restent des gaps. |
+| `/gearbox:review [diff-ou-PR]` | Pour une review indépendante | Vérifie spec/correctness/sécurité/tests/opérations et calibre les findings par failure path + failure cost. Dans la boucle orchestrée, la review finale est routée `lite / focused / full` selon la conséquence : pas de nouveau reviewer si les task reviews suffisent, un adversarial reviewer pour le risque silencieux, spine complète uniquement sur les frontières à fort impact. |
 | `/gearbox:learn <leçon>` | Après une découverte non évidente qui mérite d'être conservée | Écrit/réconcilie `docs/solutions/` et peut ajouter `retire_when` quand la guidance dépend d’un bug/version/service externe. Régénère l’index puis passe l’audit déterministe de frontmatter/index. |
 | `/gearbox:clean-solutions [scope]` | Maintenance périodique de `docs/solutions/` | Audite métadonnées/index, vérifie en priorité les `retire_when` satisfaits, puis confronte la mémoire au code/tests/specs/ADRs. Classe en `KEEP`, `REFRESH`, `MERGE`, `DELETE` ou `BLOCKED`. `--dry-run` reste disponible. |
 | `/gearbox:retro [run-id / issue/ PR / session] [--bundle]` | Après un run coûteux, confus ou riche en corrections | Produit une rétro **forensic** avec preuves `path:line`/artifact fields : plan adherence, repeated work, stumbles, request conflicts, dispatch/escalation/repair cost proxies et quality escapes. `--bundle` génère en plus un dossier redacted sous `.gearbox/diagnostics/` pour partager/analyser la session. |
@@ -153,6 +153,70 @@ Les petites tâches **same-shape** low-risk peuvent être fusionnées en un micr
 Un test vert ne compte comme preuve que s'il exerce un vrai seam, possède une attente indépendante du code testé et a une mutation réaliste qui le ferait échouer. Les tests de présence de texte, change detectors décoratifs, mocks contournant le vrai failure path et seams production créés uniquement pour tester ne satisfont pas ce gate.
 
 Chaque finding réparable reçoit un id stable. Deux tentatives avec la même stratégie sont permises ; une troisième identique est bloquée et force re-diagnostic/split/changement de stratégie. Cinq tentatives totales forcent une adjudication du contrôleur si le budget global n'a pas arrêté la boucle avant.
+
+## Review finale proportionnée
+
+Gearbox 1.5 sépare les **task reviews** obligatoires de la profondeur de review du diff intégré final.
+
+`scripts/final_review_router.py` choisit mécaniquement :
+
+```text
+lite
+→ task review gates déjà satisfaits
+→ failure loud + local
+→ risque low/medium
+→ 0 nouveau reviewer modèle
+→ diff inspection + verifier
+
+focused
+→ failure silencieux/mixte
+   ou risque high mais borné
+   ou shared seam
+→ 1 fresh adversarial integration reviewer
+
+full
+→ auth / permissions / money / secrets
+→ destructive migration / persistence / public contract
+→ production config / concurrency
+→ architecture structurante / critical risk
+→ comprehensive reviewer
+→ + cross-provider peer en hybrid
+```
+
+Le nombre de lignes ne peut **jamais** faire gagner `lite`. Un gros volume de code exécutable peut seulement forcer `full` comme filet de sécurité.
+
+Le mode choisi est persisté dans `state.final_review` et apparaît dans le rapport technique de PR. `verifier` reste obligatoire quel que soit le mode : une review n'est pas une preuve exécutable.
+
+## Benchmarks agentiques
+
+`benchmarks/agentic/` permet de comparer une baseline et une candidate Gearbox dans de vraies sessions d'agent, chacune dans un clone et un contexte frais.
+
+Le protocole mesure d'abord :
+
+- correctness ;
+- safety.
+
+Seulement si **tous les runs comparés** passent ces gates, Gearbox autorise la comparaison économique :
+
+- lignes source ajoutées ;
+- input/output/cached tokens quand le runner les rapporte ;
+- coût provider réellement rapporté ;
+- durée et turns ;
+- workers/reviews/escalades/repair cycles depuis `.gearbox/runs/*/state.json` ;
+- mode de final review choisi.
+
+Les workspaces sont conservés et peuvent être rescored offline, donc changer un scorer ne repaie pas les modèles.
+
+Le runner Claude de référence exclut les plugins globaux, charge explicitement le plugin de chaque arm, neutralise mémoire/CLAUDE.md externes et lance un processus frais par cellule afin d'éviter une baseline contaminée.
+
+Le CI normal ne lance **aucune session modèle**. Il exécute uniquement :
+
+```bash
+python3 scripts/agentic_bench.py self-test
+python3 scripts/agentic_bench.py validate benchmarks/agentic/manifest.example.json
+```
+
+Les campagnes live sont explicites et leurs résultats appartiennent uniquement au repo/commit/tasks/models/harness mesurés. Gearbox ne transforme jamais un benchmark en promesse universelle de « X% moins cher ».
 
 ## Plomberie intelligente
 
