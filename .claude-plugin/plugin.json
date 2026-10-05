@@ -1,8 +1,8 @@
 {
   "name": "gearbox",
   "displayName": "Gearbox",
-  "version": "1.4.1",
-  "description": "Claude Code engineering orchestration with explicit human plan approval by default, auto-mode bypass, exact-plan hashing, lean prompt-budgeted skills, ready-frontier workers, evidence reuse, finding deduplication, child reconciliation, cross-provider review, durable memory, and forensic retrospectives.",
+  "version": "1.5.0",
+  "description": "Claude Code engineering orchestration with explicit plan approval, consequence-routed lite/focused/full final review, isolated baseline-vs-candidate agentic benchmarks, lean prompt budgets, ready-frontier workers, evidence reuse, finding deduplication, child reconciliation, cross-provider task review, durable memory, and forensic retrospectives.",
   "author": {
     "name": "Bambijow"
   },
@@ -58,7 +58,11 @@
     "finding-dedup",
     "child-reconciliation",
     "usage-accounting",
-    "plan-approval"
+    "plan-approval",
+    "final-review-routing",
+    "agentic-benchmarks",
+    "baseline-comparison",
+    "correctness-gated-economy"
   ],
   "skills": [
     "./skills/setup",
