@@ -8,7 +8,7 @@
     {
       "name": "gearbox",
       "source": "./",
-      "description": "Gearbox: resumable Claude Code engineering loops with delegated Claude/Codex work, cross-provider review, Ponytail simplification, verification evidence, environment retrospectives, PR reporting, and durable solution memory.",
+      "description": "Gearbox: wayfinding + resumable Claude Code engineering loops with isolated research, delegated Claude/Codex work, cross-provider review, Ponytail simplification, verification evidence, retrospectives, PR reporting, and durable domain/solution memory.",
       "category": "engineering",
       "keywords": [
         "engineering",
@@ -38,7 +38,13 @@
         "control-plane",
         "delegated-execution",
         "hook-guardrails",
-        "retrospective"
+        "retrospective",
+        "wayfinding",
+        "research",
+        "glossary",
+        "adr",
+        "ready-frontier",
+        "secret-redaction"
       ]
     }
   ]
