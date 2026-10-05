@@ -8,7 +8,7 @@ The canonical machine state is `state.json`, not conversation memory. Use `scrip
 
 ```json
 {
-  "schema_version": 3,
+  "schema_version": 6,
   "run_id": "issue-123",
   "status": "ACTIVE",
   "phase": "IMPLEMENT",
@@ -25,6 +25,7 @@ The canonical machine state is `state.json`, not conversation memory. Use `scrip
   "model_assignments": {},
   "orchestration": {"mode": "delegated-control-plane", "product_writes": "workers-only"},
   "clarification": {"status": "UNSET", "round": 0, "questions": [], "answers": {}},
+  "plan_approval": {"required": false, "status": "UNSET", "plan_path": null, "plan_sha256": null, "approved_sha256": null},
   "blocker": null,
   "learning": {},
   "repair_findings": {"policy": {"same_strategy_limit": 2, "max_attempts_per_finding": 5}, "items": {}},
@@ -62,6 +63,49 @@ Before planning, apply `references/spec-clarification.md`. When material product
 
 No worker/reviewer/model-selection budget is consumed while this blocker is active. `/resume` surfaces those questions, records answers, updates the spec and acceptance criteria, then transitions back to `ACTIVE` only after the clarification gate is resolved.
 
+## Plan approval persistence
+
+For `/issue`, `/loop`, substantial `/flow`, and brainstorm runs that continue into implementation, **absence of `--auto` means human plan approval is required**.
+
+After the lean DAG has passed plan validation and model/reviewer routing is known:
+
+```bash
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/run_state.py" plan-await \
+  --run-dir ".gearbox/runs/<run-id>" \
+  --plan ".gearbox/runs/<run-id>/dag.yaml"
+```
+
+This persists:
+
+```json
+{
+  "status": "AWAITING_APPROVAL",
+  "phase": "PLAN",
+  "blocker": {"code": "PLAN_APPROVAL_REQUIRED"},
+  "plan_approval": {
+    "required": true,
+    "status": "PENDING",
+    "plan_sha256": "<sha256 of exact presented plan>"
+  }
+}
+```
+
+No worker, Codex, reviewer, or model-escalation budget may be consumed in this state. `run_state.py consume` enforces that mechanically.
+
+Approval is bound to the exact plan bytes:
+
+```bash
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/run_state.py" plan-approve \
+  --run-dir ".gearbox/runs/<run-id>" \
+  --approved-by user
+```
+
+If the persisted plan changed after presentation, approval fails and the run stays `AWAITING_APPROVAL`. Present the updated plan and call `plan-await` again.
+
+With `--auto`, call `plan-await --auto`. The plan digest is still recorded for audit, but no human checkpoint is required.
+
+A user may approve unambiguously in the same conversation (for example “go” / “approved”); treat that as the same state transition above, never as permission to skip the persisted gate. The explicit resumable form is `/gearbox:resume <run-id> --approve-plan`.
+
 ## Finding-scoped repair state
 
 Validated repair findings receive stable ids and live in `state.json.repair_findings`. Use `scripts/repair_findings.py` while holding the run lock.
@@ -76,7 +120,7 @@ Acquire the run lock before changing run state or dispatching workers. If a lock
 
 ## Resume
 
-`/resume` reads state first, validates repository/branch/base assumptions, reconciles current HEAD, and continues from the first incomplete gate. Completed workers with valid evidence at the same commit are not relaunched.
+`/resume` reads state first, validates repository/branch/base assumptions, reconciles current HEAD, and continues from the first incomplete gate. Completed workers with valid evidence at the same commit are not relaunched. If `PLAN_APPROVAL_REQUIRED` is pending, resume must stop at that gate unless the user explicitly supplies `--approve-plan`; approval is verified against the stored plan digest before implementation resumes.
 
 If source files changed outside Gearbox since the stored head, classify the drift. Small compatible user changes may be reconciled; material drift invalidates affected evidence and tasks only. Never throw away unrelated user work.
 
