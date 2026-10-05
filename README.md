@@ -75,7 +75,7 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:shape <demande>` | Quand la demande est connue mais pas encore assez précise pour coder | Transforme une feature, une issue ou une demande en spec décisionnellement complète. Distingue ce qui peut être déduit du repo, ce qui peut être assumé de façon réversible, et ce qui exige une question utilisateur. Ne lance aucun worker tant que la spec est `SPEC_BLOCKED`. |
 | `/gearbox:spec-to-issue <spec>` | Quand une spec doit devenir une issue GitHub | Distille la spec en issue concise : objectif, scope, non-scope, critères d'acceptation, contraintes et vérification. Par défaut produit un draft ; `--create` crée réellement l'issue. La spec reste la source de vérité, l'issue sert de tracker. |
 | `/gearbox:spec-to-issues <spec>` | Quand une spec est trop grosse pour une seule issue | Découpe une grande spec en epic + plusieurs issues dépendantes et verticales. Garde la spec comme source de vérité et évite de figer trop tôt le DAG d'implémentation. `--create` crée les issues. |
-| `/gearbox:issue <URL-ou-numéro>` | Point d'entrée principal pour une issue GitHub | Charge l'issue, retrouve ou crée la spec, passe le clarification gate, consulte les solutions pertinentes, fait la reconnaissance du repo, construit et pré-valide le DAG, route chaque tâche vers Claude ou Codex avec modèle/effort, lance TDD/SDD, reviews croisées, intégration, Ponytail, vérification, repair loops, `/learn` conditionnel puis éventuellement la PR. |
+| `/gearbox:issue <URL-ou-numéro>` | Point d'entrée principal pour une issue GitHub | Charge l'issue, construit la spec puis le DAG/routing. **Sans `--auto`, il s'arrête ici et attend ton approbation du plan exact avant tout worker.** Après approbation : TDD/SDD, cross-reviews, intégration, Ponytail, vérification, repairs, learning éventuel et PR si `--ship`. |
 | `/gearbox:loop <issue-ou-spec-ou-demande>` | Quand tu veux utiliser directement le moteur générique | Lance la boucle convergente depuis une issue, une spec ou une demande locale. Réutilise les artefacts connus et itère seulement sur les gates qui échouent jusqu'à `PASS`, `BLOCKED` ou `MAX_CYCLES`. Peut shipper et suivre la PR. |
 | `/gearbox:flow <demande>` | Compatibilité avec l'ancien point d'entrée générique | Alias de compatibilité vers la logique de boucle pour du travail substantiel hors issue. Pour un nouveau workflow, préfère `/gearbox:loop`. |
 | `/gearbox:plan <spec-ou-issue>` | Quand tu veux seulement produire/inspecter le plan | Produit un **plan lean** : décisions, interfaces/signatures, valeurs imposées, tests/assertions et vérification, sans transcrire les corps de code. Ajoute `Review Focus` (0-5 failure modes), la ready frontier, ownership, routing et éventuels micro-batches. `plan_guard.py` contrôle la proportion du plan. |
@@ -87,14 +87,14 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:clean-solutions [scope]` | Maintenance périodique de `docs/solutions/` | Audite métadonnées/index, vérifie en priorité les `retire_when` satisfaits, puis confronte la mémoire au code/tests/specs/ADRs. Classe en `KEEP`, `REFRESH`, `MERGE`, `DELETE` ou `BLOCKED`. `--dry-run` reste disponible. |
 | `/gearbox:retro [run-id / issue/ PR / session] [--bundle]` | Après un run coûteux, confus ou riche en corrections | Produit une rétro **forensic** avec preuves `path:line`/artifact fields : plan adherence, repeated work, stumbles, request conflicts, dispatch/escalation/repair cost proxies et quality escapes. `--bundle` génère en plus un dossier redacted sous `.gearbox/diagnostics/` pour partager/analyser la session. |
 | `/gearbox:ship` | Quand le code est prêt à être publié | Vérifie les gates, délègue commit/push, crée ou met à jour la PR et son commentaire technique. La description de PR est compréhensible par un non-tech ; le commentaire technique contient les checks, reviews, changements Ponytail, screenshots UI/UX et 1 à 5 vrais extraits de code critique avec fichier:lignes, justification et focus de review. |
-| `/gearbox:resume <run-id/issue/PR>` | Après fermeture/crash/interruption | Recharge `state.json`, réconcilie git, locks, worktrees, budgets et preuves, puis reprend exactement au bon endroit sans relancer les workers déjà terminés et encore valides. Si le run était `SPEC_BLOCKED`, ressort les questions en attente. |
+| `/gearbox:resume <run-id/issue/PR>` | Après fermeture/crash/interruption ou pour approuver un plan en attente | Recharge l'état sans rejouer le travail. `--approve-plan` approuve uniquement le plan actuellement hashé ; s'il a changé depuis sa présentation, Gearbox refuse et redemande une approbation. |
 | `/gearbox:continue-pr <PR>` | Après création de la PR, quand CI ou un reviewer humain a parlé | Charge uniquement les nouveaux checks/commentaires, valide les findings au lieu de les accepter aveuglément, construit un repair DAG borné, corrige via workers, repousse sur la même branche et met à jour le même commentaire technique sans rejouer toute l'issue. |
 
 ## Flags les plus utiles
 
 | Flag | Effet |
 | --- | --- |
-| `--auto` | Automatise les décisions d'ingénierie raisonnables et les cycles de réparation. N'autorise pas Gearbox à inventer une décision produit/métier. |
+| `--auto` | Automatise les décisions d'ingénierie raisonnables, **saute le checkpoint humain d'approbation du plan** et autorise les repair cycles bornés. N'autorise jamais Gearbox à inventer une décision produit/métier ou à franchir les gates destructifs. |
 | `--ship` | Continue jusqu'au commit, push et création/mise à jour de la PR. |
 | `--follow-pr` | Après le ship, continue sur les échecs CI et retours de review dans les budgets définis. |
 | `--models hybrid` | Autorise Gearbox à choisir Claude ou Codex tâche par tâche. En hybrid, l'implémentation est revue par le fournisseur opposé. |
@@ -106,6 +106,39 @@ Pour continuer également après l'ouverture de la PR :
 | `--max-cycles N` | Limite le nombre de repair cycles. |
 | `--token-profile efficient` | Profil par défaut : contexte borné, handoffs par fichiers, reviews proportionnées au risque. |
 | `--token-profile strict` | Vérification/review plus lourde pour les changements sensibles. |
+
+## Approbation du plan
+
+Par défaut, un run substantiel sépare **planifier** et **autoriser l'implémentation**.
+
+```text
+/gearbox:issue #123
+→ spec / clarification
+→ reconnaissance
+→ plan lean + DAG
+→ routing Claude/Codex + reviewers
+→ hash du plan
+→ PLAN_APPROVAL_REQUIRED
+→ STOP
+```
+
+Gearbox te montre alors un résumé compact : tâches, ready frontier, modèles/efforts, Review Focus, risques et topologie de review. Aucun worker/reviewer ne peut consommer de budget tant que ce plan n'est pas approuvé.
+
+Tu peux approuver le plan exact dans la conversation par un « go » non ambigu, ou de façon explicite/reprenable :
+
+```text
+/gearbox:resume issue-123 --approve-plan
+```
+
+L'approbation est liée au SHA-256 du `dag.yaml`. Si le plan change, l'approbation précédente est invalidée et Gearbox doit te présenter la nouvelle version.
+
+Avec :
+
+```text
+/gearbox:issue #123 --auto
+```
+
+le digest est toujours enregistré, mais le checkpoint humain est marqué auto-approved et le run continue. `--ship` ne remplace jamais `--auto` : `--ship` sans `--auto` s'arrête toujours au plan.
 
 ## Économie d'exécution et plans lean
 
