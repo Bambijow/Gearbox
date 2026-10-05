@@ -18,9 +18,9 @@ This is the GitHub-specific front door to the shared Gearbox engineering loop. R
 
 Claude Code remains the architecture owner, scheduler and final judge, but the main thread is **not an implementation worker**. It must not author product code, tests, migrations, application config, public docs, or solution notes. Integration, verification, knowledge mutation and shipping are delegated to dedicated role agents. The plugin hook enforces this boundary during the command turn.
 
-`--auto` authorizes ordinary engineering decisions inside the issue's stated outcome and allows bounded repair cycles. It does not authorize destructive production actions, merge, deploy, secret access, irreversible data changes, or invented product semantics.
+`--auto` authorizes ordinary engineering decisions inside the issue's stated outcome, allows bounded repair cycles, and **bypasses the human plan-approval checkpoint after the exact DAG/routing has been persisted**. Without `--auto`, Gearbox must stop at `PLAN_APPROVAL_REQUIRED` before any implementation/review dispatch. It does not authorize destructive production actions, merge, deploy, secret access, irreversible data changes, or invented product semantics.
 
-`--ship` authorizes commit, push, PR creation/update and PR comments only after the loop reaches PASS.
+`--ship` authorizes commit, push, PR creation/update and PR comments only after the loop reaches PASS. `--ship` does not imply `--auto`; a non-auto ship run still pauses for plan approval.
 
 Initialize persistent run state before shaping so a clarification blocker survives interruption. After the spec clarification gate resolves and the DAG is pre-flighted, initialize/refresh evidence, resolve model policy, and assign every task an engine, model, effort and risk class. In `hybrid`, also precompute its opposite-provider review route with `scripts/review_router.py` so a Claude task is reviewed by Codex and a Codex task is reviewed by Claude before integration. If no model policy is stored, ask which allowed strategy to use and offer to persist it. `--models ask` forces this prompt; other `--models` values override for the run.
 
@@ -71,7 +71,7 @@ Follow `references/engineering-loop.md` from repository knowledge lookup through
 1. ground canonical domain language from the relevant glossary when present, then search relevant `docs/solutions/` before inventing architecture;
 2. isolate any required current external research through `researcher`, then distill repository facts/pointers once;
 3. build and pre-flight the dependency DAG plus ready-frontier metadata;
-4. create compact task packets;
+4. create compact task packets and resolve task/reviewer routing; without `--auto`, persist `PLAN_APPROVAL_REQUIRED`, show the compact plan/routing/ready-frontier summary, release the lock, and stop until explicit approval; with `--auto`, persist the auto-approved plan digest and continue;
 5. allocate Claude/Codex workers with isolated write worktrees and continuously dispatch the ready frontier;
 6. use RED -> GREEN -> REFACTOR where useful;
 7. inspect worker diffs centrally and adjudicate the required opposite-provider task review;
