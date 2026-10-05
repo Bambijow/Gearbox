@@ -46,7 +46,7 @@ If that location is not safely ignored, use a temporary run directory and report
 
 ## 2. Issue to minimal spec
 
-Create or refresh `$RUN_DIR/spec.md` using `/shape` discipline. When a valid accepted `Source spec` exists, make the run spec a compact working projection/pointer plus reconciled issue deltas rather than re-authoring the durable requirements. Otherwise derive it from the issue normally. Keep it decision-complete but compact. Include:
+Create or refresh `$RUN_DIR/spec.md` using the decision-complete specification and clarification contract in `references/spec-clarification.md`. When a valid accepted `Source spec` exists, make the run spec a compact working projection/pointer plus reconciled issue deltas rather than re-authoring the durable requirements. Otherwise derive it from the issue normally. Keep it decision-complete but compact. Include:
 
 - plain-language outcome;
 - verified current behavior;
@@ -87,7 +87,7 @@ Do not redo broad reconnaissance in repair cycles. Reuse the run artifacts and r
 
 During the loop, accumulate only plausible reusable lessons in `$RUN_DIR/learning-candidates.md`.
 
-After convergence reaches PASS and before shipping, run the shared learning gate. Dispatch `knowledge-curator` with `/learn` semantics only when one or more candidates satisfy its qualification gate and are not already covered in `docs/solutions/`.
+After convergence reaches PASS and before shipping, run the shared learning gate. Dispatch `knowledge-curator` only when one or more candidates satisfy the learning qualification gate in `references/engineering-loop.md` and are not already covered in `docs/solutions/`.
 
 A routine successful issue should usually produce **no** learning note. A tricky root cause, hidden invariant, misleading architecture, recurrent operational trap, or materially useful failed approach may deserve one.
 
@@ -95,7 +95,7 @@ Any created or updated solution note belongs canonically in `docs/solutions/` an
 
 ## 5. Ship the PR
 
-Only on PASS and only when `--ship` is present, delegate `/ship` semantics to the `shipper` agent with the originating issue context and canonical evidence.
+Only on PASS and only when `--ship` is present, delegate publication to the `shipper` agent using `references/pr-reporting.md`, canonical evidence, and the originating issue context.
 
 The PR has two audiences.
 
