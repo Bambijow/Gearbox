@@ -28,8 +28,9 @@ def save(path: Path, data: dict) -> None:
 
 def norm(value: str) -> str:
     value=value.strip().lower()
-    value=re.sub(r"\\","/",value)
+    value=re.sub(r"\\\\","/",value)
     value=re.sub(r"\s+"," ",value)
+    value=re.sub(r"\s*\|\s*","|",value)
     return value
 
 def fingerprint(identity: str) -> str:
