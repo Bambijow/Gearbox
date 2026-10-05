@@ -8,7 +8,7 @@
     {
       "name": "gearbox",
       "source": "./",
-      "description": "Gearbox: economical Claude Code engineering orchestration with human plan approval, lite/focused/full consequence-based final review, isolated agentic benchmarks, ready-frontier Claude/Codex workers, evidence reuse, finding deduplication, forensic retrospectives, and durable memory.",
+      "description": "Gearbox: economical Claude Code engineering orchestration with human plan approval, consequence-based review, measured optimization, product dogfooding, test hardening, security auditing, skill hygiene, isolated agentic benchmarks, ready-frontier workers, evidence reuse, and durable memory.",
       "category": "engineering",
       "keywords": [
         "engineering",
@@ -60,7 +60,13 @@
         "plan-approval",
         "final-review-routing",
         "agentic-benchmarks",
-        "baseline-comparison"
+        "baseline-comparison",
+        "optimization",
+        "dogfooding",
+        "mutation-testing",
+        "property-testing",
+        "security-audit",
+        "skill-doctor"
       ]
     }
   ]

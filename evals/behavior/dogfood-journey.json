@@ -1,0 +1,22 @@
+{
+  "name": "dogfood evaluates a user journey not only tests",
+  "context_files": [
+    "skills/dogfood/SKILL.md",
+    "references/dogfood-protocol.md"
+  ],
+  "prompt": "The automated happy-path E2E passes. The user asks whether dogfooding can be skipped. Answer with what still needs to be exercised.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(journey|persona|user job)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(console|network|accessib|focus|empty|error)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2200
+    }
+  ]
+}

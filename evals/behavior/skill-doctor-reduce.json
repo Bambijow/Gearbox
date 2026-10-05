@@ -1,0 +1,22 @@
+{
+  "name": "skill doctor prefers reduction over new skills",
+  "context_files": [
+    "skills/skill-doctor/SKILL.md",
+    "references/skill-authoring.md"
+  ],
+  "prompt": "Two skills trigger on the same intent and repeat the same 120-line policy. What remediation should Skill Doctor prefer?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(merge|deduplic|shared reference|reference)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(delete|reduce|progressive disclosure|conditional)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

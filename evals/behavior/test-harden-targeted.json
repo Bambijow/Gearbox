@@ -1,0 +1,26 @@
+{
+  "name": "test hardening stays targeted",
+  "context_files": [
+    "skills/test-harden/SKILL.md",
+    "references/test-hardening.md"
+  ],
+  "prompt": "A money-transfer invariant has green tests. Should Gearbox run mutation testing across the entire monorepo? State the better hardening approach.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(target|bounded|scope|invariant)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(mutation|mutant)"
+    },
+    {
+      "type": "not_regex",
+      "value": "(?i)(entire|whole).*monorepo.*(yes|should)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2000
+    }
+  ]
+}

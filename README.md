@@ -1,6 +1,6 @@
 # Gearbox
 
-Gearbox est un plugin Claude Code d'orchestration d'ingénierie. Il transforme une idée, une spec ou une issue GitHub en boucle de développement contrôlée : clarification proportionnée, plan lean, DAG/ready frontier, routage Claude/Codex, workers isolés, batching des micro-tâches, tests crédibles, reviews croisées calibrées par le coût réel d'un échec, Ponytail, vérification, mémoire durable et PR documentée pour humains.
+Gearbox est un plugin Claude Code d'orchestration d'ingénierie. Il transforme une idée, une spec ou une issue GitHub en boucle de développement contrôlée : clarification proportionnée, plan lean, DAG/ready frontier, routage Claude/Codex, workers isolés, batching des micro-tâches, tests crédibles, optimisation mesurée, dogfooding produit, hardening par mutations/propriétés, audits sécurité ciblés, hygiène des skills, reviews croisées calibrées par le coût réel d'un échec, Ponytail, vérification, mémoire durable et PR documentée pour humains.
 
 Le thread Claude principal agit comme **control plane** : il analyse, planifie, route, inspecte et arbitre, mais il ne modifie pas le code produit pendant un run orchestré. Les changements sont délégués à des workers et agents spécialisés, puis revus par le fournisseur opposé en mode `hybrid`.
 
@@ -52,6 +52,11 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | J'ai déjà une PR avec CI/reviews à traiter | `/gearbox:continue-pr <PR>` |
 | Je veux nettoyer la mémoire technique | `/gearbox:clean-solutions` |
 | Je veux améliorer les prochains runs après une session pénible | `/gearbox:retro [run-id]` |
+| Je veux optimiser une métrique mesurable sans casser le comportement | `/gearbox:optimize <cible>` |
+| Je veux utiliser le produit comme un humain avant de le livrer | `/gearbox:dogfood <parcours>` |
+| Je veux durcir des tests importants | `/gearbox:test-harden <scope>` |
+| Je veux un audit sécurité spécialisé | `/gearbox:security-audit <scope>` |
+| Je veux auditer/réduire les skills et prompts du repo | `/gearbox:skill-doctor [scope]` |
 
 Pour une issue classique, le mode autonome habituel est :
 
@@ -65,7 +70,7 @@ Pour continuer également après l'ouverture de la PR :
 /gearbox:issue https://github.com/acme/foo/issues/123 --auto --ship --follow-pr
 ```
 
-## Les 20 commandes
+## Les 25 commandes
 
 | Commande | Quand l'utiliser | Ce qu'elle fait exactement |
 | --- | --- | --- |
@@ -81,10 +86,15 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:plan <spec-ou-issue>` | Quand tu veux seulement produire/inspecter le plan | Produit un **plan lean** : décisions, interfaces/signatures, valeurs imposées, tests/assertions et vérification, sans transcrire les corps de code. Ajoute `Review Focus` (0-5 failure modes), la ready frontier, ownership, routing et éventuels micro-batches. `plan_guard.py` contrôle la proportion du plan. |
 | `/gearbox:build <plan-ou-tâche>` | Pour implémenter manuellement un plan déjà approuvé | Exécute via workers délégués, RED → GREEN → REFACTOR et **Test Credibility Gate**. Les petites tâches indépendantes de même forme peuvent être batchées en un worker + une cross-review, tout en gardant la traçabilité de chaque membre. Dans un run orchestré, le parent n’a toujours aucune exception « petit edit ». |
 | `/gearbox:debug <symptôme>` | Bug, test rouge, incident ou comportement mystérieux | Construit une boucle red-capable, minimise, falsifie les hypothèses et protège par un test crédible. Après root cause, un scan ciblé cherche la même classe de bug : à **3+ occurrences** (ou risque catastrophique), Gearbox traite le motif systémique/défense plutôt que de jouer au whack-a-bug. |
+| `/gearbox:optimize <cible>` | Quand le système fonctionne déjà mais qu'une métrique doit réellement bouger | Fixe une métrique et une baseline reproductible, protège correctness/safety, formule une hypothèse, change une variable à la fois et ne conserve que les variantes dont le gain est mesuré. Pas de victoire déclarée sur intuition, micro-benchmark non représentatif ou déplacement de coût caché. |
+| `/gearbox:dogfood <parcours>` | Avant livraison d'une UX, ou pour éprouver un produit comme un vrai utilisateur | Suit un persona et un parcours réels plutôt qu'une simple checklist de tests. Observe comportement, erreurs console/réseau, états vides/erreurs, accessibilité et frictions ; conserve captures et preuves ; distingue défaut fonctionnel, dette UX et polish. `--fix` délègue seulement les corrections acceptées. |
+| `/gearbox:test-harden <scope>` | Quand des tests verts protègent un invariant à fort coût d'échec | Complète le Test Credibility Gate par mutations ciblées, propriétés/invariants et fuzzing borné quand les outils du repo le permettent. Cherche surtout les tests qui survivent à une faute plausible ; ne transforme pas le coverage ou le mutation score en objectif vanity. |
 | `/gearbox:simplify [diff]` | Après intégration, pour réduire le code | Lance un agent frais de simplification. Utilise Ponytail s'il est installé ; sinon applique la discipline interne Gearbox : supprimer duplication, wrappers et abstractions inutiles, préférer stdlib/framework/existant, conserver validation, sécurité et accessibilité. Rejoue ensuite les checks nécessaires. |
 | `/gearbox:review [diff-ou-PR]` | Pour une review indépendante | Vérifie spec/correctness/sécurité/tests/opérations et calibre les findings par failure path + failure cost. Dans la boucle orchestrée, la review finale est routée `lite / focused / full` selon la conséquence : pas de nouveau reviewer si les task reviews suffisent, un adversarial reviewer pour le risque silencieux, spine complète uniquement sur les frontières à fort impact. |
+| `/gearbox:security-audit <scope>` | Pour auth, permissions, secrets, crypto, parsers, uploads, désérialisation, données sensibles ou autre frontière de confiance | Construit un mini threat model, cartographie entrées/trust boundaries/actifs, inspecte le diff et les appels adjacents, puis utilise les analyseurs disponibles (Semgrep/CodeQL/etc.) de façon ciblée. Les findings doivent décrire un chemin d'exploitation concret, l'impact et une preuve ; pas de pluie de best practices génériques. |
 | `/gearbox:learn <leçon>` | Après une découverte non évidente qui mérite d'être conservée | Écrit/réconcilie `docs/solutions/` et peut ajouter `retire_when` quand la guidance dépend d’un bug/version/service externe. Régénère l’index puis passe l’audit déterministe de frontmatter/index. |
 | `/gearbox:clean-solutions [scope]` | Maintenance périodique de `docs/solutions/` | Audite métadonnées/index, vérifie en priorité les `retire_when` satisfaits, puis confronte la mémoire au code/tests/specs/ADRs. Classe en `KEEP`, `REFRESH`, `MERGE`, `DELETE` ou `BLOCKED`. `--dry-run` reste disponible. |
+| `/gearbox:skill-doctor [scope]` | Quand le plugin/CLAUDE.md/AGENTS.md commence à accumuler règles, skills ou prompts | Audite triggers et descriptions, collisions/recouvrements, taille des prompts, progressive disclosure, références mortes, règles qui devraient devenir déterministes et trous d'evals. Préfère fusionner/réduire avant d'ajouter une nouvelle skill. `--fix` applique uniquement les remèdes bornés et vérifiables. |
 | `/gearbox:retro [run-id / issue/ PR / session] [--bundle]` | Après un run coûteux, confus ou riche en corrections | Produit une rétro **forensic** avec preuves `path:line`/artifact fields : plan adherence, repeated work, stumbles, request conflicts, dispatch/escalation/repair cost proxies et quality escapes. `--bundle` génère en plus un dossier redacted sous `.gearbox/diagnostics/` pour partager/analyser la session. |
 | `/gearbox:ship` | Quand le code est prêt à être publié | Vérifie les gates, délègue commit/push, crée ou met à jour la PR et son commentaire technique. La description de PR est compréhensible par un non-tech ; le commentaire technique contient les checks, reviews, changements Ponytail, screenshots UI/UX et 1 à 5 vrais extraits de code critique avec fichier:lignes, justification et focus de review. |
 | `/gearbox:resume <run-id/issue/PR>` | Après fermeture/crash/interruption ou pour approuver un plan en attente | Recharge l'état sans rejouer le travail. `--approve-plan` approuve uniquement le plan actuellement hashé ; s'il a changé depuis sa présentation, Gearbox refuse et redemande une approbation. |

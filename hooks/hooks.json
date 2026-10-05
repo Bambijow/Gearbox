@@ -14,7 +14,7 @@
     ],
     "UserPromptExpansion": [
       {
-        "matcher": "(?:gearbox:)?(?:setup|wayfinder|brainstorm|shape|spec-to-issue|spec-to-issues|issue|loop|flow|plan|build|debug|simplify|review|learn|clean-solutions|ship|retro|resume|continue-pr)",
+        "matcher": "(?:gearbox:)?(?:setup|wayfinder|brainstorm|shape|spec-to-issue|spec-to-issues|issue|loop|flow|plan|build|debug|optimize|dogfood|test-harden|simplify|review|security-audit|learn|clean-solutions|skill-doctor|ship|retro|resume|continue-pr)",
         "hooks": [
           {
             "type": "command",

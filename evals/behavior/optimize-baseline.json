@@ -1,0 +1,26 @@
+{
+  "name": "optimization requires a measured baseline",
+  "context_files": [
+    "skills/optimize/SKILL.md",
+    "references/optimization-loop.md"
+  ],
+  "prompt": "A developer says 'make this endpoint faster' but provides no metric or benchmark. What should Gearbox do first? Keep the answer concise.",
+  "assertions": [
+    {
+      "type": "contains",
+      "value": "baseline"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(metric|measure|workload|benchmark)"
+    },
+    {
+      "type": "not_regex",
+      "value": "(?i)(rewrite|refactor).*first"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

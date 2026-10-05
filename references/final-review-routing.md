@@ -61,6 +61,8 @@ Final-review behavior:
 - reconcile findings centrally through `references/review-calibration.md`;
 - verifier remains separate. A reviewer is not a substitute for executable evidence.
 
+For auth/permissions, secrets/crypto, untrusted parsers/uploads/deserialization, sensitive data flows, or other explicit trust boundaries, apply `references/security-audit.md` inside the full-review spine. Prefer enriching the existing comprehensive reviewer packet over automatically buying another reviewer; add a dedicated security reviewer only when `references/delegation-gate.md` justifies fresh independent judgment.
+
 ## Size can only escalate
 
 Changed-line count never awards `lite`.

@@ -13,7 +13,7 @@ Implement the requested behavior, not an imagined future platform.
 
 Read `.gearbox/config.md` when present, repository instructions, the relevant spec/plan/issue, and the code you are about to change. Check the working tree before editing so unrelated user changes remain untouched.
 
-Maintain traceability from requirement → work unit → verification. Apply `references/test-credibility.md` whenever tests are created or relied on as behavior proof. For a substantial issue workflow, `/issue` owns the DAG and worker scheduling; this skill executes individual units faithfully. Read `references/token-efficiency.md` when the parent workflow provides a task packet. For a multi-task plan, use `references/frontier-scheduling.md`: execute only ready tasks, batch qualifying same-shape micro-work, and carry relevant glossary/ADR/research/solution context pointers instead of copied bulk context.
+Maintain traceability from requirement → work unit → verification. Apply `references/test-credibility.md` whenever tests are created or relied on as behavior proof. For high-cost invariants or explicit hardening work, apply `references/test-hardening.md` after the ordinary green loop; keep mutations/properties scoped instead of turning every build into a fuzz campaign. For a substantial issue workflow, `/issue` owns the DAG and worker scheduling; this skill executes individual units faithfully. Read `references/token-efficiency.md` when the parent workflow provides a task packet. For a multi-task plan, use `references/frontier-scheduling.md`: execute only ready tasks, batch qualifying same-shape micro-work, and carry relevant glossary/ADR/research/solution context pointers instead of copied bulk context.
 
 ## Development loop
 

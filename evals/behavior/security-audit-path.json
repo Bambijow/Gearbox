@@ -1,0 +1,26 @@
+{
+  "name": "security audit requires a concrete abuse path",
+  "context_files": [
+    "skills/security-audit/SKILL.md",
+    "references/security-audit.md"
+  ],
+  "prompt": "A scanner flags a generic 'input validation' warning in changed auth code but provides no reachable path. How should Gearbox treat it?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(claim|validate|reachable|path|entry point|sink)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(attacker|precondition|impact|evidence)"
+    },
+    {
+      "type": "not_contains",
+      "value": "automatically confirmed"
+    },
+    {
+      "type": "max_chars",
+      "value": 2200
+    }
+  ]
+}

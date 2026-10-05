@@ -81,6 +81,26 @@
     "wayfinder": {
       "max_bytes": 6144,
       "class": "interactive-deep"
+    },
+    "dogfood": {
+      "max_bytes": 5120,
+      "class": "quality-specialist"
+    },
+    "optimize": {
+      "max_bytes": 5120,
+      "class": "quality-specialist"
+    },
+    "security-audit": {
+      "max_bytes": 5632,
+      "class": "risk-specialist"
+    },
+    "skill-doctor": {
+      "max_bytes": 5120,
+      "class": "maintenance"
+    },
+    "test-harden": {
+      "max_bytes": 5120,
+      "class": "quality-specialist"
     }
   }
 }
