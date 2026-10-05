@@ -13,21 +13,22 @@ Review the actual code and requirements, not a hypothetical implementation. For 
 
 Read repository instructions, `.gearbox/config.md` when present, the originating spec/issue/plan, and the full relevant diff. Inspect surrounding code when changed behavior depends on it.
 
-If the change is substantial, launch Gearbox's read-only `cross-reviewer` agent. For issue workflows, pair it with at most one independent read-only Codex worker as the different-model lens. Reconcile them centrally. The Claude reviewer should cover requirement compliance plus correctness/security/data-integrity/compatibility/tests/operations in one pass rather than spawning one reviewer per category.
+If the change is substantial, launch Gearbox's read-only `cross-reviewer` agent. For any optional reviewer beyond mandatory configured gates, apply `references/delegation-gate.md`; independent judgment must justify the extra dispatch. For issue workflows, pair it with at most one independent read-only Codex worker as the different-model lens when the risk warrants it. Reconcile them centrally. The Claude reviewer should cover requirement compliance plus correctness/security/data-integrity/compatibility/tests/operations in one pass rather than spawning one reviewer per category.
 
 Do not outsource final judgment to any reviewer.
 
 ## Finding standard
 
-A finding must be actionable and supported by a concrete failure path, requirement mismatch, maintainability hazard, or verification gap. Avoid generic style commentary.
+Apply `references/review-calibration.md` and `references/test-credibility.md`. A material finding must be actionable and supported by a concrete reachable failure path, requirement mismatch, credible verification gap, or maintainability hazard with real future cost. Avoid generic style commentary.
 
 Classify findings:
 
 - **Blocker**: likely correctness, security, data-loss, severe compatibility, or production-safety issue.
 - **Important**: meaningful bug/regression risk or material requirement gap.
 - **Minor**: directly relevant cleanup with modest impact.
+- **Advisory**: useful hardening/rollout/observation that does not make the change incorrect if left as-is.
 
-For each finding include location, evidence, consequence, and smallest useful fix direction.
+For each finding include location, evidence/failure path, consequence/failure cost, smallest useful fix direction, and action ownership (`repair|human|release|advisory`).
 
 ## Cross-review behavior
 
