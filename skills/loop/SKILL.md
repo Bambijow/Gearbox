@@ -19,7 +19,7 @@ Use `.gearbox/config.md` when present. Default to `token_profile: efficient` and
 
 Before planning, run the spec clarification gate. Resolve facts from the repo first; make only low-risk reversible engineering assumptions. If material product/domain semantics remain unresolved, persist the compact question batch, set `BLOCKED` with `SPEC_BLOCKED`, and stop before model selection or worker dispatch.
 
-`--auto` authorizes ordinary engineering decisions inside the normalized scope and allows repair cycles to proceed without routine checkpoints. It never authorizes destructive production actions, secret access, merge, deploy, or invented product semantics.
+`--auto` authorizes ordinary engineering decisions inside the normalized scope, bypasses the human plan-approval checkpoint after the exact DAG/routing is persisted, and allows repair cycles to proceed without routine checkpoints. Without `--auto`, stop at `PLAN_APPROVAL_REQUIRED` before implementation/review dispatch. It never authorizes destructive production actions, secret access, merge, deploy, or invented product semantics.
 
 `--ship` authorizes commit, push, PR creation/update and PR comments only after the loop reaches PASS.
 
@@ -32,7 +32,7 @@ Follow the shared loop protocol:
 1. minimal SDD spec and acceptance mapping;
 2. spec clarification gate with repository deductions, explicit assumptions, or `SPEC_BLOCKED`;
 3. relevant glossary/domain pointers, `docs/solutions/` lookup, isolated research when needed, and architecture reconnaissance;
-4. pre-flighted dependency DAG with ready-frontier metadata;
+4. pre-flighted dependency DAG with ready-frontier metadata and concrete routing, followed by the persisted plan-approval gate unless `--auto`;
 5. bounded Claude/Codex workers with isolated write worktrees, dispatched continuously from the ready frontier;
 6. TDD where useful;
 7. central diff inspection + opposite-provider task review;
