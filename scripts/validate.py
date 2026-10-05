@@ -96,7 +96,12 @@ def validate_hooks() -> int:
     for helper in ("plan_guard.py", "repair_findings.py", "finding_registry.py", "solutions_audit.py", "retro_bundle.py", "prompt_budget.py", "behavior_eval.py", "child_jobs.py", "usage_ledger.py"):
         if not (ROOT / "scripts" / helper).exists():
             fail(f"missing scripts/{helper}")
-    if not (ROOT / "prompt-budgets.json").exists():\n        fail("missing prompt-budgets.json")\n    if not (ROOT / "evals" / "behavior").exists():\n        fail("missing evals/behavior")\n    return sum(len(v) for v in hooks.values() if isinstance(v, list))\n
+    if not (ROOT / "prompt-budgets.json").exists():
+        fail("missing prompt-budgets.json")
+    if not (ROOT / "evals" / "behavior").exists():
+        fail("missing evals/behavior")
+    return sum(len(v) for v in hooks.values() if isinstance(v, list))
+
 def main() -> int:
     plugin_path = ROOT / ".claude-plugin" / "plugin.json"
     market_path = ROOT / ".claude-plugin" / "marketplace.json"
