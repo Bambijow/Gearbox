@@ -21,6 +21,14 @@ Check for secrets, debug artifacts, temporary orchestration files, accidental ge
 
 ## Final verification
 
+If intended changes include `docs/solutions/**/*.md`, require a current generated index and run:
+
+```bash
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/solutions_audit.py" --dir <solutions_dir> --strict --check-index
+```
+
+A failure is a shipping blocker returned to the knowledge/cleanup owner; shipping must not silently publish malformed durable memory.
+
 Run the most relevant configured checks. If the integrated diff has not had the dedicated simplification and independent review gates, run them before shipping substantial work.
 
 If a check is unavailable or too expensive, say so instead of implying a clean bill of health.
