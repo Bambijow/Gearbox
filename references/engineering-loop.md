@@ -54,6 +54,19 @@ Every gap becomes DEDUCED, ASSUMED, or QUESTION. Only low-impact reversible engi
 
 Repository facts gathered to settle clarifications are reused later; do not pay for the same reconnaissance twice.
 
+## Domain language before architecture
+
+Before shaping architecture or naming new concepts, apply `references/domain-modeling.md`.
+
+- If `GLOSSARY-MAP.md` exists, load only the relevant context glossary.
+- Otherwise read root `GLOSSARY.md` when present.
+- Carry canonical terms into the spec, DAG packets, tests, reviews and PR copy.
+- If a term or qualifying architecture decision is actually resolved during the run, delegate the smallest durable glossary/ADR edit to `domain-curator`.
+
+When an implementation decision depends on a current external fact, dispatch `researcher` using `references/research.md` and store the answer under the run directory. Downstream packets receive the research note path plus the decision-relevant conclusion, not the research transcript.
+
+For hard-to-reverse shared interface/seam decisions, apply the `references/codebase-design.md` design-it-twice gate before freezing the DAG. Ordinary features do not pay for parallel architecture proposals.
+
 ## Read reusable knowledge early
 
 Before inventing a solution, search `docs/solutions/` for relevant prior incidents, invariants, traps, migrations, and architecture lessons. Pull only directly relevant notes into `repo-facts.md` as short pointers. Follow their source links only when needed.
@@ -76,11 +89,11 @@ All gate claims map to `evidence.json`. State and evidence, not chat history, ma
 3. Reconcile architecture facts once, reusing facts already gathered during clarification.
 4. Build and pre-flight the DAG once.
 5. Dispatch bounded implementation workers in dependency waves. Every product edit, including tiny edits and test/doc changes, belongs to a worker.
-6. Workers use RED -> GREEN -> REFACTOR where the failing check provides real signal and return their actual diff/evidence, preferably with a local unpushed task commit.
+6. Workers use RED -> GREEN -> REFACTOR where the failing check provides real signal. Before returning they synchronize the latest integration tip into their task branch/worktree, rerun focused verification, and report `integration_base_sha`, `head_sha`, actual diff/evidence and preferably one local unpushed task commit.
 7. Inspect every worker diff centrally without editing it. In `hybrid`, resolve and run exactly one opposite-provider task review before integration: Claude implementation → Codex review; Codex implementation → Claude review. The review is task-scoped and returns SPEC then QUALITY verdicts.
 8. Validate review findings centrally. When repair is required, dispatch the same or a fresh implementation worker; the parent never patches the finding itself.
 9. After the task review gate passes, delegate mechanical integration to `integrator`. Integration conflicts become repair tasks.
-10. Delegate affected checks after integration waves to `verifier`.
+10. After each accepted integration, delegate affected focused checks to `verifier`, update task status, recompute the ready frontier, and immediately dispatch any newly-ready non-conflicting tasks.
 11. Run the post-integration `ponytail-simplifier` gate.
 12. Run final independent cross-model review on the simplified integrated diff. This is integration-level review and does not replace the per-task opposite-provider gate.
 13. Delegate full-enough repository-native verification and required UI/UX evidence to `verifier`.
