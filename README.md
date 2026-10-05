@@ -45,6 +45,7 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | Situation | Commande recommandée |
 | --- | --- |
 | J'ai seulement une idée | `/gearbox:brainstorm "mon idée"` |
+| J'ai une initiative trop grosse ou trop floue pour une seule spec | `/gearbox:wayfinder "destination"` |
 | J'ai déjà une issue GitHub | `/gearbox:issue <URL-ou-numéro>` |
 | J'ai déjà une spec | `/gearbox:loop <chemin-spec>` |
 | J'ai un run interrompu | `/gearbox:resume <run-id-ou-issue>` |
@@ -64,11 +65,12 @@ Pour continuer également après l'ouverture de la PR :
 /gearbox:issue https://github.com/acme/foo/issues/123 --auto --ship --follow-pr
 ```
 
-## Les 19 commandes
+## Les 20 commandes
 
 | Commande | Quand l'utiliser | Ce qu'elle fait exactement |
 | --- | --- | --- |
 | `/gearbox:setup` | Première utilisation sur un repository, ou migration de configuration | Analyse les conventions du repo, détecte tests/lint/typecheck/build/e2e, GitHub, Codex et Ponytail, initialise `.gearbox/config.md`, la politique de risque, les budgets, les modèles Claude/Codex et l'index `docs/solutions/`. Le setup ne modifie pas le produit. |
+| `/gearbox:wayfinder <idée-ou-map>` | Pour une initiative trop grande ou trop incertaine pour converger honnêtement en une seule spec | Cartographie la destination et les **decision tickets** sans implémenter. Sépare recherche, prototype, décision humaine et prérequis ; garde le brouillard non encore spécifiable dans la map ; exécute les recherches indépendantes via `researcher` ; maintient une ready frontier de décisions ; puis handoff vers shaping/plan/loop quand il ne reste plus de décision matérielle à inventer. `--create` matérialise la map/issues GitHub et `--auto-research` peut lancer les recherches indépendantes. |
 | `/gearbox:brainstorm "<idée>"` | Quand le besoin est encore flou | Ouvre une conversation de shaping produit/technique. Gearbox inspecte d'abord le repo pour éviter les questions inutiles, maintient un ledger compact de décisions, bloque sur les vraies décisions produit manquantes, puis écrit une spec acceptée. Avec `--issue`, crée ensuite l'issue GitHub ; avec `--auto --ship`, poursuit jusqu'à la PR. |
 | `/gearbox:shape <demande>` | Quand la demande est connue mais pas encore assez précise pour coder | Transforme une feature, une issue ou une demande en spec décisionnellement complète. Distingue ce qui peut être déduit du repo, ce qui peut être assumé de façon réversible, et ce qui exige une question utilisateur. Ne lance aucun worker tant que la spec est `SPEC_BLOCKED`. |
 | `/gearbox:spec-to-issue <spec>` | Quand une spec doit devenir une issue GitHub | Distille la spec en issue concise : objectif, scope, non-scope, critères d'acceptation, contraintes et vérification. Par défaut produit un draft ; `--create` crée réellement l'issue. La spec reste la source de vérité, l'issue sert de tracker. |
@@ -104,6 +106,30 @@ Pour continuer également après l'ouverture de la PR :
 | `--max-cycles N` | Limite le nombre de repair cycles. |
 | `--token-profile efficient` | Profil par défaut : contexte borné, handoffs par fichiers, reviews proportionnées au risque. |
 | `--token-profile strict` | Vérification/review plus lourde pour les changements sensibles. |
+
+## Wayfinding, recherche et modèle de domaine
+
+Gearbox sépare maintenant trois problèmes qui se mélangeaient facilement :
+
+- **Wayfinder** découvre la route d'une grosse initiative en résolvant des décisions, pas en pré-découpant tout le développement ;
+- **researcher** isole la lecture de documentation/source primaire dans un contexte séparé et renvoie un pointeur vers une note compacte sous `.gearbox/runs/<run>/research/` ;
+- **GLOSSARY / ADR** portent respectivement le vocabulaire canonique et les décisions structurantes difficiles à renverser.
+
+Une décision n'obtient un ADR que si elle est difficile à renverser, surprenante sans contexte et issue d'un vrai trade-off. Les incidents/pièges techniques continuent d'aller dans `docs/solutions/`.
+
+Pour les changements d'interface/seam réellement structurants, Gearbox peut appliquer un **design-it-twice** borné : 2 propositions indépendantes en risque deep, jusqu'à 3 seulement pour un cas exceptionnel, puis comparaison par profondeur de module, localité, placement du seam, migration et testabilité.
+
+## Ready frontier
+
+Le DAG n'est plus exécuté comme une série de vagues rigides. Gearbox maintient une **ready frontier** : dès que les dépendances d'une tâche sont intégrées et que son ownership ne conflict pas avec un worker actif, elle peut démarrer. Avant handoff, le worker resynchronise le tip d'intégration et rerun ses checks ciblés.
+
+Cette discipline augmente le parallélisme sans cacher les conflits à l'intégrateur.
+
+## Écriture pour agents
+
+Les règles destinées aux agents suivent une hiérarchie de contexte : instructions indispensables inline, référence conditionnelle derrière un pointeur, mécanique vérifiable dans lint/test/CI/hooks. `CLAUDE.md` et `AGENTS.md` doivent rester des cartes, pas des encyclopédies.
+
+Gearbox ne suppose pas qu'écrire « utilise /gearbox:foo » dans un autre skill charge magiquement ce skill : le comportement partagé vit dans `references/`, les actions déléguées dans `agents/`, et les mécanismes déterministes dans `scripts/`.
 
 ## Routing des modèles
 
@@ -181,6 +207,8 @@ Un run substantiel garde son état temporaire ici :
 `state.json` rend le run reprenable et borné par budgets. `evidence.json` est la source des affirmations de vérification : tests, lint, typecheck, build, reviews et screenshots ne sont pas annoncés comme réussis s'ils n'ont pas été enregistrés sur le bon état du code.
 
 ## PR générées par Gearbox
+
+Une PR Gearbox expose aussi le risque de merge avec **Before/After Evidence**, **Door** (one-way/two-way) et **Blast Radius**.
 
 Une PR Gearbox a deux niveaux :
 
