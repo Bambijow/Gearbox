@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 The goal is a root-cause fix with an evidence chain that can go **red** before the fix and **green** after it.
 
-Read `references/secret-redaction.md` before handling logs, environment output, request traces or evidence.
+Read `references/secret-redaction.md` before handling logs, environment output, request traces or evidence. Apply `references/test-credibility.md` to regression protection.
 
 ## 1. Build the feedback loop first
 
@@ -87,14 +87,22 @@ Once evidence selects a cause:
 
 If no correct test seam exists, say so explicitly. A too-shallow fake regression test is worse than documenting that the architecture lacks a stable seam. Consider this a codebase-design/retro candidate.
 
-Check sibling paths only when evidence shows they share the root cause.
+After the root cause is confirmed, run one targeted recurrence scan for the exact bug pattern/invariant:
+
+- one occurrence → keep the fix local;
+- two occurrences → inspect both and fix only those evidence proves share the defect;
+- **3+ occurrences**, or one occurrence whose production failure would be catastrophic → treat this as a systemic-defense trigger. Remove the recurring bug pattern where scope/evidence makes that safe and add the cheapest deterministic prevention/detection guard that catches the class.
+
+Do not shotgun-refactor merely because a text search matched. The causal invariant, not spelling, defines recurrence.
+
+On a failed fix, explicitly invalidate the hypothesis/strategy with the evidence that disproved it before trying another. Three failed fix attempts means the diagnosis/architecture is likely wrong: stop repeating variants and re-diagnose/escalate. In an orchestrated run, the finding-scoped breaker in `references/repair-findings.md` is authoritative.
 
 ## 6. Cleanup and completion
 
 Before declaring success:
 
 - original feedback loop is green;
-- regression test is green, or the missing seam is documented;
+- regression test is green and credible under `references/test-credibility.md`, or the missing seam is documented;
 - neighboring configured checks are green enough for the risk;
 - every temporary `[DEBUG-...]` probe is removed;
 - throwaway harnesses are removed or intentionally kept in a clearly named debug/test location;
@@ -112,4 +120,4 @@ Recommend `/gearbox:learn` when the debugging session revealed a reusable truth 
 
 Recommend `/gearbox:retro` when the pain came from the **agent environment**: missing fast repro tooling, poor observability, repeated navigation, unavailable fixtures, or a deterministic check that should exist.
 
-A normal bug fix needs neither.
+Production bugs or 3+ recurring instances should normally produce at least a learning/retro candidate; ordinary one-off fixes need neither.
