@@ -141,7 +141,8 @@ Report:
 - cross-review result;
 - learning gate result and solution note paths;
 - UI evidence status;
-- residual risks or intentionally deferred work.
+- residual risks or intentionally deferred work;
+- retro recommendation: `not needed` or `recommended`, with the concrete trigger when recommended.
 
 ## Post-PR continuation
 
