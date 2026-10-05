@@ -2,7 +2,7 @@
 
 Gearbox is an original implementation influenced by public engineering-agent projects:
 
-- Matt Pocock's `mattpocock/skills`: small composable engineering moves, deliberate specification, implementation discipline, debugging, and review.
+- Matt Pocock's `mattpocock/skills`: small composable engineering moves, deliberate specification, Wayfinder-style decision mapping, isolated primary-source research, domain glossaries/ADRs, tight debugging loops, ready-frontier implementation scheduling, PR evidence/merge-danger framing, and writing-for-agents/context-pointer discipline.
 - Every's `EveryInc/compound-engineering-plugin`: explicit engineering loops, multi-step orchestration, shipping/handoff workflows, and capturing reusable lessons back into the repository.
 - Jesse Vincent / obra's `obra/superpowers`: evidence-before-completion, bounded fresh-agent SDD, task-scoped review, systematic debugging, and the newer token-efficient pattern of one task reviewer producing separate spec-compliance and code-quality verdicts.
 - Dietrich Gebert's `DietrichGebert/ponytail`: an MIT-licensed minimalism/simplification discipline. Gearbox can call an installed Ponytail plugin as an independent post-integration simplification gate.
