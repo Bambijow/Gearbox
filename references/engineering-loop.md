@@ -88,12 +88,29 @@ When model selection is unresolved, ask before the first worker dispatch. This i
 
 All gate claims map to `evidence.json`. Apply `references/evidence-reuse.md` before repeating an expensive check: exact-SHA valid evidence with matching scope is current proof and should be read instead of rerun. State and evidence, not chat history, make the loop resumable and make PR reporting auditable.
 
+## Human plan approval gate
+
+The DAG is not implementation authorization by itself.
+
+After plan validation and concrete task/reviewer routing are known, persist the exact plan approval state:
+
+- with `--auto`: call `run_state.py plan-await --auto` and continue;
+- without `--auto`: call `run_state.py plan-await`, present a compact plan summary, release the run lock, and **stop before creating worktrees or dispatching implementation/review agents**.
+
+The summary should include task ids/outcomes, initial ready frontier, engine/model/effort routing, Review Focus, material risk/human gates, and expected worker/review topology. Do not paste the full DAG unless asked.
+
+A pending gate is `status=AWAITING_APPROVAL`, `phase=PLAN`, `blocker.code=PLAN_APPROVAL_REQUIRED`. No worker/Codex/reviewer/model-escalation budget can be consumed while it is pending.
+
+On explicit approval, reacquire the run lock and call `run_state.py plan-approve`. If the plan digest changed, show the changed plan and request approval again. A same-thread “go” is acceptable only when it unambiguously refers to the currently presented plan and the persisted `plan-approve` transition succeeds.
+
+`--ship` does **not** imply `--auto`: `/issue ... --ship` still pauses for plan approval.
+
 ## Cycle 0: build the change
 
 1. Normalize intake and create or reuse the minimal spec.
 2. Run the spec clarification gate; stop at `SPEC_BLOCKED` when required.
 3. Reconcile architecture facts once, reusing facts already gathered during clarification.
-4. Build and pre-flight the lean DAG once using `references/planning-contract.md`; include Review Focus and run `scripts/plan_guard.py` for persisted plans.
+4. Build and pre-flight the lean DAG once using `references/planning-contract.md`; include Review Focus and run `scripts/plan_guard.py` for persisted plans. Resolve concrete implementation/reviewer routing, then pass the human plan approval gate above.
 5. Execute `references/frontier-scheduling.md`: batch qualifying low-risk same-shape micro-work, then dispatch bounded implementation workers continuously from the ready frontier. For background/long-lived delegated work apply `references/worker-lifecycle.md`: register the child/artifact before dispatch and avoid tight polling. Every product edit, including tiny edits and test/doc changes, belongs to a worker.
 6. Workers use RED -> GREEN -> REFACTOR where the failing check provides real signal. Before returning they synchronize the latest integration tip into their task branch/worktree, rerun focused verification, and report `integration_base_sha`, `head_sha`, actual diff/evidence and preferably one local unpushed task commit.
 7. Inspect every worker diff centrally without editing it. In `hybrid`, resolve and run exactly one opposite-provider task review before integration: Claude implementation → Codex review; Codex implementation → Claude review. The review is task-scoped and returns SPEC then QUALITY verdicts.
