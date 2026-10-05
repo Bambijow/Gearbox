@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "policy": "Per-skill byte ceilings are ratchets. Lower a ceiling after durable compression; raising one requires an explicit reviewed reason. Prefer moving conditional detail to references/ or deterministic mechanics to scripts/.",
+  "skills": {
+    "brainstorm": {
+      "max_bytes": 12800,
+      "class": "interactive-deep"
+    },
+    "build": {
+      "max_bytes": 5120,
+      "class": "hot-path"
+    },
+    "clean-solutions": {
+      "max_bytes": 7168,
+      "class": "maintenance"
+    },
+    "continue-pr": {
+      "max_bytes": 2304,
+      "class": "hot-path"
+    },
+    "debug": {
+      "max_bytes": 6656,
+      "class": "interactive-deep"
+    },
+    "flow": {
+      "max_bytes": 1792,
+      "class": "compat"
+    },
+    "issue": {
+      "max_bytes": 10240,
+      "class": "hot-path"
+    },
+    "learn": {
+      "max_bytes": 6144,
+      "class": "maintenance"
+    },
+    "loop": {
+      "max_bytes": 5632,
+      "class": "hot-path"
+    },
+    "plan": {
+      "max_bytes": 6144,
+      "class": "hot-path"
+    },
+    "resume": {
+      "max_bytes": 2560,
+      "class": "hot-path"
+    },
+    "retro": {
+      "max_bytes": 11264,
+      "class": "interactive-deep"
+    },
+    "review": {
+      "max_bytes": 4096,
+      "class": "hot-path"
+    },
+    "setup": {
+      "max_bytes": 5632,
+      "class": "setup"
+    },
+    "shape": {
+      "max_bytes": 5632,
+      "class": "interactive-deep"
+    },
+    "ship": {
+      "max_bytes": 6144,
+      "class": "hot-path"
+    },
+    "simplify": {
+      "max_bytes": 4096,
+      "class": "hot-path"
+    },
+    "spec-to-issue": {
+      "max_bytes": 4608,
+      "class": "conversion"
+    },
+    "spec-to-issues": {
+      "max_bytes": 2048,
+      "class": "conversion"
+    },
+    "wayfinder": {
+      "max_bytes": 6144,
+      "class": "interactive-deep"
+    }
+  }
+}
