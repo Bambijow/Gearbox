@@ -15,7 +15,7 @@ GUARDED_COMMANDS = {
     "issue", "loop", "flow", "brainstorm", "resume", "continue-pr"
 }
 APPROVED_SCRIPTS = {
-    "run_state.py", "model_router.py", "review_router.py", "codex_worker.py",
+    "run_state.py", "model_router.py", "review_router.py", "final_review_router.py", "codex_worker.py",
     "evidence.py", "worktree_manager.py", "orchestrator_guard.py", "migrate_legacy.py",
     "redact.py", "pr_report_guard.py", "pr_body_guard.py",
     "plan_guard.py", "repair_findings.py", "finding_registry.py", "solutions_audit.py", "retro_bundle.py",
