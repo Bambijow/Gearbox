@@ -3,8 +3,8 @@ from __future__ import annotations
 import argparse, json, os, socket, subprocess, sys, time
 from pathlib import Path
 
-SCHEMA_VERSION=4
-DEFAULT_BUDGETS={"max_cycles":3,"max_worker_dispatches":10,"max_codex_dispatches":12,"max_review_dispatches":14,"max_model_escalations":3,"max_pr_repair_cycles":3}
+SCHEMA_VERSION=5
+DEFAULT_BUDGETS={"max_cycles":3,"max_worker_dispatches":10,"max_codex_dispatches":12,"max_review_dispatches":14,"max_model_escalations":3,"max_pr_repair_cycles":3,"max_total_tokens":None,"max_reported_cost_usd":None}
 
 def load(p): return json.loads(p.read_text()) if p.exists() else None
 def save(p,d): p.parent.mkdir(parents=True,exist_ok=True); tmp=p.with_suffix('.tmp'); tmp.write_text(json.dumps(d,indent=2,sort_keys=True)+"\n"); os.replace(tmp,p)
