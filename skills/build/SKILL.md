@@ -13,7 +13,7 @@ Implement the requested behavior, not an imagined future platform.
 
 Read `.gearbox/config.md` when present, repository instructions, the relevant spec/plan/issue, and the code you are about to change. Check the working tree before editing so unrelated user changes remain untouched.
 
-Maintain traceability from requirement → work unit → verification. For a substantial issue workflow, `/issue` owns the DAG and worker scheduling; this skill executes individual units faithfully. Read `references/token-efficiency.md` when the parent workflow provides a task packet. For a multi-task plan, use `references/frontier-scheduling.md`: execute only ready tasks and carry relevant glossary/ADR/research/solution context pointers instead of copied bulk context.
+Maintain traceability from requirement → work unit → verification. Apply `references/test-credibility.md` whenever tests are created or relied on as behavior proof. For a substantial issue workflow, `/issue` owns the DAG and worker scheduling; this skill executes individual units faithfully. Read `references/token-efficiency.md` when the parent workflow provides a task packet. For a multi-task plan, use `references/frontier-scheduling.md`: execute only ready tasks, batch qualifying same-shape micro-work, and carry relevant glossary/ADR/research/solution context pointers instead of copied bulk context.
 
 ## Development loop
 
@@ -22,7 +22,7 @@ For each work unit:
 1. Identify the observable behavior or invariant being added or changed.
 2. Choose the narrowest credible evidence seam.
 3. Use RED → GREEN → REFACTOR by default for business logic, regressions, state transitions, parsers, transformations, API contracts, concurrency behavior, and other behavior where a failing check provides signal.
-4. Verify the red state fails for the intended reason.
+4. Verify the red state fails for the intended reason and that the test has a credible mutation story rather than merely detecting source text/change.
 5. Make the smallest coherent implementation.
 6. Run the narrow check, then expand verification as confidence grows.
 7. Perform a compact self-review against the assigned acceptance slice and re-read the diff for accidental scope growth before moving on.
