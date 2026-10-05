@@ -8,7 +8,7 @@
     {
       "name": "gearbox",
       "source": "./",
-      "description": "Gearbox: economical Claude Code engineering orchestration with wayfinding, lean prompt budgets, Claude/Codex workers, exact-SHA evidence reuse, finding deduplication, child reconciliation, cross-provider review, forensic retrospectives, and durable memory.",
+      "description": "Gearbox: economical Claude Code engineering orchestration with human plan approval by default, auto-mode bypass, Claude/Codex ready-frontier workers, evidence reuse, finding deduplication, child reconciliation, cross-provider review, forensic retrospectives, and durable memory.",
       "category": "engineering",
       "keywords": [
         "engineering",
@@ -56,7 +56,8 @@
         "evidence-reuse",
         "finding-dedup",
         "child-reconciliation",
-        "usage-accounting"
+        "usage-accounting",
+        "plan-approval"
       ]
     }
   ]
