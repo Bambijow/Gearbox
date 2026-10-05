@@ -45,6 +45,16 @@ For non-hybrid policies:
 - high: fresh task reviewer required, stronger model route, final cross-review where available;
 - critical: plan/spec can proceed, but stop before the critical mutation unless explicitly authorized.
 
+## Final integrated review depth
+
+Per-task review topology above stays mandatory where configured. The **final integrated** review is separately routed by consequence using `references/final-review-routing.md` and `scripts/final_review_router.py`:
+
+- `lite`: no new final model dispatch when task gates passed and failure is loud/local;
+- `focused`: one fresh adversarial integration reviewer for silent/mixed or high-risk-but-bounded failure;
+- `full`: comprehensive integration review for critical/high-consequence boundaries or material architecture/contract changes, plus a cross-provider peer in hybrid when available.
+
+Changed-line count may force `full` only as a broad-change backstop. It can never earn `lite`. This keeps review spend proportional to plausible failure cost rather than diff cosmetics.
+
 ## Budgets
 
 Default bounded resources:
