@@ -11,9 +11,9 @@ Create a plan that another capable engineer or agent can execute without redisco
 
 ## Ground the plan
 
-Read `.gearbox/config.md` when present, repository instructions, the target spec or issue, and the relevant code/tests. Verify important symbols and paths instead of fabricating likely filenames.
+Read `.gearbox/config.md` when present, repository instructions, the target spec or issue, and the relevant code/tests. Apply `references/domain-modeling.md` when domain language matters and `references/frontier-scheduling.md` for executable DAG metadata. Verify important symbols and paths instead of fabricating likely filenames.
 
-For a broad codebase, use independent subagents only when discovery can be split cleanly, for example API surface, persistence, and test architecture. Reconcile their findings yourself.
+For a broad codebase, use independent subagents only when discovery can be split cleanly, for example API surface, persistence, and test architecture. Reconcile their findings yourself. If a shared interface/seam is hard to reverse and reasonable designs differ, apply the `references/codebase-design.md` design-it-twice gate with parallel `design-proposer` agents before committing the plan.
 
 ## Build a dependency graph, not a shopping list
 
@@ -24,7 +24,10 @@ Each unit should have:
 - outcome;
 - acceptance criteria/spec slice covered;
 - dependencies / blockers;
+- `ready_when`: the exact dependency/decision condition that places the task on the ready frontier;
 - interfaces consumed and produced;
+- owned write surface plus known shared seams;
+- context pointers (glossary/ADR/research/solution/source) needed by this task, without copied bulk context;
 - exact or well-supported likely touch points;
 - implementation notes limited to decisions already justified by the codebase;
 - tests or verification proving completion;
@@ -32,7 +35,7 @@ Each unit should have:
 
 Prefer slices that cross layers and prove integration over horizontal tasks like "create all models", then "create all services", then "write all tests".
 
-Mark units that can run in parallel. Keep shared-file contention in mind before claiming parallelism.
+Model parallelism as a ready frontier rather than a static wave. Keep shared-file contention in mind before declaring tasks simultaneously ready. A task whose dependencies are integrated may start immediately even while unrelated tasks continue.
 
 ## Plan quality checks
 
@@ -51,7 +54,7 @@ Before finalizing, challenge the plan:
 
 ## Output format
 
-Start with a short architecture summary, key decisions, and compact Global Constraints. Then provide ordered work units with dependency edges and explicit interfaces. End with a verification matrix mapping requirements to checks.
+Start with a short architecture summary, key decisions, canonical domain pointers, and compact Global Constraints. Then provide dependency-graph work units with explicit interfaces/ownership/`ready_when`. State the **Initial ready frontier** by task id. End with a verification matrix mapping requirements to checks.
 
 For substantial work, persist the plan in the configured plans directory. Link the originating spec by relative path when both are persisted.
 
