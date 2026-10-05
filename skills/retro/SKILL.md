@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Retrospect on the engineering environment
 
-The user wants to improve the **next** engineering run, not reopen the feature that just shipped.
+The user wants to improve the **next** engineering run, not reopen the feature that just shipped. Apply `references/agent-writing.md` before recommending edits to `CLAUDE.md`, `AGENTS.md`, skills or other agent-facing docs.
 
 A retro studies the primary evidence of a session/run and asks:
 
@@ -162,6 +162,19 @@ Look for:
 - repeated re-planning of facts already known;
 - blockers that should have been caught by spec clarification or DAG preflight.
 
+### 9. Domain language drift
+
+When agents repeatedly use inconsistent terms, specs/tasks/tests disagree about the same concept, or workers rediscover an architectural choice, inspect `references/domain-modeling.md`.
+
+Route the durable fix correctly:
+
+- canonical project language → glossary;
+- qualifying hard-to-reverse decision → ADR;
+- hidden runtime invariant/root cause → `docs/solutions/`;
+- navigation problem → agent-facing pointer.
+
+Do not fix terminology drift by copying the same definition into every prompt.
+
 ## Severity
 
 Rank candidates by expected future cost:
@@ -178,7 +191,7 @@ Present the findings in severity order. For each finding include:
 
 - **Evidence**: exact run artifact, event, retry, review finding, path or measured symptom;
 - **Why it matters**: the recurring failure/cost it creates;
-- **Class**: navigation | deterministic-check | judgement-standard | steering | tooling | routing | verification | DAG;
+- **Class**: navigation | deterministic-check | judgement-standard | steering | tooling | routing | verification | DAG | domain-modeling | agent-writing;
 - **Change**: the smallest durable improvement;
 - **Destination**: exact file/tool/check/config location that should own the improvement;
 - **Expected effect**: what should disappear or become cheaper on the next run.
