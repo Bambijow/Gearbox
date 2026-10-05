@@ -8,7 +8,7 @@
     {
       "name": "gearbox",
       "source": "./",
-      "description": "Gearbox: wayfinding + resumable Claude Code engineering loops with isolated research, delegated Claude/Codex work, cross-provider review, Ponytail simplification, verification evidence, retrospectives, PR reporting, and durable domain/solution memory.",
+      "description": "Gearbox: economical Claude Code engineering orchestration with wayfinding, lean plans, Claude/Codex workers, cross-provider review, ready-frontier batching, credible-test gates, finding-scoped repairs, Ponytail simplification, forensic retrospectives, and durable memory.",
       "category": "engineering",
       "keywords": [
         "engineering",
@@ -44,7 +44,13 @@
         "glossary",
         "adr",
         "ready-frontier",
-        "secret-redaction"
+        "secret-redaction",
+        "lean-plans",
+        "micro-batching",
+        "test-credibility",
+        "repair-circuit-breaker",
+        "forensics",
+        "delegation-gate"
       ]
     }
   ]
