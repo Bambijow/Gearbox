@@ -1,0 +1,21 @@
+{
+  "name": "review does not block on costless defense",
+  "context_files": [
+    "references/review-calibration.md"
+  ],
+  "prompt": "A changed internal helper does not retry a local pure function. Its only caller already retries the whole operation, no contract requires helper-level retry, and failure is surfaced before data is written. Classify the review finding and explain whether it should block.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(advisory|omit|not.*block|does not.*block|no.*finding)"
+    },
+    {
+      "type": "not_regex",
+      "value": "(?i)\\bblocker\\b.{0,80}(must|fix)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2600
+    }
+  ]
+}
