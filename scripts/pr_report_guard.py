@@ -7,6 +7,8 @@ import sys
 import tempfile
 from pathlib import Path
 
+from redact import contains_secret_like
+
 START = "<!-- gearbox-critical-code:start -->"
 END = "<!-- gearbox-critical-code:end -->"
 NONE = "<!-- gearbox-critical-code:none -->"
@@ -30,6 +32,8 @@ def normalize(text: str) -> str:
 
 def validate(report: Path, repo_root: Path, require_code: bool, max_snippets: int, max_lines: int, max_total_lines: int) -> int:
     text = report.read_text(encoding="utf-8")
+    if contains_secret_like(text):
+        fail("report contains obvious secret-like material")
     if "<!-- gearbox-report:v1 -->" not in text:
         fail("missing Gearbox report marker")
 
@@ -120,6 +124,20 @@ def self_test() -> int:
                 raise
         else:
             fail("self-test expected prose-only report to fail")
+        secret = root / "secret.md"
+        secret.write_text(
+            "<!-- gearbox-report:v1 -->\n"
+            "<!-- gearbox-critical-code:none -->\n"
+            "token=supersecretvalue\n",
+            encoding="utf-8",
+        )
+        try:
+            validate(secret, root, False, 5, 30, 120)
+        except SystemExit as exc:
+            if exc.code != 1:
+                raise
+        else:
+            fail("self-test expected secret-like report to fail")
     print("PASS: pr-report-guard self-test")
     return 0
 
