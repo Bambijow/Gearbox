@@ -13,7 +13,7 @@ Implement the requested behavior, not an imagined future platform.
 
 Read `.gearbox/config.md` when present, repository instructions, the relevant spec/plan/issue, and the code you are about to change. Check the working tree before editing so unrelated user changes remain untouched.
 
-Maintain traceability from requirement → work unit → verification. For a substantial issue workflow, `/issue` owns the DAG and worker scheduling; this skill executes individual units faithfully. Read `references/token-efficiency.md` when the parent workflow provides a task packet.
+Maintain traceability from requirement → work unit → verification. For a substantial issue workflow, `/issue` owns the DAG and worker scheduling; this skill executes individual units faithfully. Read `references/token-efficiency.md` when the parent workflow provides a task packet. For a multi-task plan, use `references/frontier-scheduling.md`: execute only ready tasks and carry relevant glossary/ADR/research/solution context pointers instead of copied bulk context.
 
 ## Development loop
 
@@ -35,7 +35,7 @@ When `/build` is invoked **manually as the user’s direct coding command**, the
 
 When `/build` is executing inside an orchestrated `/issue`, `/loop`, `/flow`, `/brainstorm --issue/--ship`, `/resume`, or `/continue-pr` run, `references/control-plane.md` overrides that convenience: **every product mutation is worker-owned, even a one-line edit**. Choose the cheapest suitable worker rather than letting the parent edit. The parent inspects actual diffs, validates reviews and dispatches `integrator`; it does not finish incomplete worker code itself.
 
-For parallel write tasks, use separate git worktrees and path ownership.
+For parallel write tasks, use separate git worktrees and path ownership. Before a worker reports done, synchronize the latest integration tip into its branch/worktree, rerun focused verification, and report `integration_base_sha` plus `head_sha`.
 
 Codex workers should be stateless `codex exec --ephemeral` jobs with a bounded context packet. They do not own architecture, pushes, or PRs. They may create a local task commit in their isolated worktree when that makes mechanical integration safer; they never publish it. Do not paste the whole spec/plan or large source files into their prompt when paths and symbols let them inspect the worktree directly.
 
