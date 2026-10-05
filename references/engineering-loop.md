@@ -19,6 +19,10 @@ Every product mutation is delegated:
 
 The plugin `PreToolUse` guard enforces the main-thread boundary while orchestrated commands are active. If a worker is incomplete or a cherry-pick conflicts, dispatch a repair worker. The parent must never complete the code itself.
 
+## Delegation economics
+
+Mandatory product-role delegation above is not optional. For **auxiliary** research/discovery/design/reviewer agents, apply `references/delegation-gate.md` first and record why the subagent pays for itself. Do not create an agent merely to summarize context the parent already owns.
+
 ## Inputs
 
 Normalize one of these sources:
@@ -63,9 +67,9 @@ Before shaping architecture or naming new concepts, apply `references/domain-mod
 - Carry canonical terms into the spec, DAG packets, tests, reviews and PR copy.
 - If a term or qualifying architecture decision is actually resolved during the run, delegate the smallest durable glossary/ADR edit to `domain-curator`.
 
-When an implementation decision depends on a current external fact, dispatch `researcher` using `references/research.md` and store the answer under the run directory. Downstream packets receive the research note path plus the decision-relevant conclusion, not the research transcript.
+When an implementation decision depends on a current external fact and flood protection/parallelism justifies delegation under `references/delegation-gate.md`, dispatch `researcher` using `references/research.md` and store the answer under the run directory. Downstream packets receive the research note path plus the decision-relevant conclusion, not the research transcript.
 
-For hard-to-reverse shared interface/seam decisions, apply the `references/codebase-design.md` design-it-twice gate before freezing the DAG. Ordinary features do not pay for parallel architecture proposals.
+For hard-to-reverse shared interface/seam decisions, apply the `references/codebase-design.md` design-it-twice gate before freezing the DAG; fresh independent judgment is the delegation reason for those `design-proposer` agents. Ordinary features do not pay for parallel architecture proposals.
 
 ## Read reusable knowledge early
 
@@ -87,8 +91,8 @@ All gate claims map to `evidence.json`. State and evidence, not chat history, ma
 1. Normalize intake and create or reuse the minimal spec.
 2. Run the spec clarification gate; stop at `SPEC_BLOCKED` when required.
 3. Reconcile architecture facts once, reusing facts already gathered during clarification.
-4. Build and pre-flight the DAG once.
-5. Dispatch bounded implementation workers in dependency waves. Every product edit, including tiny edits and test/doc changes, belongs to a worker.
+4. Build and pre-flight the lean DAG once using `references/planning-contract.md`; include Review Focus and run `scripts/plan_guard.py` for persisted plans.
+5. Execute `references/frontier-scheduling.md`: batch qualifying low-risk same-shape micro-work, then dispatch bounded implementation workers continuously from the ready frontier. Every product edit, including tiny edits and test/doc changes, belongs to a worker.
 6. Workers use RED -> GREEN -> REFACTOR where the failing check provides real signal. Before returning they synchronize the latest integration tip into their task branch/worktree, rerun focused verification, and report `integration_base_sha`, `head_sha`, actual diff/evidence and preferably one local unpushed task commit.
 7. Inspect every worker diff centrally without editing it. In `hybrid`, resolve and run exactly one opposite-provider task review before integration: Claude implementation → Codex review; Codex implementation → Claude review. The review is task-scoped and returns SPEC then QUALITY verdicts.
 8. Validate review findings centrally. When repair is required, dispatch the same or a fresh implementation worker; the parent never patches the finding itself.
@@ -108,7 +112,7 @@ Classify the integrated state as one of:
 
 All of these are true:
 
-- every acceptance scenario maps to credible evidence;
+- every acceptance scenario maps to credible evidence and behavior-bearing tests used as proof pass `references/test-credibility.md`;
 - required tests/checks pass;
 - no validated Blocker or Important review finding remains;
 - no required migration/security/compatibility concern is unresolved;
@@ -133,21 +137,24 @@ Stop instead of looping when any of these apply:
 
 ## Repair cycles
 
-Default `max_cycles` is 3 total convergence cycles after the initial implementation pass unless repository config overrides it. A cycle exists only when a failed gate created actionable repair work.
+Default `max_cycles` remains 3 convergence cycles after the initial implementation pass unless repository config overrides it. A cycle exists only when validated failed gates created actionable repair work.
 
-For each repair cycle:
+Apply `references/repair-findings.md`. Every validated repairable finding gets a stable id (for example `REV-004`) and is opened in `scripts/repair_findings.py` before dispatch.
 
-1. Convert only validated failed gates into repair tasks.
-2. Reuse the existing spec, repo facts and DAG knowledge. Do not redo broad reconnaissance.
-3. Dispatch the smallest worker topology that can fix the defects.
-4. Run focused RED/GREEN checks for the repaired behavior when applicable.
-5. Inspect the repair diff centrally without editing it. In `hybrid`, run the opposite-provider task review for each implementation repair before integration, using only the delta review package.
-6. Validate findings; if repair is still needed dispatch another bounded worker. Delegate accepted integration to `integrator`, then delegate affected checks to `verifier`.
-7. Re-run Ponytail only when the repair introduced or materially changed structure, duplication, abstractions, or control flow. For tiny local fixes, perform a targeted simplification check instead of paying for a full pass.
-8. Re-review the repaired findings and changed scope. Run another broad final review only when the repair changed architecture, public contracts, security/data boundaries, or a substantial part of the integrated diff.
-9. Run full-enough verification before declaring PASS.
+For each repair:
 
-Never loop because a reviewer has a subjective style preference. Never ask a reviewer to review another reviewer.
+1. Convert only validated, non-advisory failed gates into finding-scoped repair tasks. Apply `references/review-calibration.md`; style preferences and advisory hardening do not create repair work.
+2. Reuse the existing spec, repo facts, DAG knowledge and prior finding evidence. Do not redo broad reconnaissance.
+3. Before dispatch, call `repair_findings.py attempt` with a short material strategy id. If it returns `rediagnose`, do not send the same strategy a third time; re-diagnose, split, change evidence seam/provider/model/ownership, or adjudicate the finding. If it returns `adjudicate`, classify the residual as load-bearing, human-decision, advisory, or invalid/stale.
+4. Dispatch the smallest worker topology that can fix the finding. Run focused RED/GREEN checks and the test-credibility gate where applicable.
+5. Record the attempt result in the finding ledger.
+6. Inspect the repair diff centrally without editing it. In `hybrid`, use the opposite provider for a **scoped re-review** of the finding + delta, not the entire original task.
+7. Validate the re-review. Delegate accepted integration to `integrator`, then affected checks to `verifier`.
+8. Re-run Ponytail only when the repair materially changed structure/duplication/abstractions/control flow.
+9. Run another broad final review only when the repair changed architecture, public contracts, security/data boundaries, or a substantial part of the integrated diff.
+10. Run full-enough final verification before PASS.
+
+The per-finding breaker is an additional guardrail; the global `max_cycles`/dispatch budgets may stop the run sooner. Never loop because a reviewer has a subjective preference, and never ask a reviewer to review another reviewer.
 
 ## Learning candidate ledger
 
