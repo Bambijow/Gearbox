@@ -5,14 +5,20 @@
   "properties": {
     "status": {
       "type": "string",
-      "enum": ["success", "blocked", "failed"]
+      "enum": [
+        "success",
+        "blocked",
+        "failed"
+      ]
     },
     "summary": {
       "type": "string"
     },
     "changed_files": {
       "type": "array",
-      "items": {"type": "string"}
+      "items": {
+        "type": "string"
+      }
     },
     "verification": {
       "type": "array",
@@ -20,20 +26,52 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "command": {"type": "string"},
-          "result": {"type": "string"}
+          "command": {
+            "type": "string"
+          },
+          "result": {
+            "type": "string"
+          }
         },
-        "required": ["command", "result"]
+        "required": [
+          "command",
+          "result"
+        ]
       }
     },
     "risks": {
       "type": "array",
-      "items": {"type": "string"}
+      "items": {
+        "type": "string"
+      }
     },
     "notes": {
       "type": "array",
-      "items": {"type": "string"}
+      "items": {
+        "type": "string"
+      }
+    },
+    "integration_base_sha": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "head_sha": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
-  "required": ["status", "summary", "changed_files", "verification", "risks", "notes"]
+  "required": [
+    "status",
+    "summary",
+    "integration_base_sha",
+    "head_sha",
+    "changed_files",
+    "verification",
+    "risks",
+    "notes"
+  ]
 }
