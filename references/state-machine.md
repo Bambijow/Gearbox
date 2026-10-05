@@ -27,6 +27,7 @@ The canonical machine state is `state.json`, not conversation memory. Use `scrip
   "clarification": {"status": "UNSET", "round": 0, "questions": [], "answers": {}},
   "blocker": null,
   "learning": {},
+  "repair_findings": {"policy": {"same_strategy_limit": 2, "max_attempts_per_finding": 5}, "items": {}},
   "last_error": null
 }
 ```
@@ -60,6 +61,14 @@ Before planning, apply `references/spec-clarification.md`. When material product
 ```
 
 No worker/reviewer/model-selection budget is consumed while this blocker is active. `/resume` surfaces those questions, records answers, updates the spec and acceptance criteria, then transitions back to `ACTIVE` only after the clarification gate is resolved.
+
+## Finding-scoped repair state
+
+Validated repair findings receive stable ids and live in `state.json.repair_findings`. Use `scripts/repair_findings.py` while holding the run lock.
+
+The ledger preserves source/severity, repair strategy, worker/model route, attempt outcomes and final ruling. Two failed attempts with the same strategy trip a re-diagnosis gate before a third identical dispatch. Five total attempts is an absolute controller-adjudication breaker when the global cycle budget has not stopped the run earlier.
+
+This state lets `/resume` continue the actual finding rather than replaying broad review history.
 
 ## Locks
 
