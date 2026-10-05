@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 Use this when the user has an idea, problem, partial feature, or existing spec that still needs collaborative shaping before implementation.
 
-This is a conversational entry point. Do not turn it into a questionnaire, a design document marathon, or an implementation session before the product behavior is clear.
+This is a conversational entry point. Do not turn it into a questionnaire or document marathon. Scale ceremony to the request before asking detailed questions.
 
 Read:
 
@@ -21,9 +21,36 @@ Read:
 - `references/control-plane.md` for the parent/worker boundary;
 - `references/engineering-loop.md` only once the spec is accepted and implementation begins.
 
+## Route the brainstorm first
+
+Before the first detailed question, classify the request and tell the user the route briefly so they can correct it:
+
+- **spike** — a feasibility/question probe whose output is an answer/recommendation, not product code to keep;
+- **bounded** — a well-scoped change to an existing flow with at most a small number of product decisions;
+- **architectural** — a new subsystem/project or a change that restructures shared interfaces/boundaries;
+- **wayfinder** — the destination is understandable but several dependent decision clusters/fog must be resolved before one honest spec can exist.
+
+When in doubt, use the heavier route. Hidden complexity may upgrade a route; do not downgrade mid-session merely to avoid ceremony.
+
+### Spike
+
+State the exact question and cheapest credible probe. Use read-only investigation, `researcher` when `references/delegation-gate.md` says flood protection pays, or an isolated throwaway worker/worktree when a prototype is necessary. Never integrate spike code into the product. Report evidence + recommendation and stop. If the user then says “build it”, reclassify that implementation request; the spike itself did not approve production code.
+
+### Bounded
+
+Explore the existing flow, ask only consequential questions, present a short design in chat (approach, touch points, evidence seam), and get acceptance. Do not create a durable spec merely because Gearbox can. If `--issue` or `--ship` is present, materialize the accepted bounded design as a minimal source spec before tracker/implementation so downstream work has a stable contract.
+
+### Architectural
+
+Use the full decision-ledger → accepted spec flow below.
+
+### Wayfinder
+
+Do not manufacture one giant speculative spec. Explain that the initiative needs a decision map and hand off to `/gearbox:wayfinder`. Because slash-command text does not implicitly load another skill, stop instead of pretending Wayfinder ran.
+
 ## Flag semantics
 
-- no flags: brainstorm interactively, persist the accepted spec, and produce a GitHub issue draft; do not mutate GitHub or implement yet.
+- no flags: follow the selected route. Spike ends with a recommendation; bounded normally ends with an accepted in-chat design/decision ledger; architectural persists the accepted spec and issue draft. Do not mutate GitHub or implement.
 - `--issue`: after the spec is accepted, create the GitHub issue and enter the shared engineering loop. Stop before PR shipping unless `--ship` is also present.
 - `--ship`: implies `--issue`; after PASS, commit/push/open the PR and publish the normal Gearbox PR evidence.
 - `--auto`: after product intent is decision-complete, authorize ordinary engineering choices and bounded repair cycles. It never authorizes inventing missing product semantics.
@@ -69,7 +96,7 @@ Good questions distinguish between materially different outcomes, for example:
 - what is explicitly out of scope;
 - which of two materially different UX/domain semantics is intended.
 
-Do not ask the user for facts the repository can answer. If a consequential choice depends on a current external fact, dispatch `researcher` and keep only its conclusion + note pointer in the decision ledger. When repository knowledge can resolve a question, inspect the relevant code/tests/docs once and summarize the fact into `decisions.md`.
+Do not ask the user for facts the repository can answer. If a consequential choice depends on a current external fact, first apply `references/delegation-gate.md`; when flood protection/parallelism pays, dispatch `researcher` and keep only its conclusion + note pointer in the decision ledger. When repository knowledge can resolve a question, inspect the relevant code/tests/docs once and summarize the fact into `decisions.md`.
 
 Prefer one focused question at a time during genuine product exploration. Bundle a few independent yes/no details only when doing so is clearly cheaper and does not hide a decision.
 
@@ -102,7 +129,7 @@ If a material product decision remains open, keep the conversation in brainstorm
 
 ## 5. Materialize the accepted spec
 
-Transform the compressed ledger plus verified repository facts into a decision-complete, compact spec using the specification content and clarification gates defined in this skill plus `references/spec-clarification.md`.
+Skip this section for a completed spike. For a bounded route without `--issue`/`--ship`, keep the accepted short design in the brainstorm run and stop without durable-document theatre. For architectural work, or bounded work continuing into tracker/implementation, transform the compressed ledger plus verified repository facts into a decision-complete, compact spec using the specification content and clarification gates defined in this skill plus `references/spec-clarification.md`.
 
 On convergence, save or update the accepted spec canonically under:
 
