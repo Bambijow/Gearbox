@@ -38,8 +38,8 @@ Use the repository source-of-truth order from `references/artifact-contract.md`,
 
 Do not deep-read the whole corpus by default.
 
-1. Inventory `docs/solutions/` cheaply: filenames, titles, tags, index entries, pointers, and git last-change metadata when useful.
-2. Search for obvious invalidation signals: missing referenced paths/symbols, duplicate domain terms, newer related notes, removed subsystems, changed config keys, and broken links.
+1. Run `scripts/solutions_audit.py` when available, then inventory `docs/solutions/` cheaply: filenames, titles, tags, index entries, `retire_when` triggers, pointers, and git last-change metadata when useful.
+2. Search for obvious invalidation signals: satisfied `retire_when` conditions, missing referenced paths/symbols, duplicate domain terms, newer related notes, removed subsystems, changed config keys, and broken links. Retirement triggers are priority candidates because they name exactly what changed; verify the condition before acting.
 3. Group candidates by domain.
 4. Deep-read only the suspect notes plus the minimum current code/tests/specs/ADRs needed to establish truth.
 5. For very large corpora, work in bounded batches and leave a compact summary of what was and was not audited.
@@ -80,12 +80,13 @@ Use this when truth cannot be established safely, for example when code, tests, 
 
 1. Establish the audit scope.
 2. Build the cheap inventory and suspect list.
-3. Validate suspects against current repository evidence.
+3. Validate suspects against current repository evidence and, for `retire_when`, the named external/version source. A trigger is evidence to investigate, not automatic deletion.
 4. Produce an action plan with evidence for each `REFRESH`, `MERGE`, `DELETE`, or `BLOCKED` candidate.
 5. Unless `--dry-run` is present, apply safe documentation-only changes.
 6. Regenerate/repair `docs/solutions/index.md` (prefer `scripts/solutions_index.py`) and update `README.md` only if the repository uses it.
 7. Repair links between solution notes when a merge/delete changes targets.
 8. Re-scan the affected subset for dangling references and duplicate current guidance.
+9. Run `scripts/solutions_audit.py --strict --check-index` after mutations so malformed metadata/index drift cannot ship.
 
 Do not modify product code to make it agree with a solution note. The notes follow established current truth, never the reverse.
 
