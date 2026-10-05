@@ -1,0 +1,25 @@
+{
+  "name": "brainstorm routes feasibility to spike",
+  "context_files": [
+    "skills/brainstorm/SKILL.md"
+  ],
+  "prompt": "The user says: “Can we find out whether this existing backend can sustain 2,000 websocket clients? I only need a feasibility answer right now; throwaway probes are fine.” State the route and what artifact/result you would produce. Do not implement.",
+  "assertions": [
+    {
+      "type": "contains",
+      "value": "spike"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(feasibility|probe|investigat)"
+    },
+    {
+      "type": "not_regex",
+      "value": "(?i)(create|write).{0,25}(implementation )?(spec|dag)"
+    },
+    {
+      "type": "max_chars",
+      "value": 3000
+    }
+  ]
+}
