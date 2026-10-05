@@ -8,7 +8,7 @@
     {
       "name": "gearbox",
       "source": "./",
-      "description": "Gearbox: economical Claude Code engineering orchestration with wayfinding, lean plans, Claude/Codex workers, cross-provider review, ready-frontier batching, credible-test gates, finding-scoped repairs, Ponytail simplification, forensic retrospectives, and durable memory.",
+      "description": "Gearbox: economical Claude Code engineering orchestration with wayfinding, lean prompt budgets, Claude/Codex workers, exact-SHA evidence reuse, finding deduplication, child reconciliation, cross-provider review, forensic retrospectives, and durable memory.",
       "category": "engineering",
       "keywords": [
         "engineering",
@@ -50,7 +50,13 @@
         "test-credibility",
         "repair-circuit-breaker",
         "forensics",
-        "delegation-gate"
+        "delegation-gate",
+        "behavior-evals",
+        "prompt-ratchet",
+        "evidence-reuse",
+        "finding-dedup",
+        "child-reconciliation",
+        "usage-accounting"
       ]
     }
   ]
