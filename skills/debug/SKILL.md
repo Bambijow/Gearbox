@@ -1,46 +1,115 @@
 ---
 name: debug
-description: "Diagnose and fix a bug from evidence: reproduce, narrow, form falsifiable hypotheses, fix the root cause, add regression protection, and capture reusable learning when warranted."
+description: "Diagnose and fix a bug from a tight red-capable feedback loop: reproduce, minimise, rank falsifiable hypotheses, instrument deliberately, fix the root cause, add regression protection, clean up, and capture reusable learning when warranted."
 argument-hint: "[symptom, failing test, incident, or issue]"
 disable-model-invocation: true
 ---
 
-# Debug from evidence, not edit roulette
+# Debug from a tight loop, not edit roulette
 
-The goal is a root-cause fix with a clear evidence chain.
+The goal is a root-cause fix with an evidence chain that can go **red** before the fix and **green** after it.
 
-## 1. Establish the symptom
+Read `references/secret-redaction.md` before handling logs, environment output, request traces or evidence.
 
-Read repository instructions and `.gearbox/config.md` if present. Inspect the relevant code, logs, tests, and recent changes. Redact secrets before repeating any logs or environment values.
+## 1. Build the feedback loop first
 
-Reproduce the failure when practical. If direct reproduction is impossible, construct the closest deterministic evidence: a failing test, minimal input, trace, query, or state snapshot.
+Before forming a code-level theory, establish one command/harness that exercises the user's actual symptom.
 
-Write down the difference between **expected**, **observed**, and **unknown**.
+Good loop shapes include:
 
-## 2. Narrow the fault domain
+- one focused test;
+- a CLI/curl invocation with an assertion;
+- a small replay of a captured request/event;
+- a headless browser script;
+- a throwaway harness around the real failing seam;
+- a property/fuzz loop;
+- a differential old-vs-new comparison;
+- `git bisect run` when the regression window is known.
 
-Trace the failing path from boundary to invariant. Check assumptions at seams: inputs, serialization, state transitions, retries, caches, clocks, concurrency, permissions, network boundaries, migrations, feature flags, and environment differences.
+Tighten it until it is:
 
-Use binary narrowing where possible. Instrument temporarily when observation is cheaper than speculation. Remove temporary instrumentation before finishing unless it has lasting operational value.
+- **red-capable**: it can catch this exact bug, not merely “does not crash”;
+- **deterministic enough**: flaky bugs have a raised/pinned reproduction rate;
+- **fast**: seconds where reasonably possible;
+- **agent-runnable**: no human click loop unless unavoidable.
+
+Run the loop at least once before moving on and record only redacted output.
+
+If you genuinely cannot build a red-capable loop, stop and state what is missing: environment access, a redacted trace/log/HAR, or permission for temporary instrumentation. Do not compensate with confident speculation.
+
+## 2. Reproduce and minimise
+
+Run the loop until the reported symptom is confirmed.
+
+Then remove inputs, callers, config, state and steps one at a time. Re-run after each cut.
+
+Stop minimising when every remaining element is load-bearing for the failure. The minimal repro narrows the hypothesis space and is the preferred seed for the regression test.
 
 ## 3. Compete hypotheses
 
-Maintain a small ranked set of falsifiable hypotheses. For each, state what evidence would support or reject it. Run the cheapest discriminating check first.
+Create 3-5 ranked **falsifiable** hypotheses before testing the first plausible idea.
 
-Do not patch the first suspicious line merely because it is nearby.
+For each:
 
-## 4. Fix the root cause
+```text
+If <cause> is true, then <specific probe/change> should produce <observable result>.
+```
 
-Once evidence identifies the cause, make the smallest fix that restores the violated invariant. Add a regression test at the narrowest stable seam that would have caught the bug without hardcoding internals.
+Discard “vibes” that do not predict an observation.
 
-Check for sibling paths that share the same root cause. Fix them only when the evidence shows they are genuinely affected.
+Show the compact ranked list to the user when their domain knowledge could cheaply re-rank it. Do not block an AFK run waiting for acknowledgement.
 
-## 5. Verify broadly enough
+## 4. Instrument one prediction at a time
 
-Run the regression test, relevant neighboring tests, and configured checks appropriate to the changed area. Reproduce the original scenario again if possible.
+Prefer, in order:
 
-## 6. Decide whether this should compound
+1. debugger/REPL inspection;
+2. narrow targeted instrumentation at a discriminating boundary;
+3. focused traces/queries/metrics.
 
-Invoke or recommend `/learn` only when the investigation uncovered a non-obvious reusable lesson: a hidden invariant, misleading architecture, recurring failure mode, operational trap, or prevention rule. Do not create a learning note for ordinary typo-level bugs.
+Do not “log everything and grep”.
 
-Finish with a concise evidence chain: symptom → decisive evidence → root cause → fix → regression protection → remaining uncertainty.
+Tag temporary debug output with a unique prefix such as `[DEBUG-a4f2]` so cleanup is mechanical.
+
+For performance regressions, establish a measured baseline/profiler/query plan before changing code.
+
+Every captured command/output stored in Gearbox artifacts must be redacted. Never echo a credential-bearing environment variable just to inspect it.
+
+## 5. Fix the root cause and lock it down
+
+Once evidence selects a cause:
+
+1. turn the minimised repro into a regression test **before** the fix when a correct stable seam exists;
+2. watch it fail;
+3. apply the smallest fix restoring the violated invariant;
+4. watch the regression test pass;
+5. rerun the original un-minimised Phase 1 loop.
+
+If no correct test seam exists, say so explicitly. A too-shallow fake regression test is worse than documenting that the architecture lacks a stable seam. Consider this a codebase-design/retro candidate.
+
+Check sibling paths only when evidence shows they share the root cause.
+
+## 6. Cleanup and completion
+
+Before declaring success:
+
+- original feedback loop is green;
+- regression test is green, or the missing seam is documented;
+- neighboring configured checks are green enough for the risk;
+- every temporary `[DEBUG-...]` probe is removed;
+- throwaway harnesses are removed or intentionally kept in a clearly named debug/test location;
+- stored evidence/log summaries contain no raw sensitive values.
+
+Finish with:
+
+```text
+symptom → red loop → minimal repro → decisive evidence → root cause → fix → regression protection → remaining uncertainty
+```
+
+## Compound or retro?
+
+Recommend `/gearbox:learn` when the debugging session revealed a reusable truth about the system: hidden invariant, misleading architecture, recurring operational trap, or non-obvious failed approach.
+
+Recommend `/gearbox:retro` when the pain came from the **agent environment**: missing fast repro tooling, poor observability, repeated navigation, unavailable fixtures, or a deterministic check that should exist.
+
+A normal bug fix needs neither.
