@@ -68,11 +68,11 @@ This is the issue-to-spec half of Gearbox. The reverse direction is `/spec-to-is
 
 Follow `references/engineering-loop.md` from repository knowledge lookup through convergence:
 
-1. search relevant `docs/solutions/` before inventing architecture;
-2. distill repository facts once;
-3. build and pre-flight the dependency DAG;
+1. ground canonical domain language from the relevant glossary when present, then search relevant `docs/solutions/` before inventing architecture;
+2. isolate any required current external research through `researcher`, then distill repository facts/pointers once;
+3. build and pre-flight the dependency DAG plus ready-frontier metadata;
 4. create compact task packets;
-5. allocate Claude/Codex workers with isolated write worktrees;
+5. allocate Claude/Codex workers with isolated write worktrees and continuously dispatch the ready frontier;
 6. use RED -> GREEN -> REFACTOR where useful;
 7. inspect worker diffs centrally and adjudicate the required opposite-provider task review;
 8. delegate accepted integration mechanics to `integrator`; conflicts become repair tasks, never parent-authored fixes;
