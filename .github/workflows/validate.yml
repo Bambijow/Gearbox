@@ -1,0 +1,29 @@
+name: Validate Gearbox
+
+on:
+  push:
+    branches: [staging, main]
+  pull_request:
+    branches: [staging, main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate plugin structure
+        run: python3 scripts/validate.py
+      - name: Compile runtime scripts
+        run: python3 -m compileall -q scripts
+      - name: Redaction self-test
+        run: python3 scripts/redact.py --self-test
+      - name: PR technical report guard self-test
+        run: python3 scripts/pr_report_guard.py --self-test
+      - name: PR body guard self-test
+        run: python3 scripts/pr_body_guard.py --self-test
