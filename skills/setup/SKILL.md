@@ -82,8 +82,8 @@ When `model_policy: hybrid`, `task_review_policy: cross-provider-in-hybrid` mean
 
 `ask-once` means a run prompts only when model policy is missing/unresolved, then offers to persist it. `--models ask` always prompts. If migrating an older Gearbox config, remove legacy intermediate Codex tiers and normalize to `economy=Luna`, `standard=Sol`, `frontier=Astra`.
 
-Ensure `.gearbox/.gitignore` ignores `runs/`. Create/regenerate `docs/solutions/index.md` when solution notes already exist. Do not modify `CLAUDE.md` merely to advertise Gearbox.
+Ensure `.gearbox/.gitignore` ignores both `runs/` and `diagnostics/`. Create/regenerate `docs/solutions/index.md` when solution notes already exist. Do not modify `CLAUDE.md` merely to advertise Gearbox.
 
 ## Control-plane enforcement
 
-Gearbox ships `hooks/hooks.json` plus `scripts/orchestrator_guard.py`. Do not copy this hook into project settings. When the plugin is enabled, the plugin hook activates automatically for orchestrated front doors. Ensure `.gearbox/.gitignore` ignores transient `runs/`; the guard itself stores its per-session marker in the system temp directory, not in the repository.
+Gearbox ships `hooks/hooks.json` plus `scripts/orchestrator_guard.py`. Do not copy this hook into project settings. When the plugin is enabled, the plugin hook activates automatically for orchestrated front doors. Ensure `.gearbox/.gitignore` ignores transient `runs/` and `diagnostics/`; the guard itself stores its per-session marker in the system temp directory, not in the repository.
