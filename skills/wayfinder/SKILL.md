@@ -19,7 +19,8 @@ Read:
 - `references/research.md` for external/primary-source investigation;
 - `references/agent-writing.md` when the route may change agent-facing docs;
 - `references/codebase-design.md` only for hard-to-reverse module/interface/seam decisions;
-- `references/token-efficiency.md` for context-pointer discipline.
+- `references/token-efficiency.md` for context-pointer discipline;
+- `references/delegation-gate.md` before optional research/design analysis dispatches.
 
 ## Two modes
 
@@ -45,7 +46,7 @@ Input is a loose initiative.
    - `gearbox:wayfinder-grilling`
    - `gearbox:wayfinder-task`
    Create labels best-effort; failure to create a label must not destroy the map.
-9. For independent research tickets, dispatch `researcher` agents in parallel when `--auto-research` is set. Store findings by pointer rather than pasting them into the map.
+9. For independent research tickets under `--auto-research`, apply `references/delegation-gate.md` before dispatch. Research normally qualifies through flood protection and/or a true parallel unit; record that reason. If neither applies, resolve the small read-only fact in the current context instead. Store delegated findings by pointer rather than pasting them into the map.
 10. Stop after charting. Do not silently start implementation.
 
 ### Work an existing map
