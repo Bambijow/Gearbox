@@ -53,8 +53,22 @@ tags: [domain, subsystem]
 areas: [relevant/path/**]
 verified_against: <current git sha>
 last_verified: <YYYY-MM-DD>
+# Optional only when an external/version condition can make this guidance obsolete:
+retire_when: <outside change that retires this note + how to verify it>
 ---
 ```
+
+## Retirement conditions
+
+Use `retire_when` only when the learning is conditional on something **outside the current repository truth**: an upstream bug, dependency/platform behavior, version floor, external service limitation, or temporary compatibility constraint.
+
+Write the condition plus a cheap verification route in one scalar, for example:
+
+```yaml
+retire_when: upstream SDK issue #1234 is fixed in a released version; check the issue and SDK release notes
+```
+
+Do not add `retire_when` to evergreen repository invariants merely to fill the field. A repo change required before removal belongs in the note body as a migration/removal step.
 
 Then write a compact note containing:
 
@@ -73,7 +87,7 @@ Avoid a chronological diary. Future readers need the compressed model, not the f
 
 Store the note under `docs/solutions/` using `YYYY-MM-DD-short-kebab-title.md`.
 
-Regenerate or update `docs/solutions/index.md` using `scripts/solutions_index.py` when available. The index is the canonical cheap retrieval surface; a repository-specific `README.md` may coexist.
+Regenerate or update `docs/solutions/index.md` using `scripts/solutions_index.py` when available. Then run `scripts/solutions_audit.py --strict --check-index` against the solutions directory; fix deterministic metadata/index failures before considering the learning complete. The index is the canonical cheap retrieval surface; a repository-specific `README.md` may coexist.
 
 Prefer links to source files, tests, issues, PRs, ADRs, and commands over copied context. Keep the note compact enough to be cheap for future agents to retrieve.
 
