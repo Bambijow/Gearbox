@@ -87,6 +87,12 @@ def validate_hooks() -> int:
     report_guard = ROOT / "scripts" / "pr_report_guard.py"
     if not report_guard.exists():
         fail("missing scripts/pr_report_guard.py")
+    body_guard = ROOT / "scripts" / "pr_body_guard.py"
+    if not body_guard.exists():
+        fail("missing scripts/pr_body_guard.py")
+    redactor = ROOT / "scripts" / "redact.py"
+    if not redactor.exists():
+        fail("missing scripts/redact.py")
     return sum(len(v) for v in hooks.values() if isinstance(v, list))
 
 def main() -> int:
