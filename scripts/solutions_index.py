@@ -21,12 +21,12 @@ def title(text,p):
 def main():
  ap=argparse.ArgumentParser(); ap.add_argument('--dir',default='docs/solutions'); args=ap.parse_args(); d=Path(args.dir); d.mkdir(parents=True,exist_ok=True)
  rows=[]
- for p in sorted(d.glob('*.md')):
+ for p in sorted(d.rglob('*.md')):
   if p.name.lower() in {'index.md','readme.md'}: continue
   t=p.read_text(encoding='utf-8'); f=fm(t); tags=f.get('tags',[]); areas=f.get('areas',[]); last=f.get('last_verified','')
   if isinstance(tags,str): tags=[tags]
   if isinstance(areas,str): areas=[areas]
-  rows.append((str(f.get('title') or title(t,p)), ', '.join(tags), ', '.join(areas), p.name, str(last)))
+  rows.append((str(f.get('title') or title(t,p)), ', '.join(tags), ', '.join(areas), p.relative_to(d).as_posix(), str(last)))
  out=['# Solution index','','Current active engineering memory. Generated/maintained by Gearbox.','', '| Solution | Tags | Areas | Last verified |','|---|---|---|---|']
  for ttl,tags,areas,name,last in rows: out.append(f'| [{ttl}]({name}) | {tags} | {areas} | {last} |')
  (d/'index.md').write_text('\n'.join(out)+'\n',encoding='utf-8'); print(f'wrote {d/"index.md"} ({len(rows)} entries)')
