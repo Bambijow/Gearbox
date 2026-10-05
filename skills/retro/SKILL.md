@@ -184,8 +184,9 @@ Build a compact timeline from durable artifacts rather than memory. Specifically
 - **repeated work** — rediscovery, duplicate tests/reviews, repeated repair strategy, repeated file reads;
 - **stumbles** — tool/worker failures, lost child results, flaky checks, missing access;
 - **request conflicts** — user/spec/plan/reviewer instructions pulling in different directions;
-- **cost/time proxies** — dispatch counts, model escalations, repair attempts, broad-suite repetitions and host-reported usage. Never invent dollar/token numbers the artifacts do not contain;
-- **quality evidence** — findings that escaped task review into final review/CI;
+- **cost/time proxies** — dispatch counts, model escalations, repair attempts, broad-suite repetitions and host-reported usage. When `.gearbox/runs/<run>/usage.json` exists, use `usage_ledger.py summary` for measured token/cost telemetry. Never invent dollar/token numbers the artifacts do not contain;
+- **quality evidence** — findings that escaped task review into final review/CI, plus expensive checks rerun despite reusable exact-SHA evidence;
+- **child lifecycle** — stale/orphaned workers, duplicate dispatches after lost inline returns, or repeated short polling that `children.json` could have reconciled;
 - **similar runs** — compare another recent run only when the current evidence suggests recurrence. Do not sweep session history by default.
 
 Use `references/delegation-gate.md` before dispatching any analysis subagent: retro analysis usually belongs in the current context unless flood protection or independent judgment is genuinely needed.
