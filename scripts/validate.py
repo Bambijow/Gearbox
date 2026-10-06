@@ -93,7 +93,7 @@ def validate_hooks() -> int:
     redactor = ROOT / "scripts" / "redact.py"
     if not redactor.exists():
         fail("missing scripts/redact.py")
-    for helper in ("plan_guard.py", "repair_findings.py", "finding_registry.py", "solutions_audit.py", "retro_bundle.py", "prompt_budget.py", "behavior_eval.py", "agentic_bench.py", "child_jobs.py", "usage_ledger.py", "final_review_router.py", "capabilities.py", "invocation_fingerprint.py"):
+    for helper in ("plan_guard.py", "repair_findings.py", "finding_registry.py", "solutions_audit.py", "retro_bundle.py", "prompt_budget.py", "behavior_eval.py", "agentic_bench.py", "child_jobs.py", "usage_ledger.py", "final_review_router.py", "capabilities.py", "invocation_fingerprint.py", "game_asset_router.py"):
         if not (ROOT / "scripts" / helper).exists():
             fail(f"missing scripts/{helper}")
     if not (ROOT / "prompt-budgets.json").exists():

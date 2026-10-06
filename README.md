@@ -57,6 +57,10 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | Je veux durcir des tests importants | `/gearbox:test-harden <scope>` |
 | Je veux un audit sécurité spécialisé | `/gearbox:security-audit <scope>` |
 | Je veux auditer/réduire les skills et prompts du repo | `/gearbox:skill-doctor [scope]` |
+| Je veux créer un asset image 2D pour un jeu | `/gearbox:asset-image <brief>` |
+| Je veux créer/éditer du pixel art | `/gearbox:pixel-art <brief>` |
+| Je veux modéliser un asset 3D game-ready | `/gearbox:model-3d <brief>` |
+| Je veux auditer un modèle 3D | `/gearbox:review-3d <asset>` |
 
 Pour une issue classique, le mode autonome habituel est :
 
@@ -70,7 +74,7 @@ Pour continuer également après l'ouverture de la PR :
 /gearbox:issue https://github.com/acme/foo/issues/123 --auto --ship --follow-pr
 ```
 
-## Les 25 commandes
+## Les 29 commandes
 
 | Commande | Quand l'utiliser | Ce qu'elle fait exactement |
 | --- | --- | --- |
@@ -89,9 +93,13 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:optimize <cible>` | Quand le système fonctionne déjà mais qu'une métrique doit réellement bouger | Fixe une métrique et une baseline reproductible, protège correctness/safety, formule une hypothèse, change une variable à la fois et ne conserve que les variantes dont le gain est mesuré. Pas de victoire déclarée sur intuition, micro-benchmark non représentatif ou déplacement de coût caché. |
 | `/gearbox:dogfood <parcours>` | Avant livraison d'une UX, ou pour éprouver un produit comme un vrai utilisateur | Suit un persona et un parcours réels plutôt qu'une simple checklist de tests. Observe comportement, erreurs console/réseau, états vides/erreurs, accessibilité et frictions ; conserve captures et preuves ; distingue défaut fonctionnel, dette UX et polish. `--fix` délègue seulement les corrections acceptées. |
 | `/gearbox:test-harden <scope>` | Quand des tests verts protègent un invariant à fort coût d'échec | Complète le Test Credibility Gate par mutations ciblées, propriétés/invariants et fuzzing borné quand les outils du repo le permettent. Cherche surtout les tests qui survivent à une faute plausible ; ne transforme pas le coverage ou le mutation score en objectif vanity. |
+| `/gearbox:asset-image <brief>` | Créer une image 2D game-ready hors pixel art | Route forcée vers Codex GPT-6.1 Sol. Le brief fixe dimensions, alpha, art direction, cible moteur et chemins source/export ; aucun fallback Claude n'est autorisé. |
+| `/gearbox:pixel-art <brief>` | Sprites, tiles, icons ou animation pixel art | Route forcée Codex GPT-6.1 Sol. Utilise Aseprite MCP quand disponible ; sinon fallback génération directe Sol, avec dimensions/palette/frames vérifiées. |
+| `/gearbox:model-3d <brief>` | Créer un modèle/prop/scène 3D game-ready | Route forcée Claude Opus 5.5/high, avec Blender préféré ou Godot pour les scènes/procédures. Chaque asset passe ensuite obligatoirement le gate `/gearbox:review-3d`. |
 | `/gearbox:simplify [diff]` | Après intégration, pour réduire le code | Lance un agent frais de simplification. Utilise Ponytail s'il est installé ; sinon applique la discipline interne Gearbox : supprimer duplication, wrappers et abstractions inutiles, préférer stdlib/framework/existant, conserver validation, sécurité et accessibilité. Rejoue ensuite les checks nécessaires. |
 | `/gearbox:review [diff-ou-PR]` | Pour une review indépendante | Vérifie spec/correctness/sécurité/tests/opérations et calibre les findings par failure path + failure cost. Dans la boucle orchestrée, la review finale est routée `lite / focused / full` selon la conséquence : pas de nouveau reviewer si les task reviews suffisent, un adversarial reviewer pour le risque silencieux, spine complète uniquement sur les frontières à fort impact. |
 | `/gearbox:security-audit <scope>` | Pour auth, permissions, secrets, crypto, parsers, uploads, désérialisation, données sensibles ou autre frontière de confiance | Construit un mini threat model, cartographie entrées/trust boundaries/actifs, inspecte le diff et les appels adjacents, puis utilise les analyseurs disponibles (Semgrep/CodeQL/etc.) de façon ciblée. Les findings doivent décrire un chemin d'exploitation concret, l'impact et une preuve ; pas de pluie de best practices génériques. |
+| `/gearbox:review-3d <asset>` | Gate de production d'un asset 3D | Review read-only forcée GPT-6 Astra, avec Blender/Godot pour inspecter géométrie, transforms, UVs, matériaux, budgets, rig/collision/LOD et import moteur. Aucun downgrade Sol/Claude. |
 | `/gearbox:learn <leçon>` | Après une découverte non évidente qui mérite d'être conservée | Écrit/réconcilie `docs/solutions/` et peut ajouter `retire_when` quand la guidance dépend d’un bug/version/service externe. Régénère l’index puis passe l’audit déterministe de frontmatter/index. |
 | `/gearbox:clean-solutions [scope]` | Maintenance périodique de `docs/solutions/` | Audite métadonnées/index, vérifie en priorité les `retire_when` satisfaits, puis confronte la mémoire au code/tests/specs/ADRs. Classe en `KEEP`, `REFRESH`, `MERGE`, `DELETE` ou `BLOCKED`. `--dry-run` reste disponible. |
 | `/gearbox:skill-doctor [scope]` | Quand le plugin/CLAUDE.md/AGENTS.md commence à accumuler règles, skills ou prompts | Audite triggers et descriptions, collisions/recouvrements, taille des prompts, progressive disclosure, références mortes, règles qui devraient devenir déterministes et trous d'evals. Préfère fusionner/réduire avant d'ajouter une nouvelle skill. `--fix` applique uniquement les remèdes bornés et vérifiables. |
@@ -281,6 +289,17 @@ Cette discipline augmente le parallélisme sans cacher les conflits à l'intégr
 Les règles destinées aux agents suivent une hiérarchie de contexte : instructions indispensables inline, référence conditionnelle derrière un pointeur, mécanique vérifiable dans lint/test/CI/hooks. `CLAUDE.md` et `AGENTS.md` doivent rester des cartes, pas des encyclopédies.
 
 Gearbox ne suppose pas qu'écrire « utilise /gearbox:foo » dans un autre skill charge magiquement ce skill : le comportement partagé vit dans `references/`, les actions déléguées dans `agents/`, et les mécanismes déterministes dans `scripts/`.
+
+## Game-dev asset lanes
+
+Gearbox possède quatre lanes spécialisées à routage dur :
+
+- image 2D : Codex GPT-6.1 Sol ;
+- pixel art : Codex GPT-6.1 Sol + Aseprite MCP quand disponible, sinon génération directe Sol ;
+- modélisation 3D : Claude Opus 5.5/high avec Blender ou Godot ;
+- review 3D : Codex GPT-6 Astra/high en read-only.
+
+Ces routes ne sont pas modifiées par `auto`, `claude-heavy`, `codex-heavy` ou `--no-codex`. Une route imposée indisponible produit `GAME_ASSET_ROUTE_BLOCKED`. Un asset 3D créé par Opus n'est jamais considéré prêt avant la review Astra.
 
 ## Capability-aware execution
 

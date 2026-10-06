@@ -21,7 +21,9 @@ The plugin `PreToolUse` guard enforces the main-thread boundary while orchestrat
 
 ## Capability-aware dispatch
 
-Read `references/capability-routing.md`. Each DAG task carries `required_capabilities`. Capability eligibility is resolved before model price/effort: do not dispatch a worker that cannot access a required external tool. For Codex, use a sanitized MCP inventory for planning and a live preflight immediately before launch; under the default policy expose only required MCPs to that worker. Before dispatch, fingerprint the exact base SHA + task packet + route + capability set and register it in `children.json`; a matching live/reusable child is reconciled rather than launched twice.
+Read `references/capability-routing.md`. Each DAG task carries `required_capabilities`. Game-asset kinds (`asset-image`, `pixel-art`, `model-3d`, `review-3d`) first resolve `scripts/game_asset_router.py`; their forced provider/model route overrides normal model-policy economics. Capability eligibility is resolved before model price/effort: do not dispatch a worker that cannot access a required external tool. For Codex, use a sanitized MCP inventory for planning and a live preflight immediately before launch; under the default policy expose only required MCPs to that worker. Before dispatch, fingerprint the exact base SHA + task packet + route + capability set and register it in `children.json`; a matching live/reusable child is reconciled rather than launched twice.
+
+Pure 3D creation is not asset-ready until the forced GPT-6 Astra `review-3d` gate passes. If a 3D task also changes runtime code, keep the normal code/task review in addition to this asset gate.
 
 ## Delegation economics
 

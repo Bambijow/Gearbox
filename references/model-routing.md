@@ -26,6 +26,21 @@ Use `scripts/capabilities.py route` when the candidate capability sets are known
 
 For Codex dispatches, pass every required MCP as `--required-capability <name>` and use `--prune-mcp` under the default `required-only` policy. The wrapper disables other configured MCP servers only for that invocation, while retaining the user's Codex config and credentials. A task with `required_capabilities: []` therefore gets no MCP tool schemas unless the run explicitly overrides the policy.
 
+## Forced game-asset specialist routes
+
+Game-asset task kinds bypass the ordinary economy/risk router. Resolve them with `scripts/game_asset_router.py` before normal model routing:
+
+| task kind | forced route | capability rule |
+|---|---|---|
+| `asset-image` | Codex `gpt-6.1-sol` / medium | direct model generation |
+| `pixel-art` | Codex `gpt-6.1-sol` / medium | prefer live Aseprite MCP; direct Sol fallback |
+| `model-3d` | Claude `claude-opus-5-5` / high | requires live Blender or Godot |
+| `review-3d` | Codex `gpt-6-astra` / high, read-only | requires live Blender or Godot |
+
+These are hard specialist contracts. `auto`, `claude-heavy`, `codex-heavy`, `--no-codex`, normal capability economics and Astra escalation policy do not substitute another provider/model. If the forced route is unavailable, return `GAME_ASSET_ROUTE_BLOCKED`.
+
+A completed `model-3d` task always receives the dedicated `review-3d` Astra gate before asset readiness. When the same task also changes product code, the normal code/task review policy still applies to that code; the 3D gate is additional.
+
 ## Preferred Codex registry
 
 Use only three configured Codex model slots by default:

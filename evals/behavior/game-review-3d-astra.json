@@ -1,0 +1,26 @@
+{
+  "name": "3D review forces Astra",
+  "context_files": [
+    "skills/review-3d/SKILL.md",
+    "references/review-3d-checklist.md"
+  ],
+  "prompt": "A finished GLB needs its mandatory specialist review. State the reviewer model and whether Sol/Claude may substitute.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)gpt-6.*astra"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(must|forced|hard|only)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(not|never|no).*?(sol|claude)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

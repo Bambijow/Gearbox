@@ -1,0 +1,26 @@
+{
+  "name": "3D modeling forces Opus 5.5",
+  "context_files": [
+    "skills/model-3d/SKILL.md",
+    "references/model-3d-workflow.md"
+  ],
+  "prompt": "A codex-heavy run needs a game-ready 3D prop and Blender is available. Which model/provider owns actual modeling, and what review follows?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(claude.*opus.*5\\.5|opus.*5\\.5)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(gpt-6.*astra|astra)"
+    },
+    {
+      "type": "not_regex",
+      "value": "(?i)codex.*(model|create).*3d"
+    },
+    {
+      "type": "max_chars",
+      "value": 2000
+    }
+  ]
+}

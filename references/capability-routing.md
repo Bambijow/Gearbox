@@ -61,3 +61,7 @@ Codex metadata additionally records CLI version, prompt/schema hashes, active MC
 - capability disappears after planning -> reroute when allowed, otherwise block;
 - pruning override rejected -> surface failure; never claim minimal exposure;
 - duplicate fingerprint -> reconcile instead of paying twice.
+
+## Game-asset capability preferences
+
+Game-asset model identity is resolved by `scripts/game_asset_router.py`, not by generic capability economics. Aseprite is a preferred capability for `pixel-art`: when live it becomes required for that invocation, otherwise Codex GPT-6.1 Sol uses its direct-generation fallback. `model-3d` and `review-3d` require a live Blender or Godot 3D capability; missing 3D tooling blocks the forced route rather than changing models.

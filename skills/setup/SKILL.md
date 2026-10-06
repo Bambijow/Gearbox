@@ -16,7 +16,7 @@ Detect specs/ADR/runbook locations, existing `GLOSSARY.md` / `GLOSSARY-MAP.md` c
 
 ## Capability preflight
 
-Read `references/capability-routing.md`. If Codex exists, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/capabilities.py" inventory`; persist only `available` names, never raw MCP config/secrets. Claude capabilities are recorded only when explicit; live preflight wins.
+Read `references/capability-routing.md`. If Codex exists, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/capabilities.py" inventory`; persist only `available` names, never raw MCP config/secrets. Claude capabilities are recorded only when explicit; live preflight wins. Preserve live Aseprite/Blender/Godot capability names for game-asset routing; specialist model identities come from `scripts/game_asset_router.py` and are not downgraded by model policy.
 
 ## Model preflight
 

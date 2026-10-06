@@ -101,6 +101,22 @@
     "test-harden": {
       "max_bytes": 5120,
       "class": "quality-specialist"
+    },
+    "asset-image": {
+      "max_bytes": 4096,
+      "class": "creative-specialist"
+    },
+    "pixel-art": {
+      "max_bytes": 4096,
+      "class": "creative-specialist"
+    },
+    "model-3d": {
+      "max_bytes": 4608,
+      "class": "creative-specialist"
+    },
+    "review-3d": {
+      "max_bytes": 4096,
+      "class": "quality-specialist"
     }
   }
 }

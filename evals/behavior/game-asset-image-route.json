@@ -1,0 +1,26 @@
+{
+  "name": "image assets force Codex Sol",
+  "context_files": [
+    "skills/asset-image/SKILL.md",
+    "references/game-asset-contract.md"
+  ],
+  "prompt": "A user asks for a new non-pixel game inventory icon. The run policy is claude-heavy. Which provider/model must create the actual image asset?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)codex"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)gpt-6\\.1[- ]sol"
+    },
+    {
+      "type": "not_regex",
+      "value": "(?i)(claude|opus).*create"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

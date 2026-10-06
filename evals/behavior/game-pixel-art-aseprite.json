@@ -1,0 +1,26 @@
+{
+  "name": "pixel art prefers Aseprite but stays on Sol",
+  "context_files": [
+    "skills/pixel-art/SKILL.md",
+    "references/pixel-art-workflow.md"
+  ],
+  "prompt": "The task is a 32x32 sprite and live capability `aseprite` is available. State the required route and tool behavior.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)aseprite"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)codex"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)gpt-6\\.1[- ]sol"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

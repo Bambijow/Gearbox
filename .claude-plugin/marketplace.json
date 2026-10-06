@@ -8,7 +8,7 @@
     {
       "name": "gearbox",
       "source": "./",
-      "description": "Gearbox: capability-aware Claude/Codex engineering orchestration with per-worker MCP pruning, stateless workers, dispatch deduplication, consequence-based review, agentic benchmarks, evidence reuse, and durable memory.",
+      "description": "Gearbox: capability-aware Claude/Codex engineering and game-asset orchestration with forced specialist model lanes, MCP pruning, stateless workers, 3D Astra review, evidence reuse, and durable memory.",
       "category": "engineering",
       "keywords": [
         "engineering",
@@ -71,7 +71,15 @@
         "mcp-preflight",
         "mcp-pruning",
         "invocation-fingerprint",
-        "dispatch-dedup"
+        "dispatch-dedup",
+        "game-dev",
+        "game-assets",
+        "pixel-art",
+        "aseprite",
+        "blender",
+        "godot",
+        "3d-modeling",
+        "3d-review"
       ]
     }
   ]

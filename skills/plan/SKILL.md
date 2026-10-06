@@ -29,6 +29,7 @@ Each unit should have:
 - owned write surface plus known shared seams;
 - context pointers (glossary/ADR/research/solution/source) needed by this task, without copied bulk context;
 - `required_capabilities`: external tool/MCP names needed by the task; use `[]` when none so Codex can prune unrelated MCPs;
+- specialist `task_kind` when the unit is `asset-image`, `pixel-art`, `model-3d`, or `review-3d`; these use the forced routes in `scripts/game_asset_router.py` rather than normal model economics;
 - exact or well-supported likely touch points;
 - implementation notes limited to decisions the capable implementer cannot safely choose alone; prefer exact signatures/values/assertions over function bodies;
 - tests or verification proving completion, including the `references/test-credibility.md` seam when behavior-bearing tests are planned;
