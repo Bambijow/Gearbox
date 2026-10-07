@@ -1,8 +1,8 @@
 {
   "name": "gearbox",
   "displayName": "Gearbox",
-  "version": "1.8.0",
-  "description": "Claude Code engineering orchestration with capability-aware routing, game-asset specialists, per-worker MCP pruning, stateless Codex workers, forced 2D/pixel/3D model lanes, 3D Astra review, evidence reuse, and durable memory.",
+  "version": "1.9.0",
+  "description": "Claude Code engineering orchestration with capability-aware routing, game-asset specialists, test-suite pruning/hardening, stateless Codex workers, MCP pruning, consequence-routed review, evidence reuse, and durable memory.",
   "author": {
     "name": "Bambijow"
   },
@@ -81,7 +81,10 @@
     "blender",
     "godot",
     "3d-modeling",
-    "3d-review"
+    "3d-review",
+    "test-cleanup",
+    "test-maintenance",
+    "redundant-tests"
   ],
   "skills": [
     "./skills/setup",
@@ -107,6 +110,7 @@
     "./skills/optimize",
     "./skills/dogfood",
     "./skills/test-harden",
+    "./skills/clean-tests",
     "./skills/security-audit",
     "./skills/skill-doctor",
     "./skills/asset-image",

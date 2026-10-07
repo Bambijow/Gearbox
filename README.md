@@ -55,6 +55,7 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | Je veux optimiser une métrique mesurable sans casser le comportement | `/gearbox:optimize <cible>` |
 | Je veux utiliser le produit comme un humain avant de le livrer | `/gearbox:dogfood <parcours>` |
 | Je veux durcir des tests importants | `/gearbox:test-harden <scope>` |
+| Je veux nettoyer une suite de tests devenue redondante | `/gearbox:clean-tests [scope] [--apply]` |
 | Je veux un audit sécurité spécialisé | `/gearbox:security-audit <scope>` |
 | Je veux auditer/réduire les skills et prompts du repo | `/gearbox:skill-doctor [scope]` |
 | Je veux créer un asset image 2D pour un jeu | `/gearbox:asset-image <brief>` |
@@ -74,7 +75,7 @@ Pour continuer également après l'ouverture de la PR :
 /gearbox:issue https://github.com/acme/foo/issues/123 --auto --ship --follow-pr
 ```
 
-## Les 29 commandes
+## Les 30 commandes
 
 | Commande | Quand l'utiliser | Ce qu'elle fait exactement |
 | --- | --- | --- |
@@ -93,6 +94,7 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:optimize <cible>` | Quand le système fonctionne déjà mais qu'une métrique doit réellement bouger | Fixe une métrique et une baseline reproductible, protège correctness/safety, formule une hypothèse, change une variable à la fois et ne conserve que les variantes dont le gain est mesuré. Pas de victoire déclarée sur intuition, micro-benchmark non représentatif ou déplacement de coût caché. |
 | `/gearbox:dogfood <parcours>` | Avant livraison d'une UX, ou pour éprouver un produit comme un vrai utilisateur | Suit un persona et un parcours réels plutôt qu'une simple checklist de tests. Observe comportement, erreurs console/réseau, états vides/erreurs, accessibilité et frictions ; conserve captures et preuves ; distingue défaut fonctionnel, dette UX et polish. `--fix` délègue seulement les corrections acceptées. |
 | `/gearbox:test-harden <scope>` | Quand des tests verts protègent un invariant à fort coût d'échec | Complète le Test Credibility Gate par mutations ciblées, propriétés/invariants et fuzzing borné quand les outils du repo le permettent. Cherche surtout les tests qui survivent à une faute plausible ; ne transforme pas le coverage ou le mutation score en objectif vanity. |
+| `/gearbox:clean-tests [scope] [--apply]` | Quand une suite historique contient doublons, anciens tests ou cas devenus peu utiles | Audit indépendant via `test-curator`. Classe `KEEP/MERGE/DELETE/REWRITE/BLOCKED`, exige une preuve de comportement/invariant avant toute suppression, et reste report-only sans `--apply`. Avec `--apply`, ne modifie que tests/fixtures/helpers de test puis rerun les checks ciblés. |
 | `/gearbox:asset-image <brief>` | Créer une image 2D game-ready hors pixel art | Route forcée vers Codex GPT-6.1 Sol. Le brief fixe dimensions, alpha, art direction, cible moteur et chemins source/export ; aucun fallback Claude n'est autorisé. |
 | `/gearbox:pixel-art <brief>` | Sprites, tiles, icons ou animation pixel art | Route forcée Codex GPT-6.1 Sol. Utilise Aseprite MCP quand disponible ; sinon fallback génération directe Sol, avec dimensions/palette/frames vérifiées. |
 | `/gearbox:model-3d <brief>` | Créer un modèle/prop/scène 3D game-ready | Route forcée Claude Opus 5.5/high, avec Blender préféré ou Godot pour les scènes/procédures. Chaque asset passe ensuite obligatoirement le gate `/gearbox:review-3d`. |

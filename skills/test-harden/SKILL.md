@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 Start from green tests and a named invariant. This skill asks a harder question: would the tests detect a realistic wrong implementation?
 
-Read `references/test-hardening.md` and `references/test-credibility.md`. Detect repository-native mutation/property/fuzz tools before adding dependencies.
+Read `references/test-hardening.md` and `references/test-credibility.md`. Detect repository-native mutation/property/fuzz tools before adding dependencies. If the problem is excess/redundant tests rather than weak fault detection, use `/gearbox:clean-tests`; after cleanup, harden only the important surviving invariants.
 
 ## Sequence
 

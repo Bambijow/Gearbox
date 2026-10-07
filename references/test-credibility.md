@@ -27,6 +27,10 @@ Do not count these as behavior proof:
 
 If no credible seam exists, record that as a verification/architecture finding. Keep the original red-capable reproduction as evidence when possible rather than manufacturing false confidence.
 
+## Cleanup / deletion gate
+
+Before deleting or merging a behavior-bearing test, apply `references/test-suite-cleanup.md`. A test is removable only when the protected behavior is intentionally gone or credible surviving tests preserve the relevant failure signal. Age, slowness, flakiness or the existence of broader E2E coverage are not sufficient evidence.
+
 ## Hardening escalation
 
 For high-cost invariants, parsers/state machines, money/auth/data-integrity logic, or a user-requested confidence pass, apply `references/test-hardening.md`. A real targeted mutation that survives is stronger evidence of a test gap than merely naming a mutation story. Do not run repository-wide mutation/fuzz campaigns by default; constrain the target, time budget and invariant first.

@@ -1,0 +1,26 @@
+{
+  "name": "test cleanup requires preservation proof",
+  "context_files": [
+    "skills/clean-tests/SKILL.md",
+    "references/test-suite-cleanup.md"
+  ],
+  "prompt": "A project has an old unit test that is slow and appears to overlap with an E2E test. Should Gearbox delete it? State the cleanup rule and what evidence is needed.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(not|never|insufficient).*?(old|slow|e2e|integration)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(invariant|behavior|failure mode|fault)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(surviv|coverage|detect|mutation|credible)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2200
+    }
+  ]
+}

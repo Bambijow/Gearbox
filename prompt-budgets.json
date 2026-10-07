@@ -117,6 +117,10 @@
     "review-3d": {
       "max_bytes": 4096,
       "class": "quality-specialist"
+    },
+    "clean-tests": {
+      "max_bytes": 4608,
+      "class": "maintenance"
     }
   }
 }

@@ -41,6 +41,10 @@ Avoid tautologies such as comparing a function to itself through another wrapper
 
 Use bounded fuzzing for parsers/protocol decoders/serializers/state machines/input validators when crashes, hangs or invariant violations have a clear oracle. Keep corpus, seed/time budget and reproduction artifacts when a failure is found.
 
+## Relationship to cleanup
+
+Use `references/test-suite-cleanup.md` when the issue is suite entropy: duplicate, obsolete, superseded or implementation-coupled tests. Cleanup removes noise; hardening proves that important survivors still detect plausible faults. Do not use mutation testing as an excuse to keep every redundant example forever.
+
 ## Exit
 
 Hardening is sufficient when high-value plausible mutants die, important properties hold under generated examples, and failures are reproducible. More test volume without a new failure model is not automatically more confidence.
