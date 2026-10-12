@@ -29,7 +29,7 @@ Each unit should have:
 - owned write surface plus known shared seams;
 - context pointers (glossary/ADR/research/solution/source) needed by this task, without copied bulk context;
 - `required_capabilities`: external tool/MCP names needed by the task; use `[]` when none so Codex can prune unrelated MCPs;
-- specialist `task_kind`: game-asset kinds use `scripts/game_asset_router.py`; `web-design`/`creative-web` use `scripts/web_design_router.py`. Persist any Opus→Codex delegate route separately;
+- specialist `task_kind`: game assets use `game_asset_router.py`; web/creative use `web_design_router.py`; design/quality/audio/level specialists use `product_quality_router.py`. Persist any delegate route separately;
 - exact or well-supported likely touch points;
 - implementation notes limited to decisions the capable implementer cannot safely choose alone; prefer exact signatures/values/assertions over function bodies;
 - tests or verification proving completion, including the `references/test-credibility.md` seam when behavior-bearing tests are planned;
@@ -55,7 +55,8 @@ Before finalizing, challenge the plan:
 - Would any reviewer immediately reject something the plan itself requires?
 - Are tasks right-sized to earn one meaningful test cycle and one useful review unit, with trivial same-shape work batched instead of fragmented?
 - Can at least one provider satisfy every task's explicit external capabilities before model routing?
-- Material web-design work uses `task_kind: web-design`; local copy/spacing/bug fixes do not wake the lane. Use `creative-web` only when interaction/motion/spatial behavior is part of the experience itself.
+- Material web-design uses `web-design`; use `creative-web` only when interaction/motion/spatial behavior is part of the experience itself.
+- Only schedule specialist quality gates when their surface changed: design-system, a11y, visual baseline, UX copy, measured perf, art direction, audio, or level/playtest.
 - Does `## Review Focus` contain at most five plausible failure modes implied by the requested behavior, each owned by a task/check when testable?
 - Is the plan proportionate to the spec, or has it started writing implementation bodies the worker can derive?
 

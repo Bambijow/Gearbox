@@ -70,6 +70,18 @@ Check obvious contrast, keyboard/focus, labels/names, landmarks/semantics where 
 ### Motion and polish
 Motion should explain hierarchy, causality or spatial relationship. Flag gratuitous repetition, jank and missing reduced-motion behavior.
 
+## Specialist quality gates
+
+For material user-facing web work, final orchestration may additionally require:
+
+- `A11Y_GATE: PASS` from `a11y-audit`;
+- `CONTENT_GATE: PASS` when substantial UX copy/state copy changed;
+- `DESIGN_SYSTEM_GATE` when shared primitives/tokens were added or drift was reconciled;
+- `VISUAL_REGRESSION_GATE: PASS` when an approved visual baseline exists;
+- `PERF_GATE: PASS` for performance-sensitive or creative/heavy experiences.
+
+Do not duplicate these specialist audits inside this reviewer when their dedicated evidence exists.
+
 ## Bounded finish loop
 
 1. capture desktop + mobile/narrow;

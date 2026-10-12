@@ -68,6 +68,23 @@ The reviewer requires `SLOP_GATE`, `INTERACTION_GATE`, and `CREATIVE_GATE`. Crea
 
 Use `scripts/web_design_router.py --creative` for the deterministic route.
 
+## Product/design quality specialist routes
+
+Use `scripts/product_quality_router.py` for these task kinds before normal model economics:
+
+| task kind | owner | bounded execution / review |
+|---|---|---|
+| `design-system` | Opus 5.5/high | Codex Sol/medium apply; fresh Sonnet/high review |
+| `a11y-audit` | Sonnet/high | Codex Sol/medium repairs only after validated findings |
+| `visual-regression` | Sonnet/high | read-only semantic adjudication |
+| `content-design` | Sonnet/high | Codex Sol/medium bounded copy/resource edits |
+| `experience-perf` | Codex Sol/high profiler | fresh Sonnet/high evidence review |
+| `art-direction` | Opus 5.5/high | fresh Sonnet/high cross-asset review |
+| `audio-design` | Opus 5.5/high | Codex Sol/high tool wiring when capability exists |
+| `level-design` | Opus 5.5/high | Codex Sol/high blockout; fresh Opus/high playtest review |
+
+These routes are role contracts, not excuses to bypass capability preflight or normal mutation ownership.
+
 ## Preferred Codex registry
 
 Use only three configured Codex model slots by default:

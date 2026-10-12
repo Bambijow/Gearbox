@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Model game-ready 3D assets with Opus direction
 
-Read `references/game-asset-contract.md` and `references/model-3d-workflow.md`.
+Read `references/game-asset-contract.md` and `references/model-3d-workflow.md`. Read `references/art-direction.md` when an art-direction contract or style bible exists; inherit it explicitly and record intentional deviations.
 
 Resolve the route with `scripts/game_asset_router.py --task-kind model-3d`, passing Claude and Codex capabilities separately.
 

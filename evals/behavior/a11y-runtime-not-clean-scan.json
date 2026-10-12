@@ -1,0 +1,26 @@
+{
+  "name": "accessibility clean scanner is not sufficient",
+  "context_files": [
+    "skills/a11y-audit/SKILL.md",
+    "references/accessibility-audit.md"
+  ],
+  "prompt": "Axe reports zero violations, but a modal loses focus after closing and cannot be completed with keyboard only. Can Gearbox pass accessibility?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|cannot).*?(pass|PASS)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(focus|keyboard)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(automated|axe).*?(not|insufficient|evidence)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1600
+    }
+  ]
+}

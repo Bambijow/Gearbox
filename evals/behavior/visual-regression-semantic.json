@@ -1,0 +1,26 @@
+{
+  "name": "visual regression distinguishes intent from pixels",
+  "context_files": [
+    "skills/visual-regression/SKILL.md",
+    "references/semantic-visual-regression.md"
+  ],
+  "prompt": "A redesign intentionally changes every color and font, while one primary CTA is accidentally clipped on mobile. How should Gearbox classify the visual differences?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(color|font).*?INTENDED"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(CTA|clipp).*?REGRESSION"
+    },
+    {
+      "type": "not_regex",
+      "value": "(?i)all.*pixels.*regression"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

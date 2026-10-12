@@ -1,0 +1,22 @@
+{
+  "name": "experience performance requires measurement",
+  "context_files": [
+    "skills/experience-perf/SKILL.md",
+    "references/experience-performance.md"
+  ],
+  "prompt": "A WebGL scene looks efficient in code review and uses requestAnimationFrame carefully. Can Gearbox claim the 60fps performance target without profiling it?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|cannot)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(measure|profile|trace|runtime|frame)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1500
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "art direction permits intentional variants",
+  "context_files": [
+    "skills/art-direction/SKILL.md",
+    "references/art-direction.md"
+  ],
+  "prompt": "A boss asset intentionally breaks the normal silhouette and material language to communicate corruption, while the reason is approved by gameplay/narrative direction. Must Gearbox force it back into the common asset style?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|should not)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)INTENTIONAL_VARIANT"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(gameplay|narrative|reason)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1600
+    }
+  ]
+}

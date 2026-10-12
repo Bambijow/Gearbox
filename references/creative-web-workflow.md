@@ -167,3 +167,14 @@ Creative web requires actual runtime evidence:
 - cleanup/disposal behavior for WebGL scenes.
 
 The source code is not the experience.
+
+## Specialist gates
+
+Before final creative-web PASS:
+
+- run `a11y-audit` for the representative journey;
+- run `experience-perf` for expensive canvas/WebGL/media/motion paths;
+- run semantic visual regression when an approved baseline exists;
+- run content-design when the experience introduces substantial narrative/UX copy.
+
+The creative reviewer consumes these results instead of replacing them with vibes.

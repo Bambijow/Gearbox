@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Creative web as interaction-led production
 
-Read `references/web-design-contract.md`, `references/web-design-anti-slop.md`, `references/component-interaction.md`, `references/creative-web-workflow.md`, `references/web-design-comp-generation.md`, and `references/web-design-review.md`.
+Read `references/web-design-contract.md`, `references/web-design-anti-slop.md`, `references/component-interaction.md`, `references/accessibility-audit.md`, `references/experience-performance.md`, `references/semantic-visual-regression.md`, `references/creative-web-workflow.md`, `references/web-design-comp-generation.md`, and `references/web-design-review.md`.
 
 Use this lane only when interaction/motion/spatial behavior is part of the requested experience, not merely because a page should look premium.
 
@@ -28,8 +28,11 @@ Run real browser evidence. The final fresh reviewer must pass:
 ```text
 SLOP_GATE
 INTERACTION_GATE
+A11Y_GATE
+PERF_GATE
+VISUAL_REGRESSION_GATE (when baseline exists)
 CREATIVE_GATE
 VERDICT
 ```
 
-Performance, reduced-motion, keyboard/touch alternatives and WebGL/canvas fallback are part of correctness, not optional polish.
+Performance, reduced-motion, keyboard/touch alternatives and WebGL/canvas fallback are part of correctness, not optional polish. Run `experience-perf` on measured expensive paths and `a11y-audit` before final PASS.

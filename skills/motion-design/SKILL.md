@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Motion design with an Opus director and tool-aware execution
 
-Read `references/game-asset-contract.md` and `references/motion-design-workflow.md`.
+Read `references/game-asset-contract.md` and `references/motion-design-workflow.md`. Read `references/art-direction.md` when an art-direction contract or style bible exists; inherit it explicitly and record intentional deviations.
 
 Resolve the specialist route with `scripts/game_asset_router.py --task-kind motion-design`, passing Claude and Codex capabilities separately.
 

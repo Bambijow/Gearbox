@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Create game-ready image assets through Codex Sol
 
-Read `references/game-asset-contract.md` and `references/image-asset-workflow.md`.
+Read `references/game-asset-contract.md` and `references/image-asset-workflow.md`. Read `references/art-direction.md` when an art-direction contract or style bible exists; inherit it explicitly and record intentional deviations.
 
 This route is hard-pinned:
 

@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Directed web design with anti-slop and optional visual comps
 
-Read `references/web-design-contract.md`, `references/web-design-inspiration.md`, `references/web-design-anti-slop.md`, `references/component-interaction.md`, `references/web-design-comp-generation.md`, and `references/web-design-review.md`.
+Read `references/web-design-contract.md`, `references/web-design-inspiration.md`, `references/web-design-anti-slop.md`, `references/component-interaction.md`, `references/design-system-lifecycle.md`, `references/content-design.md`, `references/accessibility-audit.md`, `references/semantic-visual-regression.md`, `references/web-design-comp-generation.md`, and `references/web-design-review.md`.
 
 Resolve the lane with `scripts/web_design_router.py`. Opus 5.5/high owns visual direction and ambiguous design decisions. Codex GPT-6.1 Sol owns optional comp generation and final implementation. A fresh Claude reviewer judges rendered output.
 
@@ -35,8 +35,8 @@ Without `--apply`, stop after the approved design contract and, when enabled, ap
 
 With `--apply`, dispatch `web-builder-dispatcher`. The builder may derive idiomatic implementation details but may not invent a new visual direction or fill gaps with generic AI/SaaS defaults. It must run the anti-slop self-check before handoff.
 
-Material components with non-trivial state/focus/async/gesture behavior require the interaction contract from `references/component-interaction.md`; use the `interaction-designer` when the state topology is ambiguous. Material motion should reuse the existing `motion-design` lane.
+Material components with non-trivial state/focus/async/gesture behavior require the interaction contract from `references/component-interaction.md`; use `interaction-designer` when ambiguous. For shared primitives or visible design drift, invoke the design-system gate. Substantial new UX copy/state copy invokes the content-design gate. Material motion reuses `motion-design`.
 
-Render and inspect the result. A meaningful web-design task cannot claim visual PASS without real rendered evidence, `SLOP_GATE: PASS`, and `INTERACTION_GATE: PASS|NOT_APPLICABLE`. Use one batched desktop+mobile review, one repair batch, and at most one confirmation review. Stop ordinary polish after that bounded cycle unless a blocker remains.
+Render and inspect the result. A meaningful web-design task cannot claim PASS without real rendered evidence, `SLOP_GATE: PASS`, `INTERACTION_GATE: PASS|NOT_APPLICABLE`, and `A11Y_GATE: PASS`. When an approved visual baseline exists, also require `VISUAL_REGRESSION_GATE: PASS`; when substantial copy changed, require `CONTENT_GATE: PASS`. Use one batched desktop+mobile review, one repair batch, and at most one confirmation review. Stop ordinary polish after that bounded cycle unless a blocker remains.
 
 For user-facing flows, run the relevant dogfood journey after visual review when browser/E2E tooling is available.

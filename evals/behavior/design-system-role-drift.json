@@ -1,0 +1,22 @@
+{
+  "name": "design system drift is semantic not numeric",
+  "context_files": [
+    "skills/design-system/SKILL.md",
+    "references/design-system-lifecycle.md"
+  ],
+  "prompt": "Two UI gaps are both 16px but serve different semantic roles, while two same-role gaps are 15px and 16px. Which case is more likely design-system drift and why?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(15.*16|same.role).*?(drift|align|merge)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(different.*role|semantic).*?(keep|not.*drift|separate)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

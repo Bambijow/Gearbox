@@ -77,3 +77,13 @@ For `web-design`, capability routing distinguishes useful evidence from hard exe
 Do not route away from the specialist director/builder models merely because an optional design capability is missing.
 
 For web comps, image generation is a soft capability under `auto` and a hard capability only under `--comp require`. The comp pass remains owned by Codex Sol even though a GPT Image model renders the pixels. Never persist API credentials while probing availability.
+
+## Product-quality capability rules
+
+These specialist routes still obey live capability preflight:
+
+- `a11y-audit` and `visual-regression` prefer browser/Playwright/accessibility-tree tooling; when material runtime evidence cannot be captured, block rather than claim a runtime gate.
+- `experience-perf` requires a credible runtime profiling path for the target experience; source review alone cannot PASS PERF.
+- `audio-design --apply` uses exact discovered audio/engine capabilities. Godot can wire supplied audio assets but does not imply sound-generation capability.
+- `level-design --apply` requires a credible Godot or Blender blockout path; actual traversal evidence remains mandatory.
+- `design-system`, `content-design`, and `art-direction` may produce read-only contracts/audits without external tools; applying mutations still follows normal worker ownership.

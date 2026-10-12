@@ -1,8 +1,8 @@
 {
   "name": "gearbox",
   "displayName": "Gearbox",
-  "version": "1.13.0",
-  "description": "Claude Code engineering orchestration with interaction-first web design, anti-slop/creative-web lanes, Codex-driven visual comps, motion/3D game-dev specialists, test-suite pruning/hardening, runtime review, evidence reuse, and durable memory.",
+  "version": "1.14.0",
+  "description": "Claude Code engineering orchestration with interaction-first web/creative design, design-system and accessibility gates, semantic visual regression, content/performance quality, art/audio/level game-dev specialists, Codex execution lanes, evidence reuse, and durable memory.",
   "author": {
     "name": "Bambijow"
   },
@@ -105,7 +105,16 @@
     "creative-web",
     "webgl",
     "kinetic-type",
-    "creative-development"
+    "creative-development",
+    "design-system-lifecycle",
+    "accessibility-audit",
+    "semantic-visual-regression",
+    "content-design",
+    "experience-performance",
+    "art-direction",
+    "audio-design",
+    "level-design",
+    "playtesting"
   ],
   "skills": [
     "./skills/setup",
@@ -140,6 +149,14 @@
     "./skills/motion-design",
     "./skills/web-design",
     "./skills/creative-web",
-    "./skills/review-3d"
+    "./skills/review-3d",
+    "./skills/design-system",
+    "./skills/a11y-audit",
+    "./skills/visual-regression",
+    "./skills/content-design",
+    "./skills/experience-perf",
+    "./skills/art-direction",
+    "./skills/audio-design",
+    "./skills/level-design"
   ]
 }

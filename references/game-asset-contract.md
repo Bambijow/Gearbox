@@ -32,6 +32,10 @@ When the tool supports an editable source format, keep it alongside the runtime 
 
 Do not silently replace source art with only a flattened export.
 
+## Art-direction inheritance
+
+When an ART_DIRECTION.md/style bible or approved art-direction contract exists, every image/pixel/3D/motion asset packet cites the rules it inherits. Deviations must be explicitly intentional. For multi-asset sets or visible drift, apply `references/art-direction.md` and the `ART_DIRECTION_GATE`.
+
 ## Asset safety
 
 Do not overwrite unrelated artist-authored files. Keep generated changes inside owned paths. Do not embed credentials, private URLs or licensed source material into artifacts or metadata.

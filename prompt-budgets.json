@@ -133,6 +133,38 @@
     "creative-web": {
       "max_bytes": 4608,
       "class": "creative-specialist"
+    },
+    "design-system": {
+      "max_bytes": 4096,
+      "class": "maintenance"
+    },
+    "a11y-audit": {
+      "max_bytes": 4096,
+      "class": "quality-specialist"
+    },
+    "visual-regression": {
+      "max_bytes": 4096,
+      "class": "quality-specialist"
+    },
+    "content-design": {
+      "max_bytes": 4096,
+      "class": "creative-specialist"
+    },
+    "experience-perf": {
+      "max_bytes": 4096,
+      "class": "quality-specialist"
+    },
+    "art-direction": {
+      "max_bytes": 4096,
+      "class": "creative-specialist"
+    },
+    "audio-design": {
+      "max_bytes": 4096,
+      "class": "creative-specialist"
+    },
+    "level-design": {
+      "max_bytes": 4096,
+      "class": "creative-specialist"
     }
   }
 }

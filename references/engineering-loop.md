@@ -53,6 +53,23 @@ Use `/gearbox:creative-web` when interaction, motion, spatial behavior, kinetic 
 
 Choose the least complex rendering stack that can express the thesis. WebGL, smooth-scroll libraries, shader effects and custom cursors are never quality badges. Real runtime, mobile/touch, reduced-motion, failure fallback and measured performance evidence are required.
 
+### Product/design quality gates
+
+Use dedicated specialists only when the change surface triggers them:
+
+- shared tokens/components or visible UI primitive drift -> `DESIGN_SYSTEM_GATE`;
+- material user-facing UI -> `A11Y_GATE`;
+- approved visual baseline exists -> `VISUAL_REGRESSION_GATE`;
+- substantial UX/state copy changed -> `CONTENT_GATE`;
+- measured performance-sensitive path or creative/heavy experience -> `PERF_GATE`;
+- multi-asset visual coherence or style-bible scope -> `ART_DIRECTION_GATE`;
+- audio-system work -> `AUDIO_GATE`;
+- level/encounter/blockout work -> `PLAYTEST_GATE`.
+
+Resolve their models with `scripts/product_quality_router.py`. Do not run every gate on every change. A gate is justified by consequence/surface, not by availability.
+
+For web-design, material UI requires A11Y; visual regression is required when a baseline exists; content/design-system gates fire only when their surfaces changed. Creative-web additionally requires measured PERF. For game assets, inherit the current art-direction contract when one exists. Audio and level work require contextual listening/playtest evidence respectively.
+
 ## Delegation economics
 
 Mandatory product-role delegation above is not optional. For **auxiliary** research/discovery/design/reviewer agents, apply `references/delegation-gate.md` first and record why the subagent pays for itself. Do not create an agent merely to summarize context the parent already owns.

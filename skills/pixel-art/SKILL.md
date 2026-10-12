@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Pixel art: Aseprite first, Codex Sol always
 
-Read `references/game-asset-contract.md` and `references/pixel-art-workflow.md`.
+Read `references/game-asset-contract.md` and `references/pixel-art-workflow.md`. Read `references/art-direction.md` when an art-direction contract or style bible exists; inherit it explicitly and record intentional deviations.
 
 The model route is hard-pinned to Codex GPT-6.1 Sol. Resolve it with `scripts/game_asset_router.py --task-kind pixel-art` plus the live capability set.
 

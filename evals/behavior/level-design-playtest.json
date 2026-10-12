@@ -1,0 +1,26 @@
+{
+  "name": "level design requires real traversal evidence",
+  "context_files": [
+    "skills/level-design/SKILL.md",
+    "references/level-design.md"
+  ],
+  "prompt": "A Godot arena blockout looks correct in editor screenshots but nobody has traversed it. Can PLAYTEST_GATE pass?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|cannot)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(travers|playtest|playthrough|runtime)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(PLAYTEST_GATE).*?(BLOCKED|REPAIR|not.*PASS)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1600
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Gearbox
 
-Gearbox est un plugin Claude Code d'orchestration d'ingénierie et de production game-dev. Il transforme une idée, une spec ou une issue GitHub en boucle de développement contrôlée : clarification proportionnée, plan lean, DAG/ready frontier, routage Claude/Codex, workers isolés, batching des micro-tâches, tests crédibles, optimisation mesurée, dogfooding produit, hardening par mutations/propriétés, audits sécurité ciblés, hygiène des skills, reviews croisées calibrées par le coût réel d'un échec, Ponytail, vérification, mémoire durable et PR documentée pour humains.
+Gearbox est un plugin Claude Code d'orchestration d'ingénierie, design produit et production game-dev. Il transforme une idée, une spec ou une issue GitHub en boucle contrôlée : clarification, plan/DAG, routage Claude/Codex, workers isolés, tests crédibles, design/interaction/a11y/performance gates, visual regression sémantique, production d'assets, dogfooding, reviews proportionnées, vérification, mémoire durable et PR documentée.
 
 Le thread Claude principal agit comme **control plane** : il analyse, planifie, route, inspecte et arbitre, mais il ne modifie pas le code produit pendant un run orchestré. Les changements sont délégués à des workers et agents spécialisés, puis revus par le fournisseur opposé en mode `hybrid`. Un worker n'est candidat que s'il possède les MCP/outils externes requis par sa tâche.
 
@@ -54,6 +54,14 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | Je veux améliorer les prochains runs après une session pénible | `/gearbox:retro [run-id]` |
 | Je veux optimiser une métrique mesurable sans casser le comportement | `/gearbox:optimize <cible>` |
 | Je veux utiliser le produit comme un humain avant de le livrer | `/gearbox:dogfood <parcours>` |
+| Je veux maintenir/réconcilier le design system | `/gearbox:design-system [scope] [--apply]` |
+| Je veux auditer l'accessibilité réelle d'un parcours | `/gearbox:a11y-audit <scope> [--fix]` |
+| Je veux distinguer changement visuel voulu et régression | `/gearbox:visual-regression <surface> [--record]` |
+| Je veux améliorer labels, erreurs, empty states et UX copy | `/gearbox:content-design <scope> [--apply]` |
+| Je veux mesurer la perf réellement ressentie | `/gearbox:experience-perf <journey> [--fix]` |
+| Je veux garder tous les assets dans la même direction artistique | `/gearbox:art-direction <scope> [--apply]` |
+| Je veux concevoir le système audio d'un jeu/produit | `/gearbox:audio-design <brief> [--apply]` |
+| Je veux concevoir/blockouter un niveau ou encounter | `/gearbox:level-design <brief> [--apply]` |
 | Je veux durcir des tests importants | `/gearbox:test-harden <scope>` |
 | Je veux nettoyer une suite de tests devenue redondante | `/gearbox:clean-tests [scope] [--apply]` |
 | Je veux un audit sécurité spécialisé | `/gearbox:security-audit <scope>` |
@@ -62,8 +70,6 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | Je veux créer/éditer du pixel art | `/gearbox:pixel-art <brief>` |
 | Je veux modéliser un asset 3D game-ready | `/gearbox:model-3d <brief>` |
 | Je veux concevoir/produire du motion design ou une animation | `/gearbox:motion-design <brief>` |
-| `/gearbox:web-design <brief> [--comp auto|require|skip] [--apply]` | Landing page, dashboard, app shell, docs, portfolio, pricing, onboarding ou refonte visuelle substantielle | Opus 5.5 dirige le design, Inspo calibre les références quand disponible, Codex GPT-6.1 Sol implémente le contrat, puis un reviewer Claude frais juge des rendus desktop/mobile. Une retouche locale reste une retouche, pas un redesign. |
-| `/gearbox:creative-web <brief> [--apply]` | Portfolio immersif, campagne interactive, éditorial expérimental, typographie cinétique, expérience canvas/WebGL ou narration spatiale | Opus 5.5 définit l’interaction thesis, les scènes/états, les fallbacks et la stack minimale nécessaire ; Codex Sol/high implémente ; un reviewer Opus frais exige SLOP_GATE + INTERACTION_GATE + CREATIVE_GATE et des preuves runtime/mobile/reduced-motion/perf. |
 | Je veux concevoir ou refondre une interface web avec direction artistique | `/gearbox:web-design <brief> [--comp auto|require|skip] [--apply]` |
 | Je veux une expérience web interactive/immersive où le mouvement fait partie du concept | `/gearbox:creative-web <brief> [--apply]` |
 | Je veux auditer un modèle 3D | `/gearbox:review-3d <asset>` |
@@ -80,7 +86,7 @@ Pour continuer également après l'ouverture de la PR :
 /gearbox:issue https://github.com/acme/foo/issues/123 --auto --ship --follow-pr
 ```
 
-## Les 33 commandes
+## Les 41 commandes
 
 | Commande | Quand l'utiliser | Ce qu'elle fait exactement |
 | --- | --- | --- |
@@ -298,13 +304,30 @@ Les règles destinées aux agents suivent une hiérarchie de contexte : instruct
 
 Gearbox ne suppose pas qu'écrire « utilise /gearbox:foo » dans un autre skill charge magiquement ce skill : le comportement partagé vit dans `references/`, les actions déléguées dans `agents/`, et les mécanismes déterministes dans `scripts/`.
 
+## Product-quality gates
+
+Gearbox ne lance pas toutes les reviews spécialisées partout. Elles se déclenchent selon la surface réellement modifiée :
+
+```text
+shared tokens/components      → DESIGN_SYSTEM_GATE
+material user-facing UI       → A11Y_GATE
+approved visual baseline      → VISUAL_REGRESSION_GATE
+substantial UX/state copy     → CONTENT_GATE
+measured heavy/creative path  → PERF_GATE
+multi-asset/style-bible work  → ART_DIRECTION_GATE
+audio-system work             → AUDIO_GATE
+level/encounter/blockout      → PLAYTEST_GATE
+```
+
+Le routing est déterministe via `scripts/product_quality_router.py`. Les gates dédiés réutilisent leurs preuves au lieu de faire relancer les mêmes audits par le reviewer final.
+
 ## Interaction design & creative web
 
 Le web-design possède maintenant un contrat d'interaction pour les composants réellement stateful : états, triggers, focus, feedback async, interruption/réversibilité, clavier/pointer/touch, latency et reduced-motion. Le mouvement vient après la sémantique d'état. Une vraie review UI retourne aussi `INTERACTION_GATE: PASS|REPAIR|NOT_APPLICABLE`.
 
 `/gearbox:creative-web` monte d'un cran lorsque l'interaction devient le médium lui-même : expériences immersives, typographie cinétique, scroll/camera choreography, canvas/WebGL, visualiseurs et portfolios expérimentaux. Le directeur Opus choisit la stack la plus simple capable d'exprimer l'idée ; DOM/CSS/SVG passent avant Canvas/WebGL, et aucun effet n'est retenu uniquement parce qu'il est spectaculaire.
 
-Le runtime est la preuve : desktop, mobile/touch, keyboard, reduced-motion, fallback WebGL/canvas et mesures de performance pour les chemins coûteux. Le creative reviewer exige `SLOP_GATE`, `INTERACTION_GATE` et `CREATIVE_GATE`.
+Le runtime est la preuve : desktop, mobile/touch, keyboard, reduced-motion, fallback WebGL/canvas et mesures de performance pour les chemins coûteux. Le creative reviewer exige `SLOP_GATE`, `INTERACTION_GATE`, `A11Y_GATE`, `PERF_GATE`, `CREATIVE_GATE` et, lorsqu'une baseline approuvée existe, `VISUAL_REGRESSION_GATE`.
 
 ## Web-design lane
 
@@ -335,17 +358,20 @@ dogfood when the surface owns a user journey
 
 Le directeur classe la surface en `Persuade`, `Operate`, `Read` ou `Experience`, puis en `refine`, `surface` ou `redesign`. Une demande locale ne peut pas devenir une refonte implicite. Pour `surface`/`redesign`, il doit nommer la category rut, choisir des écarts ancrés dans le produit et un signature device réel. Inspo sert à comparer de vraies références, jamais à moyenner des sites à la mode.
 
-Quand la génération image est disponible, `surface`/`redesign` passe par une paire de comps desktop/mobile générée sous orchestration Codex Sol depuis le design system ; le renderer par défaut est `gpt-image-2.5-flare`, avec `gpt-image-2.5-sunburst` pour l'unique correction ciblée. Le raster gouverne composition/hiérarchie, jamais la vérité produit ou le copy exact. La finition reste bornée et exige `SLOP_GATE: PASS`.
+Quand la génération image est disponible, `surface`/`redesign` passe par une paire de comps desktop/mobile générée sous orchestration Codex Sol depuis le design system ; le renderer par défaut est `gpt-image-2.5-flare`, avec `gpt-image-2.5-sunburst` pour l'unique correction ciblée. Le raster gouverne composition/hiérarchie, jamais la vérité produit ou le copy exact. La finition reste bornée et exige `SLOP_GATE`, `INTERACTION_GATE` et `A11Y_GATE`; elle ajoute CONTENT/DESIGN_SYSTEM/VISUAL_REGRESSION seulement quand ces surfaces ont réellement changé.
 
 ## Game-dev asset lanes
 
-Gearbox possède cinq lanes spécialisées :
+Gearbox possède désormais des lanes d'assets et de conception de jeu :
 
 - image 2D : Codex GPT-6.1 Sol ;
 - pixel art : Codex GPT-6.1 Sol + Aseprite MCP quand disponible, sinon génération directe Sol ;
 - modélisation 3D : Opus 5.5 dirige, Codex Sol peut exécuter des opérations Blender/Godot bornées ;
 - motion design : Opus 5.5 dirige timing/mouvement, Codex Sol peut exécuter via Blender/Godot/Aseprite ;
-- review 3D : Codex GPT-6 Astra/high en read-only.
+- review 3D : Codex GPT-6 Astra/high en read-only ;
+- art direction : Opus 5.5 maintient la cohérence cross-media ;
+- audio design : Opus dirige, Codex câble les outils réellement disponibles ;
+- level design : Opus dirige, Codex blockoute, PLAYTEST_GATE tranche.
 
 Les identités spécialistes ne sont pas remplacées par le routing économique. Quand seul Codex possède le MCP 3D/animation, Gearbox utilise une délégation explicite Opus→Codex plutôt qu'un fallback silencieux. Un asset 3D reste soumis à la review Astra.
 
