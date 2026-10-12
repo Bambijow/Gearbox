@@ -16,6 +16,7 @@ Use `scripts/usage_ledger.py` to record provider/host-reported token or cost dat
 - never hard-code a model price table into run artifacts;
 - distinguish reported values from estimates;
 - record each dispatch once with a stable dispatch id;
+- when observable, also record task kind, effort and terminal outcome so repeated runs can inform economics;
 - cached-input tokens are tracked separately from input/output totals;
 - absence of cost telemetry means `reported_cost_usd: null`, not zero cost.
 
@@ -37,3 +38,9 @@ When set, call `usage_ledger.py check` before an optional expensive dispatch whe
 ## Routing
 
 Use repeated measured patterns to tune model routing. Do not retune the router from one anomalous expensive call.
+
+## Routing advisor
+
+`scripts/routing_advisor.py` aggregates non-estimated historical dispatches by task kind/provider/model/effort. It requires repeated samples and a minimum success rate before making an economic recommendation.
+
+Recommendations are advisory tie-breakers only. Registered specialist routes remain pinned, safety-ceiling surfaces remain observe-only, and telemetry may never promote work to frontier compute by itself.

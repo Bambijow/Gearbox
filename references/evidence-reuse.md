@@ -67,3 +67,9 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/evidence.py" fingerprint \
 Record the returned `scope_fingerprint` when adding evidence, then query reuse with that fingerprint. A change outside those dependencies may reuse the proof across SHAs; a dependency-content or scenario/environment change may not.
 
 Do not use scoped reuse for evidence whose true dependency surface is unknown.
+
+## Automatic local dependency closure
+
+For supported Python and JS/TS/CSS local imports, `scripts/evidence_deps.py` can derive a bounded dependency closure from one or more entry files. Add contracts/tokens/fixtures not visible through imports as explicit extras.
+
+Use the derived list as input to `evidence.py fingerprint`. If dynamic imports/generated files/runtime configuration make the dependency surface uncertain, do not pretend the closure is complete; retain exact-SHA reuse.

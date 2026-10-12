@@ -1,0 +1,26 @@
+{
+  "name": "final review targets uncovered proof gaps",
+  "context_files": [
+    "references/final-review-routing.md",
+    "references/incremental-runtime.md"
+  ],
+  "prompt": "Task reviews and quality gates pass, but the coverage matrix still has one uncovered silent retry-duplication failure mode. Can Gearbox choose lite final review, and what should the reviewer receive?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not).*?lite"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)focused"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(retry.*duplication|uncovered.*failure|review.focus)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

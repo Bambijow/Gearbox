@@ -91,6 +91,19 @@ Use `references/evidence-reuse.md` before any re-probe/re-check. Exact-SHA is th
 
 Compile worker/reviewer handoffs through `scripts/context_compiler.py`; persist packet hash/size in `state.context_packets`. Repair packets point to the original packet plus canonical finding/delta instead of resending broad context.
 
+## Incremental runtime scheduling
+
+Read `references/incremental-runtime.md`.
+
+- Use `frontier_scheduler.py` for ready-frontier dispatch order/batching.
+- Compile minimal probe artifacts with `probe_plan.py`.
+- Compile repository checks with `verification_plan.py`; do not default to the broadest suite.
+- Derive local evidence dependencies with `evidence_deps.py` when safe, otherwise exact-SHA.
+- Query `result_cache.py` before cacheable read-only dispatches.
+- Compile requirement/proof coverage before final review.
+- Feed quality aggregate + coverage gaps into `final_review_router.py`.
+- Record task kind/effort/outcome in usage telemetry and consult `routing_advisor.py` only as a safety-bounded economic tie-breaker.
+
 ## Delegation economics
 
 Mandatory product-role delegation above is not optional. For **auxiliary** research/discovery/design/reviewer agents, apply `references/delegation-gate.md` first and record why the subagent pays for itself. Do not create an agent merely to summarize context the parent already owns.
@@ -183,7 +196,7 @@ On explicit approval, reacquire the run lock and call `run_state.py plan-approve
 2. Run the spec clarification gate; stop at `SPEC_BLOCKED` when required.
 3. Reconcile architecture facts once, reusing facts already gathered during clarification.
 4. Build and pre-flight the lean DAG once using `references/planning-contract.md`; run `plan_guard.py`, classify expected change surfaces, compile/persist the provisional quality plan, resolve specialist routes through `route_task.py`, then pass the human plan approval gate.
-5. Execute `references/frontier-scheduling.md`: batch qualifying low-risk same-shape micro-work, then dispatch bounded implementation workers continuously from the ready frontier. For background/long-lived delegated work apply `references/worker-lifecycle.md`: register the child/artifact before dispatch and avoid tight polling. Every product edit, including tiny edits and test/doc changes, belongs to a worker.
+5. Execute `references/frontier-scheduling.md`: run the deterministic frontier scheduler, then dispatch its selected task/batch units. For background/long-lived delegated work apply `references/worker-lifecycle.md`: register the child/artifact before dispatch and avoid tight polling. Every product edit, including tiny edits and test/doc changes, belongs to a worker.
 6. Workers use RED -> GREEN -> REFACTOR where the failing check provides real signal. Before returning they synchronize the latest integration tip into their task branch/worktree, rerun focused verification, and report `integration_base_sha`, `head_sha`, actual diff/evidence and preferably one local unpushed task commit.
 7. Inspect every worker diff centrally without editing it. In `hybrid`, resolve and run exactly one opposite-provider task review before integration: Claude implementation → Codex review; Codex implementation → Claude review. The review is task-scoped and returns SPEC then QUALITY verdicts.
 8. Validate review findings centrally. When repair is required, dispatch the same or a fresh implementation worker; the parent never patches the finding itself.
@@ -191,7 +204,7 @@ On explicit approval, reacquire the run lock and call `run_state.py plan-approve
 10. After each accepted integration, delegate affected focused checks to `verifier`, but query reusable exact-SHA evidence first so identical valid checks are not rerun. Update task status, recompute the ready frontier, and immediately dispatch any newly-ready non-conflicting tasks.
 11. Run the post-integration `ponytail-simplifier` gate.
 12. Refresh the compiled quality plan from actual changed paths. Query reusable evidence first; collect each required shared probe group once, then run only required gate reviewers and persist normalized gate envelopes.
-13. Aggregate required gates. REPAIR/BLOCKED quality results enter the ordinary finding/repair machinery; do not continue on vibes.
+13. Aggregate required gates and compile the requirement/proof coverage matrix. REPAIR/BLOCKED quality or blocked proof results enter ordinary finding/repair machinery.
 14. Route the simplified integrated diff through `references/final-review-routing.md` and `scripts/final_review_router.py`, reusing gate evidence instead of duplicating specialist reviews. Persist the selected mode in `state.final_review`.
 15. Delegate remaining repository-native verification to `verifier`, reusing exact-SHA or explicitly scoped evidence.
 

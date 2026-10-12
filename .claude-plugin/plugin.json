@@ -1,8 +1,8 @@
 {
   "name": "gearbox",
   "displayName": "Gearbox",
-  "version": "1.15.0",
-  "description": "Claude Code engineering orchestration with compiled quality planning, unified specialist routing, dependency-scoped evidence reuse, shared runtime probes, bounded context packets, interaction-first web/creative design, and game-dev specialists.",
+  "version": "1.16.0",
+  "description": "Claude Code engineering orchestration as an incremental runtime: critical-path scheduling, minimal probes/checks, automatic evidence dependencies, safe cross-run read-only cache, proof coverage, gap-driven review, adaptive economics, bounded context, and specialist web/game-dev lanes.",
   "author": {
     "name": "Bambijow"
   },
@@ -122,7 +122,16 @@
     "context-compiler",
     "gate-envelope",
     "quality-profile",
-    "unified-routing"
+    "unified-routing",
+    "incremental-runtime",
+    "critical-path-scheduler",
+    "verification-compiler",
+    "probe-compiler",
+    "evidence-dependency-graph",
+    "read-only-cache",
+    "coverage-matrix",
+    "gap-driven-review",
+    "adaptive-routing"
   ],
   "skills": [
     "./skills/setup",

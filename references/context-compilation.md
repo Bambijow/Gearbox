@@ -70,3 +70,11 @@ Compilation provides:
 - stable dispatch fingerprints;
 - less repeated context;
 - easier forensic comparison when a worker goes off-scope.
+
+## Safe compression
+
+The compiler preserves hard sections: role/outcome/spec slice/task, explicit capabilities, ownership, verification and output contract.
+
+When the packet exceeds its byte budget it may drop only excess low-priority pointers/dependency notes, preserving a minimum useful subset and recording exact omitted counts in the packet manifest. It never truncates a hard requirement to make a budget green.
+
+Order compressible lists by relevance before compiling.

@@ -1,0 +1,22 @@
+{
+  "name": "frontier scheduler prioritizes critical path and safe batching",
+  "context_files": [
+    "references/frontier-scheduling.md",
+    "references/incremental-runtime.md"
+  ],
+  "prompt": "Three tasks are ready: A unlocks two downstream tasks, while B and C are independent low-risk same-shape edits with the same batch key. How should Gearbox schedule them with two worker slots?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(A|critical.path).*?(first|priority|dispatch)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(B.*C|C.*B).*?(batch|one.*dispatch|same.shape)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

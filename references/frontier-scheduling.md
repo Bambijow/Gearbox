@@ -9,6 +9,14 @@ A task is on the ready frontier when:
 - its owned write surface does not conflict with another active task unless the interface is explicitly coordinated;
 - the task packet has enough pointers to start without broad rediscovery.
 
+## Deterministic scheduler
+
+Persist a compact task-status snapshot and run `scripts/frontier_scheduler.py`. The scheduler computes ready/waiting/blocked nodes, active ownership conflicts, critical-path length, descendant unlock count and dispatch units.
+
+Use its `dispatch_units` result rather than asking the model to rank the entire ready frontier conversationally. The scheduler may group compatible low/medium-risk tasks with the same `batch_key`; it never batches high/critical work merely to fill a slot.
+
+The task snapshot contains statuses/dependencies/owned paths/risk/batch metadata, not task prompts.
+
 ## Same-shape micro-batching
 
 Before dispatch, look for multiple ready nodes that are all:
@@ -29,7 +37,7 @@ Batching changes the dispatch/review unit, not traceability: every original memb
 
 ## Dispatch
 
-Dispatch as many frontier tasks in parallel as the configured worker budget safely allows. Apply `references/delegation-gate.md` only to optional auxiliary analysis agents; implementation workers remain mandatory under the control-plane contract.
+Dispatch the scheduler-selected units up to the configured worker budget. Apply `references/delegation-gate.md` only to optional auxiliary analysis agents; implementation workers remain mandatory under the control-plane contract.
 
 Every worker starts from the current integration-branch tip (or exact integration SHA recorded in its packet). Its packet also carries explicit `required_capabilities` (use `[]` when none); capability preflight and duplicate-fingerprint reconciliation happen before consuming a worker slot.
 

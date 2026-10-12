@@ -93,7 +93,7 @@ def validate_hooks() -> int:
     redactor = ROOT / "scripts" / "redact.py"
     if not redactor.exists():
         fail("missing scripts/redact.py")
-    for helper in ("plan_guard.py", "repair_findings.py", "finding_registry.py", "solutions_audit.py", "retro_bundle.py", "prompt_budget.py", "behavior_eval.py", "agentic_bench.py", "child_jobs.py", "usage_ledger.py", "final_review_router.py", "capabilities.py", "invocation_fingerprint.py", "game_asset_router.py", "web_design_router.py", "product_quality_router.py", "change_surface.py", "quality_plan.py", "gate_result.py", "experience_bundle.py", "context_compiler.py", "route_task.py"):
+    for helper in ("plan_guard.py", "repair_findings.py", "finding_registry.py", "solutions_audit.py", "retro_bundle.py", "prompt_budget.py", "behavior_eval.py", "agentic_bench.py", "child_jobs.py", "usage_ledger.py", "final_review_router.py", "capabilities.py", "invocation_fingerprint.py", "game_asset_router.py", "web_design_router.py", "product_quality_router.py", "change_surface.py", "quality_plan.py", "gate_result.py", "experience_bundle.py", "context_compiler.py", "route_task.py", "frontier_scheduler.py", "probe_plan.py", "verification_plan.py", "evidence_deps.py", "result_cache.py", "coverage_matrix.py", "routing_advisor.py", "registry_lint.py"):
         if not (ROOT / "scripts" / helper).exists():
             fail(f"missing scripts/{helper}")
     if not (ROOT / "prompt-budgets.json").exists():
@@ -106,6 +106,8 @@ def validate_hooks() -> int:
         fail("invalid orchestration-registry.json structure")
     if not (ROOT / "schemas" / "gate-result.schema.json").exists():
         fail("missing schemas/gate-result.schema.json")
+    if not (ROOT / "references" / "incremental-runtime.md").exists():
+        fail("missing references/incremental-runtime.md")
     if not (ROOT / "evals" / "behavior").exists():
         fail("missing evals/behavior")
     if not (ROOT / "benchmarks" / "agentic" / "README.md").exists():

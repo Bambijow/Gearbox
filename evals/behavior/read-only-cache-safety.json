@@ -1,0 +1,25 @@
+{
+  "name": "cross-run cache never reuses mutation outputs",
+  "context_files": [
+    "references/incremental-runtime.md"
+  ],
+  "prompt": "A previous implementation worker produced a commit from an identical-looking task packet. May Gearbox store and reuse that implementation result through the cross-run immutable result cache?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|must not|cannot)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(read.only|immutable).*?(cache|result)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(implementation|mutation).*?(not|excluded|refuse|cache)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1500
+    }
+  ]
+}

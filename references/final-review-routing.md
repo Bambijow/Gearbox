@@ -69,6 +69,19 @@ Changed-line count never awards `lite`.
 
 The optional executable non-test line floor may only force `full`. It is a backstop for an unusually broad change, not a proxy for consequence on ordinary diffs.
 
+## Proof-gap input
+
+Before routing final review, compile the requirement/proof coverage matrix and aggregate the compiled quality gates.
+
+Pass `--coverage-status complete|gaps|blocked`, `--quality-aggregate pass|repair|blocked`, and each `--uncovered-failure-mode` to the router.
+
+- quality REPAIR/BLOCKED: do not buy a final reviewer; repair the failed gate first;
+- coverage BLOCKED: repair/adjudicate the failed proof first;
+- coverage GAPS or named uncovered failure modes: force at least `focused` unless a full-review boundary already applies;
+- complete coverage + passing gates may permit `lite` when consequence/visibility also permit it.
+
+The fresh reviewer receives only `review_focus` gaps plus final integration context; it should not replay specialist gates already backed by valid evidence.
+
 ## Preconditions
 
 A final review route is invalid when a required task review gate is still failed. Fix/adjudicate that gate first rather than hoping a bigger final reviewer catches it.

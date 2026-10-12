@@ -105,3 +105,19 @@ Cross-SHA reuse is allowed only when the caller explicitly requests the same sco
 ## Context compilation
 
 Compile task/reviewer packets through `context_compiler.py` and persist their hash/size. A repair packet points back to the original packet plus the canonical finding and delta instead of resending broad context.
+
+## Incremental runtime
+
+Read `references/incremental-runtime.md`.
+
+After quality compilation:
+
+- `probe_plan.py` derives the minimal artifact union per shared probe group;
+- `verification_plan.py` derives the targeted repository-native check set from the repository verification catalog;
+- `evidence_deps.py` may derive bounded local import dependencies for scoped evidence fingerprints;
+- `coverage_matrix.py` makes proof gaps explicit before final review;
+- `result_cache.py` may reuse exact-fingerprint immutable read-only results across runs;
+- `routing_advisor.py` may provide an economic tie-breaker only inside normal safety/model policy;
+- `frontier_scheduler.py` decides ready dispatch units from DAG state.
+
+Persist these plans under `state.runtime_plans` so resume does not recompute already-known topology without cause.

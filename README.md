@@ -304,6 +304,40 @@ Les règles destinées aux agents suivent une hiérarchie de contexte : instruct
 
 Gearbox ne suppose pas qu'écrire « utilise /gearbox:foo » dans un autre skill charge magiquement ce skill : le comportement partagé vit dans `references/`, les actions déléguées dans `agents/`, et les mécanismes déterministes dans `scripts/`.
 
+## Runtime incrémental 1.16
+
+La 1.16 pousse la compilation plus loin : Gearbox essaie maintenant de recalculer **uniquement ce qu'un changement invalide**.
+
+```text
+DAG state
+  → frontier_scheduler.py
+  → chemin critique + safe batching
+
+quality plan
+  → probe_plan.py
+  → artifacts runtime minimum
+
+changed paths/surfaces
+  → verification_plan.py
+  → checks repository ciblés
+
+entry files
+  → evidence_deps.py
+  → dependency closure
+  → scope fingerprint
+
+requirements + proofs
+  → coverage_matrix.py
+  → COMPLETE | GAPS | BLOCKED
+  → final review focalisée sur les trous
+```
+
+Les tâches read-only immuables (research/review/gate/probe/static analysis) peuvent être réutilisées entre runs via un cache exact-fingerprint dans le cache utilisateur/XDG, séparé par dépôt. Les mutations/implémentations en sont explicitement exclues.
+
+Le context compiler compresse seulement les pointeurs/notes de dépendance excédentaires ; acceptance criteria, task, capabilities, ownership, verification et output contract ne sont jamais sacrifiés pour respecter le budget.
+
+La télémétrie historique peut conseiller une route plus économique pour du travail générique suffisamment échantillonné, mais reste observe-only sur les surfaces sensibles et ne remplace jamais une route spécialiste ni ne promeut vers du frontier compute.
+
 ## Orchestration compilée
 
 Gearbox 1.15 déplace une partie du raisonnement répétitif hors des prompts :
@@ -338,11 +372,11 @@ PASS | REPAIR | BLOCKED
 
 `orchestration-registry.json` est la source de vérité des routes spécialistes, modèles/efforts statiques, triggers de gates et profils `dev / standard / release / critical`. Les routers spécialisés ne gardent que la logique dynamique de capabilities/modes.
 
-Les reviewers A11Y, interaction, visual-regression, perf et creative peuvent partager le même bundle d'expérience sans partager leur jugement. L'indépendance cognitive ne repaie donc plus automatiquement un nouveau browser run.
+Les reviewers A11Y, interaction, visual-regression, perf et creative peuvent partager le même bundle d'expérience sans partager leur jugement. `probe_plan.py` limite désormais ce bundle aux artifacts réellement demandés par les gates. L'indépendance cognitive ne repaie donc plus automatiquement un nouveau browser run.
 
 L'evidence reste exact-SHA par défaut. Un gate coûteux peut explicitement utiliser un **scope fingerprint** calculé sur ses vraies dépendances + scénario/environnement : un changement README ne force plus mécaniquement à rejouer une probe UI inchangée.
 
-Les packets workers/reviewers sont compilés depuis une structure minimale, hashés et bornés en bytes. Les repair packets réutilisent le packet initial + finding/delta au lieu de renvoyer tout le contexte.
+Les packets workers/reviewers sont compilés depuis une structure minimale, hashés, bornés en bytes et compressés uniquement sur les sections déclarées compressibles. Les repair packets réutilisent le packet initial + finding/delta au lieu de renvoyer tout le contexte.
 
 ## Product-quality gates
 

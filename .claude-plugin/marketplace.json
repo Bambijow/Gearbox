@@ -8,7 +8,7 @@
     {
       "name": "gearbox",
       "source": "./",
-      "description": "Gearbox: capability-aware Claude/Codex engineering with compiled quality/gate planning, shared runtime evidence, dependency-scoped reuse, bounded context, unified specialist routing, web/creative design and game-dev lanes.",
+      "description": "Gearbox: capability-aware Claude/Codex orchestration with an incremental runtime, critical-path scheduling, minimal probes/checks, scoped evidence, safe read-only caching, proof coverage, gap-driven review, web/creative design and game-dev lanes.",
       "category": "engineering",
       "keywords": [
         "engineering",
@@ -120,7 +120,16 @@
         "context-compiler",
         "gate-envelope",
         "quality-profile",
-        "unified-routing"
+        "unified-routing",
+        "incremental-runtime",
+        "critical-path-scheduler",
+        "verification-compiler",
+        "probe-compiler",
+        "evidence-dependency-graph",
+        "read-only-cache",
+        "coverage-matrix",
+        "gap-driven-review",
+        "adaptive-routing"
       ]
     }
   ]

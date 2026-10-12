@@ -1,0 +1,26 @@
+{
+  "name": "routing telemetry never overrides safety ceilings",
+  "context_files": [
+    "references/incremental-runtime.md",
+    "references/usage-accounting.md"
+  ],
+  "prompt": "Historical telemetry says a cheaper route used fewer tokens for auth work. May Gearbox automatically downgrade the auth task based on that history?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|must not|observe.only)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(auth|security|safety).*?(ceiling|surface|guardrail)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(advisory|tie.break|telemetry)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1600
+    }
+  ]
+}

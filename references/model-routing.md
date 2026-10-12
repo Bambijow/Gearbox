@@ -268,6 +268,20 @@ Pass the concrete router-selected model and effort to `scripts/codex_worker.py`.
 
 If a configured Codex slot is unavailable, do not silently invoke Codex with its default model when `allow_codex_default_model: false`. In `hybrid`, fall back to the corresponding Claude route and record the fallback. In `codex-heavy`, block and request a valid model mapping.
 
+## Telemetry economic tie-breaker
+
+For **unregistered generic tasks only**, after capability/risk/model-policy eligibility is known, Gearbox may query `scripts/routing_advisor.py` for repeated measured history of the same task kind.
+
+The advisor is never an authority over safety:
+
+- specialist routes remain pinned;
+- security/persistence/public-contract/production-config surfaces stay observe-only;
+- insufficient samples yield no recommendation;
+- telemetry cannot promote work to Astra/frontier;
+- the user/model policy remains the candidate ceiling.
+
+Use advice only as an economic tie-breaker among already-safe candidates.
+
 ## Token policy
 
 Routing optimizes successful-work cost, not raw cheapness. A cheap model that fails twice is expensive, but an expensive model used for trivial work is also waste.

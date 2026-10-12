@@ -45,6 +45,22 @@ jobs:
         run: python3 scripts/experience_bundle.py self-test
       - name: Context compiler self-test
         run: python3 scripts/context_compiler.py --self-test
+      - name: Frontier scheduler self-test
+        run: python3 scripts/frontier_scheduler.py --self-test
+      - name: Minimal probe compiler self-test
+        run: python3 scripts/probe_plan.py --self-test
+      - name: Verification plan compiler self-test
+        run: python3 scripts/verification_plan.py --self-test
+      - name: Evidence dependency graph self-test
+        run: python3 scripts/evidence_deps.py --self-test
+      - name: Read-only result cache self-test
+        run: python3 scripts/result_cache.py --self-test
+      - name: Coverage matrix self-test
+        run: python3 scripts/coverage_matrix.py --self-test
+      - name: Adaptive routing advisor self-test
+        run: python3 scripts/routing_advisor.py --self-test
+      - name: Orchestration registry lint self-test
+        run: python3 scripts/registry_lint.py --self-test
       - name: Codex worker isolation/capability self-test
         run: python3 scripts/codex_worker.py --self-test
       - name: Run-state plan approval self-test

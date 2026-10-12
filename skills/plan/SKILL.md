@@ -39,7 +39,8 @@ Before finalizing the plan:
 1. classify expected owned/touch paths with `scripts/change_surface.py`;
 2. compile the provisional quality plan with `scripts/quality_plan.py` using the repository/default quality profile;
 3. persist the quality-plan path/id with the run;
-4. include only **required** gates and shared probe groups in the human plan summary.
+4. compile the minimal probe artifact plan and targeted repository verification plan from the verification catalog;
+5. include only **required** gates, shared probe groups and selected checks in the human plan summary.
 
 Quality profiles change evidence depth, not whether required correctness/safety gates are true. Do not manually add every available specialist gate.
 
@@ -70,7 +71,7 @@ Produce:
 4. dependency-graph work units;
 5. provisional quality topology: profile, required gates, shared probe groups;
 6. `## Initial ready frontier`;
-7. verification matrix mapping requirements to checks/gates.
+7. verification matrix with stable requirement ids mapping requirements to tests/checks/gates/runtime proofs.
 
 For substantial work, persist the plan in the configured plans directory and link the originating spec. Run:
 

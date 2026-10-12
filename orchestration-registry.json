@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "policy": "Single declarative source for specialist routing, static model/effort identities, gate triggers, probe sharing, and quality-depth profiles. Router code keeps only dynamic capability/mode logic.",
+  "policy": "Single declarative source for specialist routing, implicit consequence surfaces, static model/effort identities, gate triggers/artifact needs, scheduling defaults, quality profiles, and safe adaptation bounds. Runtime code keeps dynamic mechanics only.",
   "task_routes": {
     "asset-image": {
       "router": "game_asset"
@@ -248,7 +248,10 @@
         "creative-web"
       ],
       "probe_group": "experience",
-      "skill": "web-design"
+      "skill": "web-design",
+      "probe_needs": [
+        "screenshot"
+      ]
     },
     "INTERACTION_GATE": {
       "trigger_surfaces": [
@@ -258,28 +261,41 @@
         "creative-web"
       ],
       "probe_group": "experience",
-      "skill": "web-design"
+      "skill": "web-design",
+      "probe_needs": [
+        "interaction",
+        "screenshot"
+      ]
     },
     "A11Y_GATE": {
       "trigger_surfaces": [
         "user_ui"
       ],
       "probe_group": "experience",
-      "skill": "a11y-audit"
+      "skill": "a11y-audit",
+      "probe_needs": [
+        "accessibility",
+        "interaction"
+      ]
     },
     "DESIGN_SYSTEM_GATE": {
       "trigger_surfaces": [
         "shared_design_system"
       ],
       "probe_group": "repository",
-      "skill": "design-system"
+      "skill": "design-system",
+      "probe_needs": []
     },
     "CONTENT_GATE": {
       "trigger_surfaces": [
         "ux_copy"
       ],
       "probe_group": "experience",
-      "skill": "content-design"
+      "skill": "content-design",
+      "probe_needs": [
+        "dom",
+        "screenshot"
+      ]
     },
     "PERF_GATE": {
       "trigger_surfaces": [
@@ -287,7 +303,12 @@
         "creative_runtime"
       ],
       "probe_group": "experience",
-      "skill": "experience-perf"
+      "skill": "experience-perf",
+      "probe_needs": [
+        "performance",
+        "network",
+        "console"
+      ]
     },
     "ART_DIRECTION_GATE": {
       "trigger_surfaces": [
@@ -295,21 +316,29 @@
         "multi_asset"
       ],
       "probe_group": "asset",
-      "skill": "art-direction"
+      "skill": "art-direction",
+      "probe_needs": []
     },
     "AUDIO_GATE": {
       "trigger_surfaces": [
         "audio"
       ],
       "probe_group": "runtime",
-      "skill": "audio-design"
+      "skill": "audio-design",
+      "probe_needs": [
+        "playback"
+      ]
     },
     "PLAYTEST_GATE": {
       "trigger_surfaces": [
         "level"
       ],
       "probe_group": "gameplay",
-      "skill": "level-design"
+      "skill": "level-design",
+      "probe_needs": [
+        "playback",
+        "interaction"
+      ]
     },
     "VISUAL_REGRESSION_GATE": {
       "trigger_surfaces": [
@@ -317,14 +346,92 @@
       ],
       "requires_flag": "baseline_exists",
       "probe_group": "experience",
-      "skill": "visual-regression"
+      "skill": "visual-regression",
+      "probe_needs": [
+        "screenshot",
+        "dom"
+      ]
     },
     "CREATIVE_GATE": {
       "trigger_task_kinds": [
         "creative-web"
       ],
       "probe_group": "experience",
-      "skill": "creative-web"
+      "skill": "creative-web",
+      "probe_needs": [
+        "screenshot",
+        "interaction",
+        "playback"
+      ]
     }
+  },
+  "task_surfaces": {
+    "asset-image": [
+      "visual_asset"
+    ],
+    "pixel-art": [
+      "visual_asset"
+    ],
+    "model-3d": [
+      "asset_3d"
+    ],
+    "motion-design": [
+      "visual_asset"
+    ],
+    "review-3d": [
+      "asset_3d"
+    ],
+    "web-design": [
+      "user_ui"
+    ],
+    "creative-web": [
+      "user_ui",
+      "interactive_ui",
+      "creative_runtime",
+      "performance_sensitive"
+    ],
+    "design-system": [
+      "shared_design_system"
+    ],
+    "a11y-audit": [
+      "user_ui"
+    ],
+    "visual-regression": [
+      "user_ui"
+    ],
+    "content-design": [
+      "ux_copy"
+    ],
+    "experience-perf": [
+      "performance_sensitive"
+    ],
+    "art-direction": [
+      "art_direction"
+    ],
+    "audio-design": [
+      "audio"
+    ],
+    "level-design": [
+      "level"
+    ]
+  },
+  "scheduler": {
+    "priority_policy": "critical-path-then-descendants-then-risk",
+    "batch_same_shape": true,
+    "max_batch_members": 6,
+    "conflict_policy": "owned-path-prefix-overlap"
+  },
+  "adaptive_routing": {
+    "mode": "advisory",
+    "min_samples": 5,
+    "min_success_rate": 0.8,
+    "safety_ceiling_surfaces": [
+      "security_boundary",
+      "persistence",
+      "public_api",
+      "production_config"
+    ],
+    "never_override_registered_specialist_routes": true,
+    "never_promote_to_frontier_from_telemetry": true
   }
 }

@@ -1,0 +1,26 @@
+{
+  "name": "shared probe collects only artifacts required by gates",
+  "context_files": [
+    "references/incremental-runtime.md",
+    "references/experience-probe.md"
+  ],
+  "prompt": "A UI run requires only A11Y_GATE and SLOP_GATE; PERF_GATE and visual regression are not required. Should the shared experience probe collect a performance trace and DOM baseline data anyway?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|should not)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(accessibility|interaction).*?(screenshot|slop)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(minimal|exact|only).*?(artifact|needs|gate)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

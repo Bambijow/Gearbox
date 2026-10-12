@@ -11,23 +11,6 @@ from change_surface import classify
 ROOT=Path(__file__).resolve().parents[1]
 REGISTRY=ROOT/"orchestration-registry.json"
 
-TASK_SURFACES={
-    "web-design":{"user_ui"},
-    "creative-web":{"user_ui","interactive_ui","creative_runtime","performance_sensitive"},
-    "design-system":{"shared_design_system"},
-    "a11y-audit":{"user_ui"},
-    "visual-regression":{"user_ui"},
-    "content-design":{"ux_copy"},
-    "experience-perf":{"performance_sensitive"},
-    "art-direction":{"art_direction"},
-    "audio-design":{"audio"},
-    "level-design":{"level"},
-    "asset-image":{"visual_asset"},
-    "pixel-art":{"visual_asset"},
-    "model-3d":{"asset_3d"},
-    "motion-design":{"visual_asset"},
-}
-
 def load_registry()->dict:
     return json.loads(REGISTRY.read_text(encoding="utf-8"))
 
@@ -38,7 +21,7 @@ def compile_plan(task_kind:str|None,profile:str,surfaces:list[str],paths:list[st
     detected=classify(paths,hints)
     surface_set=set(surfaces)|set(detected["surfaces"])
     if task_kind:
-        surface_set.update(TASK_SURFACES.get(task_kind,set()))
+        surface_set.update(registry.get("task_surfaces",{}).get(task_kind,[]))
 
     gates=[]; required_groups:dict[str,list[str]]={}
     for name,rule in registry["gates"].items():
