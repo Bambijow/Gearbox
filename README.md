@@ -70,7 +70,7 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | Je veux créer/éditer du pixel art | `/gearbox:pixel-art <brief>` |
 | Je veux modéliser un asset 3D game-ready | `/gearbox:model-3d <brief>` |
 | Je veux concevoir/produire du motion design ou une animation | `/gearbox:motion-design <brief>` |
-| Je veux concevoir ou refondre une interface web avec direction artistique | `/gearbox:web-design <brief> [--comp auto|require|skip] [--apply]` |
+| Je veux concevoir ou refondre une interface web avec direction artistique | `/gearbox:web-design <brief> [--comp auto / require / skip] [--apply]` |
 | Je veux une expérience web interactive/immersive où le mouvement fait partie du concept | `/gearbox:creative-web <brief> [--apply]` |
 | Je veux auditer un modèle 3D | `/gearbox:review-3d <asset>` |
 
