@@ -1,0 +1,30 @@
+{
+  "name": "web design finish loop is bounded",
+  "context_files": [
+    "references/web-design-review.md",
+    "skills/web-design/SKILL.md"
+  ],
+  "prompt": "The landing page is implemented. Describe how many visual QA/repair passes Gearbox should run before stopping normal polish.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(desktop.*mobile|mobile.*desktop)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(one|1).*repair"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(at most|maximum|one).*confirm"
+    },
+    {
+      "type": "not_regex",
+      "value": "(?i)(repeat|iterate).*?(until perfect|indefinitely|forever)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

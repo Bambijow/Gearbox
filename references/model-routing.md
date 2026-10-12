@@ -42,6 +42,18 @@ These specialist identities bypass ordinary economy routing. For `model-3d` and 
 
 A completed `model-3d` task always receives the dedicated `review-3d` Astra gate before asset readiness. When the same task also changes product code, the normal code/task review policy still applies to that code; the 3D gate is additional.
 
+## Web-design directed route
+
+Material web-design tasks use `scripts/web_design_router.py` before ordinary implementation routing.
+
+- direction: Claude Opus 5.5 / high;
+- implementation: Codex GPT-6.1 Sol, medium by default and high for full redesign;
+- rendered review: fresh Claude, Sonnet/high for refine/surface and Opus 5.5/high for full redesign.
+
+Inspo is a preferred Claude-side evidence capability, not a requirement and never visual authority. Browser/Playwright-style tooling is preferred for implementation/review evidence. A material web-design task cannot reach visual PASS from source inspection alone; missing credible rendered evidence yields `BLOCKED` at the design-review gate.
+
+The lane preserves provider separation: the director decides, Codex builds, a fresh Claude reviewer judges the rendered result. Normal model economics do not downgrade the director or builder within this specialist lane.
+
 ## Preferred Codex registry
 
 Use only three configured Codex model slots by default:

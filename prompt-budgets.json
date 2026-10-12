@@ -125,6 +125,10 @@
     "motion-design": {
       "max_bytes": 4608,
       "class": "creative-specialist"
+    },
+    "web-design": {
+      "max_bytes": 5120,
+      "class": "creative-specialist"
     }
   }
 }

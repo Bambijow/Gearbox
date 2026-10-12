@@ -62,6 +62,8 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | Je veux créer/éditer du pixel art | `/gearbox:pixel-art <brief>` |
 | Je veux modéliser un asset 3D game-ready | `/gearbox:model-3d <brief>` |
 | Je veux concevoir/produire du motion design ou une animation | `/gearbox:motion-design <brief>` |
+| `/gearbox:web-design <brief> [--apply]` | Landing page, dashboard, app shell, docs, portfolio, pricing, onboarding ou refonte visuelle substantielle | Opus 5.5 dirige le design, Inspo calibre les références quand disponible, Codex GPT-6.1 Sol implémente le contrat, puis un reviewer Claude frais juge des rendus desktop/mobile. Une retouche locale reste une retouche, pas un redesign. |
+| Je veux concevoir ou refondre une interface web avec direction artistique | `/gearbox:web-design <brief> [--apply]` |
 | Je veux auditer un modèle 3D | `/gearbox:review-3d <asset>` |
 
 Pour une issue classique, le mode autonome habituel est :
@@ -76,7 +78,7 @@ Pour continuer également après l'ouverture de la PR :
 /gearbox:issue https://github.com/acme/foo/issues/123 --auto --ship --follow-pr
 ```
 
-## Les 31 commandes
+## Les 32 commandes
 
 | Commande | Quand l'utiliser | Ce qu'elle fait exactement |
 | --- | --- | --- |
@@ -293,6 +295,31 @@ Cette discipline augmente le parallélisme sans cacher les conflits à l'intégr
 Les règles destinées aux agents suivent une hiérarchie de contexte : instructions indispensables inline, référence conditionnelle derrière un pointeur, mécanique vérifiable dans lint/test/CI/hooks. `CLAUDE.md` et `AGENTS.md` doivent rester des cartes, pas des encyclopédies.
 
 Gearbox ne suppose pas qu'écrire « utilise /gearbox:foo » dans un autre skill charge magiquement ce skill : le comportement partagé vit dans `references/`, les actions déléguées dans `agents/`, et les mécanismes déterministes dans `scripts/`.
+
+## Web-design lane
+
+`/gearbox:web-design` sépare direction, build et jugement final :
+
+```text
+product truth + incumbent UI
+          ↓
+Opus 5.5 web-design-director
+          ↓
+design contract
+   + optional Inspo evidence
+          ↓
+Codex GPT-6.1 Sol
+          ↓
+desktop + mobile renders
+          ↓
+fresh Claude visual review
+          ↓
+dogfood when the surface owns a user journey
+```
+
+Le directeur classe la surface en `Persuade`, `Operate`, `Read` ou `Experience`, puis en `refine`, `surface` ou `redesign`. Une demande locale ne peut pas devenir une refonte implicite. Inspo sert à comparer de vraies références, macrostructures et design systems ; Gearbox en extrait des principes et des écarts volontaires, jamais une copie de site.
+
+La finition est bornée : une review desktop+mobile groupée, un batch de réparations, puis au maximum une confirmation. Un changement UI substantiel n'est pas déclaré visuellement PASS sans rendu réel.
 
 ## Game-dev asset lanes
 

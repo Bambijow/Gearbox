@@ -25,6 +25,21 @@ Read `references/capability-routing.md`. Each DAG task carries `required_capabil
 
 Pure 3D creation is not asset-ready until the forced GPT-6 Astra `review-3d` gate passes. Motion that mutates a 3D model/rig/export contract uses the same Astra gate after Opus acceptance. If a 3D task also changes runtime code, keep the normal code/task review in addition to this asset gate.
 
+### Web-design lane
+
+When a task owns a new substantial web surface, meaningful information hierarchy/design-system work, or an explicitly requested redesign, use `task_kind: web-design` and `scripts/web_design_router.py`. Do not invoke the lane for trivial copy, spacing or isolated styling bugs.
+
+The sequence is:
+
+1. fresh Opus 5.5 design director resolves visual authority, mode/scope and the design contract;
+2. optional Inspo evidence calibrates references without cloning them;
+3. Codex GPT-6.1 Sol implements the approved contract;
+4. capture desktop + mobile/narrow rendered evidence;
+5. fresh Claude design review runs one bounded batched review, one repair batch, and at most one confirmation;
+6. meaningful user flows enter `dogfood` when browser/E2E tooling is available.
+
+Material motion delegates to the existing motion-design lane. Missing rendered evidence blocks visual PASS rather than turning source inspection into fake design confidence.
+
 ## Delegation economics
 
 Mandatory product-role delegation above is not optional. For **auxiliary** research/discovery/design/reviewer agents, apply `references/delegation-gate.md` first and record why the subagent pays for itself. Do not create an agent merely to summarize context the parent already owns.

@@ -1,0 +1,26 @@
+{
+  "name": "Inspo is evidence not cloning",
+  "context_files": [
+    "references/web-design-inspiration.md",
+    "skills/web-design/SKILL.md"
+  ],
+  "prompt": "Inspo returns several strong developer-tool references. How should Gearbox use them when creating a new landing page?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(evidence|reference|principle|compare|exemplar)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(not|never|avoid).*?(clone|copy)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(product|brief|contract|intentional departure|category)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2000
+    }
+  ]
+}

@@ -9,6 +9,9 @@ Gearbox is an original implementation influenced by public engineering-agent pro
 - Trail of Bits' public agent skills: security-audit context building, differential security review, targeted static analysis, mutation testing, property-based testing, and evidence-oriented security findings.
 - Anthropic's official skill-authoring guidance and `skill-creator`: trigger-quality, progressive disclosure, concise skill bodies, supporting references, and eval-driven maintenance of agent skills.
 
+- Impeccable: surface-mode design reasoning, refinement-vs-redesign boundaries, durable visual authority, bounded finish passes, and separating design critique from technical audit.
+- Inspo MCP: production-site visual-reference research, macrostructure/design-system evidence, category-gravity comparison, and reference triangulation for web-design direction. Inspo is optional and references are used as evidence, never cloned as identities.
+
 The Gearbox skill text and orchestration code were written specifically for Gearbox rather than copied from these projects. Superpowers concepts are re-expressed as Gearbox policies rather than vendoring its skill prompts.
 
 Ponytail is not bundled in this repository. Install it separately when you want Gearbox's `/simplify` phase to use the actual Ponytail plugin; otherwise Gearbox uses its own fallback simplification checklist.

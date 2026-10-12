@@ -1,0 +1,25 @@
+{
+  "name": "web design uses directed cross-provider lane",
+  "context_files": [
+    "skills/web-design/SKILL.md"
+  ],
+  "prompt": "A substantial new web surface is approved for implementation. State the director, builder, and reviewer route.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)opus.*5\\.5"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)codex.*gpt-6\\.1[- ]sol"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(fresh|independent).*claude.*review"
+    },
+    {
+      "type": "max_chars",
+      "value": 1600
+    }
+  ]
+}

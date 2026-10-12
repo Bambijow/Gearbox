@@ -1,0 +1,26 @@
+{
+  "name": "web design refinement preserves incumbent world",
+  "context_files": [
+    "skills/web-design/SKILL.md",
+    "references/web-design-contract.md"
+  ],
+  "prompt": "An established dashboard asks only to improve spacing and focus states on one settings panel. Should Gearbox redesign the product visual identity? State the correct scope behavior.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)refine"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(preserve|keep|incumbent|existing)"
+    },
+    {
+      "type": "not_regex",
+      "value": "(?i)(replace|redesign).*(whole|entire|identity).*(should|must)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

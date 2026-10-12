@@ -65,3 +65,13 @@ Codex metadata additionally records CLI version, prompt/schema hashes, active MC
 ## Game-asset capability preferences
 
 Game-asset model identity is resolved by `scripts/game_asset_router.py`, not by generic capability economics. Pass Claude and Codex capability sets separately. Aseprite is preferred for `pixel-art` on Codex; otherwise Sol uses direct generation. For `model-3d` and `motion-design`, Opus directs the work, but the router may select Codex Sol as the declared execution delegate when Codex owns the useful Blender/Godot/Aseprite capability. `review-3d` specifically requires Blender or Godot on Codex because Astra must inspect the real asset. Missing tool access blocks rather than silently changing model identity.
+
+## Web-design capability preferences
+
+For `web-design`, capability routing distinguishes useful evidence from hard execution requirements:
+
+- `inspo` is preferred for the Claude design director. Use it for exemplar/macrostructure/design-system evidence when present; absence does not block design.
+- browser / Playwright / Chrome-style tooling is preferred for the Codex builder and rendered review.
+- missing browser tooling may still allow implementation, but a material design task cannot claim visual PASS until credible rendered desktop/mobile evidence exists.
+
+Do not route away from the specialist director/builder models merely because an optional design capability is missing.
