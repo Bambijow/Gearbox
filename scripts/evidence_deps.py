@@ -11,13 +11,13 @@ JS_EXTS=[".ts",".tsx",".js",".jsx",".mjs",".cjs",".css",".scss",".sass",".less"]
 PY_EXTS=[".py"]
 
 JS_PATTERNS=[
-    re.compile(r"""(?:import|export)s+(?:[^'"]*?s+froms+)?['"]([^'"]+)['"]"""),
-    re.compile(r"""require(s*['"]([^'"]+)['"]s*)"""),
-    re.compile(r"""import(s*['"]([^'"]+)['"]s*)"""),
-    re.compile(r"""@imports+(?:url()?['"]([^'"]+)['"]"""),
+    re.compile(r"""(?:import|export)\s+(?:[^'"]*?\s+from\s+)?['"]([^'"]+)['"]"""),
+    re.compile(r"""require\(\s*['"]([^'"]+)['"]\s*\)"""),
+    re.compile(r"""import\(\s*['"]([^'"]+)['"]\s*\)"""),
+    re.compile(r"""@import\s+(?:url\()?['"]([^'"]+)['"]"""),
 ]
-PY_FROM=re.compile(r"^s*froms+([.w]+)s+imports+",re.M)
-PY_IMPORT=re.compile(r"^s*imports+([.w]+)",re.M)
+PY_FROM=re.compile(r"^\s*from\s+([.\w]+)\s+import\s+",re.M)
+PY_IMPORT=re.compile(r"^\s*import\s+([.\w]+)",re.M)
 
 def _candidate_files(base:Path,spec:str,root:Path)->list[Path]:
     out=[]
@@ -29,7 +29,7 @@ def _candidate_files(base:Path,spec:str,root:Path)->list[Path]:
             candidates += [target/("index"+ext) for ext in JS_EXTS]
             candidates += [target/"__init__.py"]
         out.extend(candidates)
-    return [p for p in out if p.is_file() and root in p.parents or p==root]
+    return [p for p in out if p.is_file() and (root in p.parents or p==root)]
 
 def js_deps(path:Path,root:Path)->set[Path]:
     text=path.read_text(encoding="utf-8",errors="ignore")
