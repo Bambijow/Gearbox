@@ -75,3 +75,5 @@ For `web-design`, capability routing distinguishes useful evidence from hard exe
 - missing browser tooling may still allow implementation, but a material design task cannot claim visual PASS until credible rendered desktop/mobile evidence exists.
 
 Do not route away from the specialist director/builder models merely because an optional design capability is missing.
+
+For web comps, image generation is a soft capability under `auto` and a hard capability only under `--comp require`. The comp pass remains owned by Codex Sol even though a GPT Image model renders the pixels. Never persist API credentials while probing availability.

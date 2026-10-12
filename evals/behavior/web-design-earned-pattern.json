@@ -1,0 +1,26 @@
+{
+  "name": "anti slop gate respects explicit visual direction",
+  "context_files": [
+    "references/web-design-anti-slop.md",
+    "references/web-design-contract.md"
+  ],
+  "prompt": "The approved brand system explicitly uses translucent glass panels as a core material and the user asks to extend that existing surface. Should Gearbox remove all glass effects simply because glassmorphism appears on the anti-slop list?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|should not|keep|preserve)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(brief|approved|incumbent|system|earned|explicit)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(refine|preserve|scope)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

@@ -16,7 +16,7 @@ Detect specs/ADR/runbook locations, existing `GLOSSARY.md` / `GLOSSARY-MAP.md` c
 
 ## Capability preflight
 
-Read `references/capability-routing.md`. If Codex exists, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/capabilities.py" inventory`; persist only `available` names, never raw MCP config/secrets. Record Claude capabilities only when explicit; live preflight wins. Keep `inspo` and browser capabilities when visible for web-design evidence. Preserve live Aseprite/Blender/Godot capability names for game-asset routing; specialist model identities come from `scripts/game_asset_router.py` and are not downgraded by model policy.
+Read `references/capability-routing.md`. If Codex exists, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/capabilities.py" inventory`; persist only `available` names, never raw MCP config/secrets. Record Claude capabilities only when explicit; live preflight wins. Keep `inspo`, browser, Aseprite/Blender/Godot availability for specialist routing. For web comps, record only whether Codex has an image-generation path; never credentials.
 
 ## Model preflight
 
@@ -57,6 +57,9 @@ codex_frontier_policy: escalation-or-exceptional
 capability_routing: enabled
 capability_preflight: live
 codex_mcp_policy: required-only
+web_comp_policy: auto
+web_comp_image_model: gpt-image-2.5-flare
+web_comp_edit_model: gpt-image-2.5-sunburst
 codex_capabilities: []
 claude_capabilities: []
 hybrid_review_policy: opposite-provider

@@ -1,0 +1,30 @@
+{
+  "name": "web design rejects unearned AI slop",
+  "context_files": [
+    "skills/web-design/SKILL.md",
+    "references/web-design-anti-slop.md"
+  ],
+  "prompt": "A new AI developer-tool landing page has no established design system. The proposed direction is a centered hero with tiny eyebrow, gradient word, two pill CTAs, purple/blue glow background, logo cloud with placeholder companies, then three equal icon cards and fade-up on every section. Should Gearbox accept this as the default? State what must happen instead.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(reject|repair|not|must not|should not)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(category rut|slop|generic|default)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(product|signature|departure|brief|truth)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(placeholder|fake|invent).*?(logo|proof|company|metric|testimonial)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2400
+    }
+  ]
+}

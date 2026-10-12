@@ -47,12 +47,13 @@ A completed `model-3d` task always receives the dedicated `review-3d` Astra gate
 Material web-design tasks use `scripts/web_design_router.py` before ordinary implementation routing.
 
 - direction: Claude Opus 5.5 / high;
+- optional comp generation: Codex GPT-6.1 Sol orchestrating a configured GPT Image renderer; auto for surface/redesign when available;
 - implementation: Codex GPT-6.1 Sol, medium by default and high for full redesign;
 - rendered review: fresh Claude, Sonnet/high for refine/surface and Opus 5.5/high for full redesign.
 
 Inspo is a preferred Claude-side evidence capability, not a requirement and never visual authority. Browser/Playwright-style tooling is preferred for implementation/review evidence. A material web-design task cannot reach visual PASS from source inspection alone; missing credible rendered evidence yields `BLOCKED` at the design-review gate.
 
-The lane preserves provider separation: the director decides, Codex builds, a fresh Claude reviewer judges the rendered result. Normal model economics do not downgrade the director or builder within this specialist lane.
+The lane preserves provider separation: the director decides, Codex may first generate design-system-grounded desktop/mobile comps, Codex builds from the approved contract/comp, and a fresh Claude reviewer judges the rendered result including the anti-slop gate. Normal model economics do not downgrade the director or builder within this specialist lane.
 
 ## Preferred Codex registry
 

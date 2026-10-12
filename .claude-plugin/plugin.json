@@ -1,8 +1,8 @@
 {
   "name": "gearbox",
   "displayName": "Gearbox",
-  "version": "1.11.0",
-  "description": "Claude Code engineering orchestration with intent-first shaping, capability-aware routing, web-design direction, motion/3D game-dev specialists, Codex implementation lanes, test-suite pruning/hardening, rendered review, evidence reuse, and durable memory.",
+  "version": "1.12.0",
+  "description": "Claude Code engineering orchestration with intent-first shaping, capability-aware routing, anti-slop web-design direction, Codex-driven visual comp generation, motion/3D game-dev specialists, test-suite pruning/hardening, rendered review, evidence reuse, and durable memory.",
   "author": {
     "name": "Bambijow"
   },
@@ -95,7 +95,11 @@
     "visual-review",
     "responsive-design",
     "accessibility-ui",
-    "inspo"
+    "inspo",
+    "ai-slop",
+    "visual-comp",
+    "image-generation",
+    "comp-led-design"
   ],
   "skills": [
     "./skills/setup",

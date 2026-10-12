@@ -2,78 +2,78 @@
 
 Review rendered output, not only source code.
 
-## Fresh reviewer
+## Fresh reviewer packet
 
-The reviewer did not direct or implement the design. It receives:
+The reviewer receives:
 
 - approved design contract;
+- approved desktop/mobile comps when comp-led;
 - target routes/states;
 - desktop and mobile/narrow captures from the same build;
 - relevant interaction/runtime evidence;
 - changed UI paths;
-- any intentionally deferred states.
+- intentionally deferred states.
 
-Judge the artifact against the contract and user job, not personal taste.
+Judge against the contract and user job, not personal taste.
+
+## AI-slop gate
+
+Read `references/web-design-anti-slop.md` and return:
+
+```text
+SLOP_GATE: PASS | REPAIR
+```
+
+A technically clean render still needs `REPAIR` when it visibly falls back to unearned model defaults. A listed pattern is not automatically wrong; flag it only when unsupported by the brief, incumbent system, content structure, or approved contract.
+
+Visual `PASS` requires `SLOP_GATE: PASS`.
+
+## Comp fidelity
+
+When an approved comp exists, compare the implementation to both contract and comp.
+
+The comp governs composition, hierarchy, material treatment and visual rhythm. Do not demand pixel identity when real content, browser behavior, responsive logic or accessibility requires adaptation. Product truth and contract outrank generated raster text/details.
 
 ## Review layers
 
 ### Product and hierarchy
-
-- primary job/action is obvious at intended viewing size;
-- visual hierarchy matches importance;
-- copy/content grouping supports the mode;
-- the result does not accidentally change product meaning.
+- primary job/action is obvious;
+- hierarchy matches importance;
+- grouping supports the mode;
+- product meaning is unchanged.
 
 ### Visual system
-
 - typography roles are coherent;
-- spacing/density/radii/materials are systematic rather than random;
+- spacing/density/radii/materials form a system;
 - color roles and contrast are intentional;
-- new work belongs to the existing system for refine/surface scopes;
-- redesign scope is internally coherent and fully committed rather than half-old/half-new.
+- refine/surface work belongs to the incumbent system;
+- redesign is coherent rather than half-old/half-new.
 
 ### Responsive and states
-
-Inspect desktop and mobile/narrow in the same review pass. Check major intermediate behavior when the layout has a known risk.
-
-Verify relevant:
-
-- overflow/clipping;
-- navigation collapse;
-- content reordering;
-- touch target/focus states;
-- empty/loading/error/disabled states;
-- long content / i18n-sensitive regions;
-- zoom/reflow-sensitive areas.
+Inspect desktop and mobile/narrow together. Check overflow, nav collapse, reordering, touch/focus states, empty/loading/error/disabled states, long content and zoom/reflow risks.
 
 ### Accessibility
-
-Check obvious color contrast, keyboard/focus behavior, names/labels, landmarks/semantics where visible to tooling, reduced motion, and whether error/status information is perceivable. Specialized accessibility tooling remains stronger evidence when available.
+Check obvious contrast, keyboard/focus, labels/names, landmarks/semantics where tooling exposes them, reduced motion and perceivable status/errors.
 
 ### Motion and polish
-
-Motion should explain change, hierarchy or causality. Flag gratuitous animation, competing motion, bad easing, jank and missing reduced-motion behavior.
-
-Polish findings must have a concrete visual consequence. Do not manufacture pixel-level churn once the quality bar is met.
+Motion should explain hierarchy, causality or spatial relationship. Flag gratuitous repetition, jank and missing reduced-motion behavior.
 
 ## Bounded finish loop
 
-One finish cycle means:
-
-1. capture desktop + mobile/narrow and inspect them together;
+1. capture desktop + mobile/narrow;
 2. collect all validated findings in one batch;
 3. repair the batch;
 4. capture once more to confirm;
-5. stop.
+5. stop ordinary polish.
 
-Do not run endless screenshot -> tiny edit -> screenshot loops. A blocker discovered in confirmation may re-enter normal repair, but ordinary polish does not reopen the finish cycle.
+Do not run endless screenshot/tiny-edit loops.
 
 ## Verdict
 
-Use:
+Return `SLOP_GATE` first, then:
 
-- `PASS`: contract met; no material visual/UX defect remains;
-- `REPAIR`: concrete contract/responsive/accessibility/runtime defects remain;
-- `BLOCKED`: rendered evidence is unavailable or a missing product/design decision prevents fair judgment.
+- `PASS`: contract met, SLOP_GATE passes, no material defect remains;
+- `REPAIR`: concrete contract/comp/responsive/accessibility/runtime defects remain;
+- `BLOCKED`: rendered evidence is unavailable or a missing decision prevents fair judgment.
 
-A meaningful web-design task cannot claim visual PASS from static code inspection alone.
+A material web-design task cannot claim visual PASS from source inspection alone.

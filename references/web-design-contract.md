@@ -2,73 +2,78 @@
 
 Web design work is a production decision surface, not a request for decorative CSS.
 
-## 1. Resolve visual authority
+## Resolve visual authority
 
 Before inventing anything, inspect the strongest existing authority:
 
-1. explicit user brief / approved design direction;
-2. existing DESIGN.md or equivalent design-system documentation;
-3. repository tokens, shared components, layouts and representative shipped screens;
+1. explicit user brief / approved direction;
+2. DESIGN.md or equivalent;
+3. repository tokens, components, layouts and representative shipped screens;
 4. current screenshots/goldens;
 5. category convention only when nothing stronger exists.
 
 A missing DESIGN.md does not make an established product visually greenfield.
 
-## 2. Pick the surface mode
+## Surface mode
 
-Use one mode for the surface being changed:
+Use one mode for the surface:
 
-- **Persuade**: help a visitor decide and act, such as landing/pricing/marketing.
-- **Operate**: help a user complete work, such as dashboards, editors and settings.
-- **Read**: optimize comprehension and wayfinding, such as docs/articles/changelogs.
-- **Experience**: let the work itself lead, such as portfolios, showcases and galleries.
+- **Persuade**: help a visitor decide and act.
+- **Operate**: help a user complete work.
+- **Read**: optimize comprehension and wayfinding.
+- **Experience**: let the work itself lead.
 
-The product category does not decide the mode. A developer tool landing page is Persuade; its dashboard is Operate.
-
-## 3. Pick the scope
+## Scope
 
 ### Refine
-
-Preserve identity, product truth, behavior and content outside the requested change. Do not use a narrow task as permission to invent a new visual language.
+Preserve identity, truth, behavior and content outside the requested change.
 
 ### Surface
-
-Create a substantial new page/flow inside the established design world. Extend the system coherently.
+Create a substantial new page/flow inside the established visual world.
 
 ### Redesign
+Replace the visual world only with explicit authorization. Preserve product truth and functional constraints.
 
-Replace the visual world only with explicit authorization. Preserve product truth, capabilities, content constraints and native/user expectations while treating the incumbent look as evidence rather than visual authority.
+## Anti-slop direction gate
 
-## 4. Design contract
+Read `references/web-design-anti-slop.md`. For `surface` and `redesign`, the director MUST name the category rut, choose at least two product-grounded departures, define one product-shaped signature device, and record slop risks. Generic composition with no deliberate justification is not direction-complete.
 
-Record only decisions implementation cannot safely improvise:
+For `refine`, preserve the incumbent world and address generic habits only inside scope.
+
+## Design contract
+
+Record decisions implementation cannot safely improvise:
 
 - audience / primary job / success condition;
 - mode and scope;
-- incumbent visual authority and what must remain unchanged;
-- visual thesis in one short paragraph;
+- incumbent authority and what must remain unchanged;
+- visual thesis;
 - macrostructure / information hierarchy;
 - typography roles and scale;
 - palette/tokens and contrast intent;
-- spacing, density, radii/material treatment when materially distinctive;
-- component language / repeated interaction patterns;
-- responsive behavior at meaningful breakpoints;
+- spacing, density, radii/material treatment;
+- component language;
+- responsive behavior;
 - loading/empty/error/disabled/focus states;
 - motion grammar and reduced-motion behavior;
 - accessibility constraints;
 - source/evidence references and anti-references;
+- category rut and slop risks when applicable;
 - intentional departures from category gravity;
-- first-viewport / key-state description;
+- product-shaped signature device;
+- first viewport / key-state description;
 - verification surfaces and target viewports.
 
-Do not transcribe implementation code. The contract is design authority for the build, not a CSS spec.
+The contract is design authority for the build, not a CSS transcript.
 
-## 5. Durable design context
+## Durable design context
 
-Reuse existing design-system docs when present. For a run, keep the working contract in the run artifacts. Only create/update a durable DESIGN.md or equivalent when the user explicitly approves a new/replacement visual world or the repository already treats that file as canonical.
+Reuse existing design-system docs. Keep the working contract in run artifacts. Only update a durable DESIGN.md/equivalent when the user explicitly approves a new visual world or the repository already treats that file as canonical.
 
-Local refinements should not churn global design documentation.
+## Comp handoff
 
-## 6. Motion handoff
+When comp generation is enabled, read `references/web-design-comp-generation.md`. The comp visualizes an already-decided system. It does not replace the contract.
 
-When motion is structurally important, point to the existing `motion-design` contract instead of improvising animation inside the builder packet. The web contract still owns why/where motion matters; the motion lane owns timing and execution detail.
+## Motion handoff
+
+When motion is structurally important, delegate timing/execution to the existing `motion-design` lane.

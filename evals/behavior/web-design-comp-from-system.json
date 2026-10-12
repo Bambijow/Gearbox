@@ -1,0 +1,30 @@
+{
+  "name": "web comps derive from design system before coding",
+  "context_files": [
+    "skills/web-design/SKILL.md",
+    "references/web-design-comp-generation.md"
+  ],
+  "prompt": "A new product surface has an approved design system and image generation is available. Explain the comp-led sequence before frontend implementation and which model owns each step.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)opus.*(design|contract|approve)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)codex.*gpt-6\\.1[- ]sol.*(comp|image|generate)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(desktop|mobile).*comp"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(approve|approved).*before.*(build|implement)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2200
+    }
+  ]
+}

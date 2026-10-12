@@ -33,10 +33,11 @@ The sequence is:
 
 1. fresh Opus 5.5 design director resolves visual authority, mode/scope and the design contract;
 2. optional Inspo evidence calibrates references without cloning them;
-3. Codex GPT-6.1 Sol implements the approved contract;
-4. capture desktop + mobile/narrow rendered evidence;
-5. fresh Claude design review runs one bounded batched review, one repair batch, and at most one confirmation;
-6. meaningful user flows enter `dogfood` when browser/E2E tooling is available.
+3. for surface/redesign, Codex Sol generates design-system-grounded desktop/mobile comps when the comp policy and image-generation path allow it; Opus approves at most one targeted revision;
+4. Codex GPT-6.1 Sol implements the approved contract and approved comp when present;
+5. capture desktop + mobile/narrow rendered evidence;
+6. fresh Claude design review runs the explicit `SLOP_GATE`, one bounded batched review, one repair batch, and at most one confirmation;
+7. meaningful user flows enter `dogfood` when browser/E2E tooling is available.
 
 Material motion delegates to the existing motion-design lane. Missing rendered evidence blocks visual PASS rather than turning source inspection into fake design confidence.
 

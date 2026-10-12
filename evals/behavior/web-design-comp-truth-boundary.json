@@ -1,0 +1,26 @@
+{
+  "name": "generated comp never overrides product truth",
+  "context_files": [
+    "references/web-design-comp-generation.md",
+    "agents/web-builder-dispatcher.md"
+  ],
+  "prompt": "A generated comp contains a fake customer logo and slightly wrong marketing copy, but its composition is good. What should the web builder treat as authoritative?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(contract|product truth|exact copy).*?(authorit|wins|source)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(not|never).*?(fake|generated).*?(logo|claim|copy|truth)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)comp.*?(composition|hierarchy|material|visual)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

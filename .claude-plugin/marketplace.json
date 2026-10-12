@@ -8,7 +8,7 @@
     {
       "name": "gearbox",
       "source": "./",
-      "description": "Gearbox: capability-aware Claude/Codex engineering, web-design and game-dev orchestration with Opus-directed visual systems, Codex implementation, Inspo evidence, motion/3D lanes, test cleanup/hardening, and durable memory.",
+      "description": "Gearbox: capability-aware Claude/Codex engineering, anti-slop web-design with Codex-driven visual comps, game-dev orchestration, motion/3D lanes, test cleanup/hardening, rendered review, evidence reuse, and durable memory.",
       "category": "engineering",
       "keywords": [
         "engineering",
@@ -93,7 +93,11 @@
         "visual-review",
         "responsive-design",
         "accessibility-ui",
-        "inspo"
+        "inspo",
+        "ai-slop",
+        "visual-comp",
+        "image-generation",
+        "comp-led-design"
       ]
     }
   ]
