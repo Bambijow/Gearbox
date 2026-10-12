@@ -61,6 +61,18 @@ jobs:
         run: python3 scripts/routing_advisor.py --self-test
       - name: Orchestration registry lint self-test
         run: python3 scripts/registry_lint.py --self-test
+      - name: Controlled review fusion self-test
+        run: python3 scripts/review_plan.py --self-test
+      - name: Historical test impact self-test
+        run: python3 scripts/test_impact.py --self-test
+      - name: Incremental repo facts cache self-test
+        run: python3 scripts/repo_facts_cache.py --self-test
+      - name: Approval-safe precompute self-test
+        run: python3 scripts/precompute.py --self-test
+      - name: Adaptive quality depth self-test
+        run: python3 scripts/quality_depth.py --self-test
+      - name: Read-only dispatch packing self-test
+        run: python3 scripts/readonly_pack.py --self-test
       - name: Codex worker isolation/capability self-test
         run: python3 scripts/codex_worker.py --self-test
       - name: Run-state plan approval self-test

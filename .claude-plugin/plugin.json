@@ -1,8 +1,8 @@
 {
   "name": "gearbox",
   "displayName": "Gearbox",
-  "version": "1.16.0",
-  "description": "Claude Code engineering orchestration as an incremental runtime: critical-path scheduling, minimal probes/checks, automatic evidence dependencies, safe cross-run read-only cache, proof coverage, gap-driven review, adaptive economics, bounded context, and specialist web/game-dev lanes.",
+  "version": "1.17.0",
+  "description": "Claude Code engineering orchestration with controlled reviewer fusion, historical test-impact ranking, content-hashed repo-facts, approval-safe deterministic precompute, adaptive quality depth, read-only dispatch packing, and the existing incremental evidence runtime.",
   "author": {
     "name": "Bambijow"
   },
@@ -131,7 +131,13 @@
     "read-only-cache",
     "coverage-matrix",
     "gap-driven-review",
-    "adaptive-routing"
+    "adaptive-routing",
+    "review-fusion",
+    "test-impact",
+    "repo-facts-cache",
+    "approval-precompute",
+    "adaptive-quality-depth",
+    "read-only-packing"
   ],
   "skills": [
     "./skills/setup",

@@ -1,0 +1,26 @@
+{
+  "name": "deterministic precompute is allowed before plan approval but dispatch is not",
+  "context_files": [
+    "references/incremental-runtime.md",
+    "references/engineering-loop.md"
+  ],
+  "prompt": "The exact DAG is waiting for human plan approval. What work may Gearbox do now, and may it launch implementation/reviewer agents?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(precompute|deterministic).*?(quality|probe|verification|route|context|repo)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(zero|0).*?(model|worker)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|cannot|must not).*?(implementation|reviewer|worker).*?(dispatch|launch)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2200
+    }
+  ]
+}

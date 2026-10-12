@@ -110,11 +110,15 @@ Compile task/reviewer packets through `context_compiler.py` and persist their ha
 
 Read `references/incremental-runtime.md`.
 
-After quality compilation:
+Before approval, `precompute.py` may compile deterministic artifacts with zero model/worker dispatches. After quality compilation:
 
+- `repo_facts_cache.py` reuses content-hashed repository structural facts;
 - `probe_plan.py` derives the minimal artifact union per shared probe group;
-- `verification_plan.py` derives the targeted repository-native check set from the repository verification catalog;
+- `verification_plan.py` derives the targeted repository-native check set; `test_impact.py` ranks that set from measured history without dropping required checks;
 - `evidence_deps.py` may derive bounded local import dependencies for scoped evidence fingerprints;
+- `quality_depth.py` may escalate evidence depth from runtime signals without changing gate requiredness;
+- `review_plan.py` fuses only compatible gate reviews while preserving separate envelopes;
+- `readonly_pack.py` packs compatible non-independent read-only work;
 - `coverage_matrix.py` makes proof gaps explicit before final review;
 - `result_cache.py` may reuse exact-fingerprint immutable read-only results across runs;
 - `routing_advisor.py` may provide an economic tie-breaker only inside normal safety/model policy;

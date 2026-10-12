@@ -36,11 +36,12 @@ Prefer vertical integration over horizontal "all models / all services / all tes
 
 Before finalizing the plan:
 
-1. classify expected owned/touch paths with `scripts/change_surface.py`;
+1. reuse deterministic structural facts through `scripts/repo_facts_cache.py`, then classify expected owned/touch paths with `scripts/change_surface.py`;
 2. compile the provisional quality plan with `scripts/quality_plan.py` using the repository/default quality profile;
 3. persist the quality-plan path/id with the run;
-4. compile the minimal probe artifact plan and targeted repository verification plan from the verification catalog;
-5. include only **required** gates, shared probe groups and selected checks in the human plan summary.
+4. compile the minimal probe artifact plan and targeted repository verification plan; rank checks with historical test impact when samples exist;
+5. run deterministic `scripts/precompute.py` for routes/context hashes/scheduler snapshot without model or worker spend;
+6. include only **required** gates, shared probe groups and selected checks in the human plan summary.
 
 Quality profiles change evidence depth, not whether required correctness/safety gates are true. Do not manually add every available specialist gate.
 

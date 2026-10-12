@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "policy": "Single declarative source for specialist routing, implicit consequence surfaces, static model/effort identities, gate triggers/artifact needs, scheduling defaults, quality profiles, and safe adaptation bounds. Runtime code keeps dynamic mechanics only.",
+  "policy": "Single declarative source for specialist routing, implicit consequence surfaces, static model/effort identities, gate triggers/artifact needs, scheduling, controlled review fusion, adaptive depth, read-only packing, and safe telemetry bounds.",
   "task_routes": {
     "asset-image": {
       "router": "game_asset"
@@ -433,5 +433,80 @@
     ],
     "never_override_registered_specialist_routes": true,
     "never_promote_to_frontier_from_telemetry": true
+  },
+  "review_fusion": {
+    "enabled": true,
+    "max_risk": "medium",
+    "allowed_profiles": [
+      "dev",
+      "standard"
+    ],
+    "excluded_task_kinds": [
+      "creative-web",
+      "security-audit"
+    ],
+    "packs": [
+      {
+        "id": "ui-quality",
+        "gates": [
+          "SLOP_GATE",
+          "INTERACTION_GATE",
+          "A11Y_GATE",
+          "CONTENT_GATE"
+        ],
+        "provider": "claude",
+        "model": "sonnet",
+        "effort": "high",
+        "agent": "quality-gate-reviewer",
+        "require_shared_probe_group": "experience",
+        "min_members": 2,
+        "max_members": 4
+      }
+    ]
+  },
+  "quality_depth": {
+    "mode": "escalate-only",
+    "repair_cycle_threshold": 2,
+    "silent_finding_min_profile": "release",
+    "integration_repair_step": 1,
+    "high_risk_min_profile": "release",
+    "critical_risk_profile": "critical",
+    "never_remove_required_gates": true
+  },
+  "readonly_packing": {
+    "enabled": true,
+    "allowed_kinds": [
+      "research",
+      "review",
+      "gate",
+      "analysis",
+      "static-check",
+      "route"
+    ],
+    "max_members": 6,
+    "require_same_provider": true,
+    "require_same_model": true,
+    "require_same_effort": true,
+    "require_same_context_fingerprint": true,
+    "forbid_independent_judgment": true
+  },
+  "test_impact": {
+    "mode": "rank-only",
+    "min_samples": 5,
+    "bucket_depth": 2,
+    "never_drop_required_checks": true
+  },
+  "repo_facts_cache": {
+    "enabled": true,
+    "cache_scope": "user-xdg-per-repo",
+    "supported_kinds": [
+      "package-json",
+      "tsconfig-json",
+      "pyproject-toml",
+      "cargo-toml",
+      "go-mod",
+      "workflow-yaml",
+      "requirements"
+    ]
   }
 }

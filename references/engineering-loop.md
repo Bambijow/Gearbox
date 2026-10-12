@@ -95,11 +95,13 @@ Compile worker/reviewer handoffs through `scripts/context_compiler.py`; persist 
 
 Read `references/incremental-runtime.md`.
 
+- Reuse content-hashed structural facts with `repo_facts_cache.py`.
 - Use `frontier_scheduler.py` for ready-frontier dispatch order/batching.
 - Compile minimal probe artifacts with `probe_plan.py`.
-- Compile repository checks with `verification_plan.py`; do not default to the broadest suite.
+- Compile repository checks with `verification_plan.py`, then rank them with `test_impact.py`; history never removes required checks.
 - Derive local evidence dependencies with `evidence_deps.py` when safe, otherwise exact-SHA.
-- Query `result_cache.py` before cacheable read-only dispatches.
+- Query `result_cache.py` before cacheable read-only dispatches and use `readonly_pack.py` for compatible non-independent read-only tasks.
+- Adapt evidence depth with `quality_depth.py` after runtime/repair signals, then compile controlled gate-review fusion with `review_plan.py`.
 - Compile requirement/proof coverage before final review.
 - Feed quality aggregate + coverage gaps into `final_review_router.py`.
 - Record task kind/effort/outcome in usage telemetry and consult `routing_advisor.py` only as a safety-bounded economic tie-breaker.
@@ -143,7 +145,7 @@ Every gap becomes DEDUCED, ASSUMED, or QUESTION. Only low-impact reversible engi
 
 `--auto` never bypasses this gate. While `SPEC_BLOCKED`, do not perform model preflight, dispatch workers/reviewers, create task worktrees, or consume implementation budgets. `/resume` continues from the stored questions after the user answers.
 
-Repository facts gathered to settle clarifications are reused later; do not pay for the same reconnaissance twice.
+Repository facts gathered to settle clarifications are reused later; do not pay for the same reconnaissance twice. Seed deterministic structural facts through `repo_facts_cache.py` so unchanged manifests/configs are not reparsed every run.
 
 ## Domain language before architecture
 
@@ -182,6 +184,8 @@ After plan validation and concrete task/reviewer routing are known, persist the 
 - with `--auto`: call `run_state.py plan-await --auto` and continue;
 - without `--auto`: call `run_state.py plan-await`, present a compact plan summary, release the run lock, and **stop before creating worktrees or dispatching implementation/review agents**.
 
+Before presenting or while waiting at this gate, Gearbox may run `precompute.py` and persist its deterministic artifacts. It must report zero model calls and zero worker dispatches; this does not authorize implementation.
+
 The summary should include task ids/outcomes, initial ready frontier, engine/model/effort routing, Review Focus, material risk/human gates, and expected worker/review topology. Do not paste the full DAG unless asked.
 
 A pending gate is `status=AWAITING_APPROVAL`, `phase=PLAN`, `blocker.code=PLAN_APPROVAL_REQUIRED`. No worker/Codex/reviewer/model-escalation budget can be consumed while it is pending.
@@ -195,7 +199,7 @@ On explicit approval, reacquire the run lock and call `run_state.py plan-approve
 1. Normalize intake and create or reuse the minimal spec.
 2. Run the spec clarification gate; stop at `SPEC_BLOCKED` when required.
 3. Reconcile architecture facts once, reusing facts already gathered during clarification.
-4. Build and pre-flight the lean DAG once using `references/planning-contract.md`; run `plan_guard.py`, classify expected change surfaces, compile/persist the provisional quality plan, resolve specialist routes through `route_task.py`, then pass the human plan approval gate.
+4. Build and pre-flight the lean DAG once using `references/planning-contract.md`; run `plan_guard.py`, classify expected change surfaces, run deterministic `precompute.py` (quality/probe/checks/routes/context hashes/repo facts), then pass the human plan approval gate. Live capability preflight still happens after approval.
 5. Execute `references/frontier-scheduling.md`: run the deterministic frontier scheduler, then dispatch its selected task/batch units. For background/long-lived delegated work apply `references/worker-lifecycle.md`: register the child/artifact before dispatch and avoid tight polling. Every product edit, including tiny edits and test/doc changes, belongs to a worker.
 6. Workers use RED -> GREEN -> REFACTOR where the failing check provides real signal. Before returning they synchronize the latest integration tip into their task branch/worktree, rerun focused verification, and report `integration_base_sha`, `head_sha`, actual diff/evidence and preferably one local unpushed task commit.
 7. Inspect every worker diff centrally without editing it. In `hybrid`, resolve and run exactly one opposite-provider task review before integration: Claude implementation → Codex review; Codex implementation → Claude review. The review is task-scoped and returns SPEC then QUALITY verdicts.
@@ -203,10 +207,10 @@ On explicit approval, reacquire the run lock and call `run_state.py plan-approve
 9. After the task review gate passes, delegate mechanical integration to `integrator`. Integration conflicts become repair tasks.
 10. After each accepted integration, delegate affected focused checks to `verifier`, but query reusable exact-SHA evidence first so identical valid checks are not rerun. Update task status, recompute the ready frontier, and immediately dispatch any newly-ready non-conflicting tasks.
 11. Run the post-integration `ponytail-simplifier` gate.
-12. Refresh the compiled quality plan from actual changed paths. Query reusable evidence first; collect each required shared probe group once, then run only required gate reviewers and persist normalized gate envelopes.
+12. Refresh the compiled quality plan from actual changed paths, adapt depth with `quality_depth.py`, query reusable evidence, collect each shared probe group once, then compile `review_plan.py`. Use fused gate review only when the plan permits it; otherwise keep reviewers separate. Persist normalized gate envelopes either way.
 13. Aggregate required gates and compile the requirement/proof coverage matrix. REPAIR/BLOCKED quality or blocked proof results enter ordinary finding/repair machinery.
 14. Route the simplified integrated diff through `references/final-review-routing.md` and `scripts/final_review_router.py`, reusing gate evidence instead of duplicating specialist reviews. Persist the selected mode in `state.final_review`.
-15. Delegate remaining repository-native verification to `verifier`, reusing exact-SHA or explicitly scoped evidence.
+15. Compile targeted verification, apply historical test-impact ranking, then delegate remaining checks to `verifier`. Record check outcome/duration back to the test-impact ledger and reuse exact-SHA or explicitly scoped evidence.
 
 Record reusable surprises as compact learning candidates while they are fresh. Do not invoke `/learn` yet just because something was interesting.
 

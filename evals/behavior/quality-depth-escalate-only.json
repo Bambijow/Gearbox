@@ -1,0 +1,25 @@
+{
+  "name": "adaptive quality depth escalates without removing gates",
+  "context_files": [
+    "references/incremental-runtime.md"
+  ],
+  "prompt": "A standard-profile UI run reaches two repair cycles and uncovers a silent failure. May Gearbox respond by reducing the A11Y state matrix to save time?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|must not|cannot)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(escalat|release|deeper|expand)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(A11Y|gate).*?(remain|required|unchanged)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

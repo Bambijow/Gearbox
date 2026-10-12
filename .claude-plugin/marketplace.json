@@ -8,7 +8,7 @@
     {
       "name": "gearbox",
       "source": "./",
-      "description": "Gearbox: capability-aware Claude/Codex orchestration with an incremental runtime, critical-path scheduling, minimal probes/checks, scoped evidence, safe read-only caching, proof coverage, gap-driven review, web/creative design and game-dev lanes.",
+      "description": "Gearbox: incremental Claude/Codex orchestration with controlled reviewer fusion, historical test-impact ranking, cached repo facts, deterministic precompute before approval, adaptive quality depth, safe read-only dispatch packing, web/creative and game-dev lanes.",
       "category": "engineering",
       "keywords": [
         "engineering",
@@ -129,7 +129,13 @@
         "read-only-cache",
         "coverage-matrix",
         "gap-driven-review",
-        "adaptive-routing"
+        "adaptive-routing",
+        "review-fusion",
+        "test-impact",
+        "repo-facts-cache",
+        "approval-precompute",
+        "adaptive-quality-depth",
+        "read-only-packing"
       ]
     }
   ]

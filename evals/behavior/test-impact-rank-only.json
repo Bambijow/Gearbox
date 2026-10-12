@@ -1,0 +1,25 @@
+{
+  "name": "historical test impact ranks but never drops required checks",
+  "context_files": [
+    "references/incremental-runtime.md"
+  ],
+  "prompt": "Historical data says a targeted UI test often fails for Button.tsx changes while the full suite almost never does. Can Gearbox skip the full suite if the verification catalog says it is required for the current profile?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|cannot|must not).*?(skip|drop)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(rank|priorit).*?(targeted|UI test|check)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(required).*?(remain|still|required)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

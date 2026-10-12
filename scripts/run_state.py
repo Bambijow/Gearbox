@@ -12,7 +12,7 @@ import tempfile
 import time
 from pathlib import Path
 
-SCHEMA_VERSION=8
+SCHEMA_VERSION=9
 DEFAULT_BUDGETS={
     "max_cycles":3,
     "max_worker_dispatches":10,
@@ -82,10 +82,10 @@ def normalize(d):
     if "context_packets" not in d:
         d["context_packets"]={}; changed=True
     if "runtime_plans" not in d:
-        d["runtime_plans"]={"scheduler":None,"verification":None,"coverage":None,"probe":None,"routing_advice":{}}; changed=True
+        d["runtime_plans"]={"scheduler":None,"verification":None,"coverage":None,"probe":None,"review":None,"quality_depth":None,"readonly_packs":None,"precompute":None,"repo_facts":None,"routing_advice":{}}; changed=True
     else:
         rp=d["runtime_plans"]
-        for k,v in {"scheduler":None,"verification":None,"coverage":None,"probe":None,"routing_advice":{}}.items():
+        for k,v in {"scheduler":None,"verification":None,"coverage":None,"probe":None,"review":None,"quality_depth":None,"readonly_packs":None,"precompute":None,"repo_facts":None,"routing_advice":{}}.items():
             if k not in rp:
                 rp[k]=v; changed=True
     if "cache" not in d:
@@ -127,7 +127,7 @@ def init(run,run_id):
         "repair_findings":{"policy":{"same_strategy_limit":2,"max_attempts_per_finding":5},"items":{}},
         "quality":{"profile":"standard","plan_path":None,"plan_id":None,"gate_results":{},"experience_bundles":[]},
         "context_packets":{},
-        "runtime_plans":{"scheduler":None,"verification":None,"coverage":None,"probe":None,"routing_advice":{}},
+        "runtime_plans":{"scheduler":None,"verification":None,"coverage":None,"probe":None,"review":None,"quality_depth":None,"readonly_packs":None,"precompute":None,"repo_facts":None,"routing_advice":{}},
         "cache":{"hits":0,"misses":0,"items":[]},
         "clarification":{"status":"UNSET","round":0,"questions":[],"answers":{}},
         "plan_approval":default_plan_approval(required=True),
@@ -255,7 +255,7 @@ def self_test():
         assert d["plan_approval"]["required"] is True
         assert d["quality"]["profile"]=="standard" and d["quality"]["gate_results"]=={}
         assert d["context_packets"]=={}
-        assert d["runtime_plans"]["scheduler"] is None and d["cache"]["hits"]==0
+        assert d["runtime_plans"]["scheduler"] is None and d["runtime_plans"]["review"] is None and d["runtime_plans"]["precompute"] is None and d["cache"]["hits"]==0
         assert plan_gate_problem(d)
         set_plan_approval(d,str(plan),auto=False)
         assert d["status"]=="AWAITING_APPROVAL"

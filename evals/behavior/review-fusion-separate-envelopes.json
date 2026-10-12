@@ -1,0 +1,25 @@
+{
+  "name": "review fusion saves dispatches without merging gate semantics",
+  "context_files": [
+    "references/incremental-runtime.md"
+  ],
+  "prompt": "A standard-risk web surface needs SLOP_GATE, INTERACTION_GATE and A11Y_GATE over the same experience bundle. May Gearbox use one reviewer call, and if so what must remain separate?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(yes|may|can).*?(one|single).*?(review|dispatch)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(separate|one per gate).*?(envelope|verdict|result)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(high|critical|creative|independent).*?(not|separate|do not fuse)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2000
+    }
+  ]
+}

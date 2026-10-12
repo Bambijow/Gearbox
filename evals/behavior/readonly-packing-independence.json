@@ -1,0 +1,25 @@
+{
+  "name": "read-only dispatch packing preserves independent judgments",
+  "context_files": [
+    "references/incremental-runtime.md"
+  ],
+  "prompt": "Two small analyses share the same model and context and do not need independent judgment, while a third task is an adversarial reviewer whose freshness is the point. What may Gearbox pack?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(two|small analyses|analysis).*?(pack|one dispatch)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(adversarial|independent|fresh).*?(separate|not.*pack|must not)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(separate).*?(output|member|contract)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

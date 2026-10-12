@@ -121,3 +121,73 @@ For cacheable read-only work:
 4. on miss, dispatch normally and cache only the immutable validated result.
 
 Record hit/miss state in the run so retrospectives can quantify avoided dispatches.
+
+
+## Controlled gate-review fusion
+
+After shared probe collection and quality-depth resolution, compile the reviewer topology with `scripts/review_plan.py`.
+
+For compatible low/medium-risk UI gates in dev/standard profiles, one fresh Sonnet reviewer may evaluate multiple gates over the same immutable bundle. It still emits **one normalized envelope per gate**. A failing A11Y gate cannot be hidden by a passing SLOP gate.
+
+Do not fuse when fresh independent judgment is itself valuable: high/critical risk, creative-web, performance adjudication, security/trust boundaries, or any task explicitly marked independent.
+
+Persist dispatches saved and fused gate membership under `state.runtime_plans.review`.
+
+## Historical test impact
+
+Repository checks may be ranked by `scripts/test_impact.py`, using prior changed-path/check outcomes stored outside the repository in the user/XDG cache.
+
+History is rank-only:
+
+- historically sensitive checks run earlier;
+- insufficient samples have low confidence;
+- required checks remain required;
+- a history of green runs is never permission to delete or skip proof.
+
+Record each completed check outcome/duration back to the ledger when available.
+
+## Incremental repository facts
+
+Use `scripts/repo_facts_cache.py` for deterministic structural facts from package manifests, tsconfig, pyproject/Cargo/go.mod, requirements and workflow files.
+
+Facts are cached by content hash. An unchanged file is not reparsed on every run. The cache stores extracted configuration facts, not model-written architecture summaries.
+
+Feed the compact returned facts into `repo-facts.md`; keep product/domain reconnaissance separate.
+
+## Deterministic precompute before approval
+
+Once the exact plan exists, Gearbox may run `scripts/precompute.py` **before human approval** because it performs deterministic artifact work only:
+
+- quality/probe/verification plans;
+- historical test-impact ranking;
+- scheduler snapshot;
+- specialist route snapshot from known capabilities;
+- compiled context packet hashes;
+- repo-facts cache lookup.
+
+The result explicitly reports `model_calls: 0`, `worker_dispatches: 0`, and `approval_safe: true`.
+
+This does not authorize implementation. Live capability preflight and every worker/reviewer dispatch still wait for plan approval.
+
+## Adaptive quality depth
+
+After integration and during repair cycles, run `scripts/quality_depth.py`.
+
+Depth is **escalate-only** relative to the approved base profile. Silent findings, repeated repairs, integration repairs, and high/critical risk may expand state/probe/review depth. Required gates never disappear and the system never silently drops below the user-approved profile.
+
+Persist base/effective profile and reasons under `state.runtime_plans.quality_depth`.
+
+## Read-only dispatch packing
+
+Before launching several small read-only tasks, run `scripts/readonly_pack.py`.
+
+Packing is allowed only when tasks:
+
+- use an allowed read-only kind;
+- use the same provider/model/effort/context fingerprint;
+- do not require independent judgment;
+- preserve separate member output contracts.
+
+Implementation/mutation work is never packed by this mechanism. Independent reviewers remain separate.
+
+Controlled gate fusion and generic read-only packing are complementary: gate fusion understands gate semantics; generic packing handles other same-context read-only work.

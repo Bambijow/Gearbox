@@ -304,6 +304,49 @@ Les règles destinées aux agents suivent une hiérarchie de contexte : instruct
 
 Gearbox ne suppose pas qu'écrire « utilise /gearbox:foo » dans un autre skill charge magiquement ce skill : le comportement partagé vit dans `references/`, les actions déléguées dans `agents/`, et les mécanismes déterministes dans `scripts/`.
 
+## Optimisations 1.17
+
+La 1.17 réduit encore les appels modèle et le temps mort sans ajouter de commande publique.
+
+```text
+same experience + compatible low/medium gates
+  → review_plan.py
+  → one reviewer call
+  → separate gate envelopes
+
+verification candidates
+  → test_impact.py
+  → historically sensitive checks first
+  → required checks never disappear
+
+package/tsconfig/pyproject/workflows unchanged
+  → repo_facts_cache.py
+  → content-hash cache hit
+
+plan awaiting approval
+  → precompute.py
+  → quality/probe/checks/routes/context hashes/scheduler
+  → 0 model calls / 0 workers
+
+runtime uncertainty rises
+  → quality_depth.py
+  → standard → release → critical as needed
+  → gate requiredness unchanged
+
+small same-context read-only tasks
+  → readonly_pack.py
+  → fewer dispatches
+  → separate member outputs
+```
+
+La fusion de gates est volontairement étroite : UI low/medium, profils dev/standard, même shared probe. Les reviews dont la fraîcheur/indépendance fait partie du signal restent séparées, notamment creative-web, perf sensible et frontières à fort risque.
+
+Le test-impact historique ne supprime jamais un check imposé par le verification catalog. Il sert uniquement à faire arriver le signal le plus probable plus tôt.
+
+Le precompute est autorisé pendant l'attente d'approbation car il ne dispatch aucun modèle/worker et ne modifie pas le produit. Le live capability preflight reste post-approval.
+
+L'adaptive quality depth est **escalate-only** : un run qui révèle des repairs répétés ou un failure silencieux peut acheter davantage d'evidence, jamais moins que le profil approuvé.
+
 ## Runtime incrémental 1.16
 
 La 1.16 pousse la compilation plus loin : Gearbox essaie maintenant de recalculer **uniquement ce qu'un changement invalide**.

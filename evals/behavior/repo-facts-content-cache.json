@@ -1,0 +1,25 @@
+{
+  "name": "repo facts reuse unchanged structural files",
+  "context_files": [
+    "references/incremental-runtime.md"
+  ],
+  "prompt": "package.json and tsconfig.json are unchanged since the previous Gearbox run. Should the next run reparse them from scratch to rediscover scripts and aliases?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|should not)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(content|hash).*?(cache|unchanged|reuse)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(package|tsconfig|structural).*?(fact|script|alias)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1600
+    }
+  ]
+}
