@@ -23,7 +23,9 @@ Read:
 
 ## Route the brainstorm first
 
-Before the first detailed question, classify the request and tell the user the route briefly so they can correct it:
+For a genuinely fuzzy one-liner, first ask for one concrete moment/outcome and why it matters, then briefly play back the understood intent with guesses marked as guesses. If the request is already concrete, skip that ceremony.
+
+Then classify the request and tell the user the route briefly so they can correct it:
 
 - **spike** — a feasibility/question probe whose output is an answer/recommendation, not product code to keep;
 - **bounded** — a well-scoped change to an existing flow with at most a small number of product decisions;
@@ -123,7 +125,7 @@ The brainstorm is ready to become a spec when all of these are true:
 
 Do not keep brainstorming for cosmetic preferences or implementation details that `/plan` can decide later.
 
-Before materializing the spec, apply the same DEDUCED / ASSUMED / QUESTION classification from `references/spec-clarification.md`. Conversational brainstorm may resolve questions one at a time, but the accepted spec must have no unresolved blocking QUESTION.
+Before materializing the spec, apply the same DEDUCED / ASSUMED / QUESTION classification from `references/spec-clarification.md`. Conversational brainstorm may resolve questions one at a time, but the accepted spec must have no unresolved blocking QUESTION. For substantial architectural work, also apply that reference's fresh builder check.
 
 If a material product decision remains open, keep the conversation in brainstorm mode even with `--auto`. `--auto` is not permission to guess.
 

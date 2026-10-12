@@ -1,0 +1,26 @@
+{
+  "name": "motion design uses direction plus bounded execution",
+  "context_files": [
+    "skills/motion-design/SKILL.md",
+    "references/motion-design-workflow.md"
+  ],
+  "prompt": "A game needs a looping 3D prop animation. Blender is available to Codex, while Claude has no 3D MCP. How should Gearbox route creative direction and tool execution?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(opus.*5\\.5|claude.*opus)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(codex.*gpt-6\\.1.*sol|gpt-6\\.1.*sol.*codex)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(timing|motion|direction|hierarchy|accept)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2200
+    }
+  ]
+}

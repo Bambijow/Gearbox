@@ -1,0 +1,21 @@
+{
+  "name": "review catches unrequested public surface",
+  "context_files": [
+    "skills/review/SKILL.md"
+  ],
+  "prompt": "A small internal refactor unexpectedly adds a new public config key and a package dependency even though an existing repository helper can do the same job. What should review do?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(unrequested|public surface|scope|config key)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(dependency|package).*?(existing|stdlib|helper|unnecessary|needless)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2000
+    }
+  ]
+}

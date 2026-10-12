@@ -1,0 +1,30 @@
+{
+  "name": "3D modeling can delegate tool execution to Codex",
+  "context_files": [
+    "skills/model-3d/SKILL.md",
+    "references/model-3d-workflow.md"
+  ],
+  "prompt": "Claude has no Blender MCP, but Codex does. A bounded game-ready prop must be modeled. Describe ownership, execution model, and final review.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(opus.*5\\.5|claude.*opus)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(codex.*gpt-6\\.1.*sol|gpt-6\\.1.*sol.*codex)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(direct|own|direction|accept|supervis)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(astra|gpt-6.*astra)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2200
+    }
+  ]
+}

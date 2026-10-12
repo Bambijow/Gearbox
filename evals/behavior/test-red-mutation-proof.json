@@ -1,0 +1,22 @@
+{
+  "name": "forced red proves mutation landed",
+  "context_files": [
+    "references/test-credibility.md",
+    "references/test-hardening.md"
+  ],
+  "prompt": "A test is made red by temporarily mutating production code, but the edit command may have been a no-op. Can Gearbox trust the failing test immediately?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(diff|prove|verify|confirm).*?(mutation|edit).*?(land|appl|present)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(before|prior).*?(trust|accept).*?(red|failure)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

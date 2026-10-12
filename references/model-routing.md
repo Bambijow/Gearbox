@@ -34,10 +34,11 @@ Game-asset task kinds bypass the ordinary economy/risk router. Resolve them with
 |---|---|---|
 | `asset-image` | Codex `gpt-6.1-sol` / medium | direct model generation |
 | `pixel-art` | Codex `gpt-6.1-sol` / medium | prefer live Aseprite MCP; direct Sol fallback |
-| `model-3d` | Claude `claude-opus-5-5` / high | requires live Blender or Godot |
-| `review-3d` | Codex `gpt-6-astra` / high, read-only | requires live Blender or Godot |
+| `model-3d` | Claude `claude-opus-5-5` / high directs; Codex `gpt-6.1-sol` / high may execute | Blender/Godot on either provider; Codex delegation when useful/required |
+| `motion-design` | Claude `claude-opus-5-5` / high directs; Codex `gpt-6.1-sol` / high may execute | Blender/Godot/Aseprite on either provider |
+| `review-3d` | Codex `gpt-6-astra` / high, read-only | Blender or Godot must be available to Codex |
 
-These are hard specialist contracts. `auto`, `claude-heavy`, `codex-heavy`, `--no-codex`, normal capability economics and Astra escalation policy do not substitute another provider/model. If the forced route is unavailable, return `GAME_ASSET_ROUTE_BLOCKED`.
+These specialist identities bypass ordinary economy routing. For `model-3d` and `motion-design`, Opus remains the director/acceptance owner while the specialist router may explicitly delegate bounded tool execution to Codex Sol, including the full concrete Blender/Godot pass when that capability exists only on Codex. This is declared delegation, not a silent fallback. If neither provider can supply the needed tool surface, return `GAME_ASSET_ROUTE_BLOCKED`.
 
 A completed `model-3d` task always receives the dedicated `review-3d` Astra gate before asset readiness. When the same task also changes product code, the normal code/task review policy still applies to that code; the 3D gate is additional.
 

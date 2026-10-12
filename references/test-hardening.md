@@ -27,6 +27,8 @@ Prefer targeted mutations at the seam under test:
 - drop an error path;
 - alter a parser branch.
 
+Before interpreting a forced mutant, prove the mutation was actually applied by inspecting/diffing the mutated source or tool output against the pristine state. A no-op mutation cannot be evidence of a trustworthy red/kill.
+
 A surviving meaningful mutant means the existing tests failed to distinguish a plausible wrong program. Equivalent mutants and impossible states should be documented and excluded, not "killed" with brittle assertions.
 
 Run the smallest supported mutation scope. Repository-wide mutation by default is wasteful.

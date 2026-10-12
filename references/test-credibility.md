@@ -9,11 +9,12 @@ Apply this gate whenever Gearbox adds, strengthens, reviews, or relies on a test
 A behavior-bearing test should satisfy all applicable items:
 
 1. **Observed red** — for new/regression behavior, the test was seen fail before the fix when a safe red-capable seam exists.
-2. **Right reason** — the red failure represented the intended broken invariant, not setup noise.
-3. **Real seam** — the test exercises the production behavior/contract at a seam real callers use.
-4. **Independent expectation** — expected values come from the spec/domain rule/example, not by reusing the production computation under test.
-5. **Mutation story** — name at least one plausible production mutation that would make the test fail.
-6. **No test-only production seam** — production API/branching was not invented solely so the test could assert something callers never rely on.
+2. **Mutation reality** — if RED was forced by mutating production code, a fixture, or config, diff/inspect against the pristine state to prove the mutation actually landed before trusting the failure.
+3. **Right reason** — the red failure represented the intended broken invariant, not setup noise.
+4. **Real seam** — the test exercises the production behavior/contract at a seam real callers use.
+5. **Independent expectation** — expected values come from the spec/domain rule/example, not by reusing the production computation under test.
+6. **Mutation story** — name at least one plausible production mutation that would make the test fail.
+7. **No test-only production seam** — production API/branching was not invented solely so the test could assert something callers never rely on.
 
 ## Hard stops
 
@@ -24,6 +25,8 @@ Do not count these as behavior proof:
 - a mock-only seam that bypasses the failure chain that occurred in production;
 - an expected value computed by calling the same helper/algorithm under test;
 - a shallow test added because no stable seam exists.
+
+When more than one credible seam is possible, give each proposed seam a one-line **catches / misses** note before choosing. Prefer the smallest real seam that still catches the important failure mode.
 
 If no credible seam exists, record that as a verification/architecture finding. Keep the original red-capable reproduction as evidence when possible rather than manufacturing false confidence.
 

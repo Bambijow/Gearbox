@@ -80,6 +80,12 @@ If one answer logically determines which later question is relevant, ask the ind
 
 `/brainstorm` remains conversational. It may ask the highest-leverage question one at a time because exploration is the purpose of that entry point. Before materializing the accepted spec, however, run the same decision-completeness test and ensure no QUESTION remains unresolved.
 
+## Fresh builder check
+
+For architectural specs, or another substantial/cross-cutting spec where hidden ambiguity would be expensive, dispatch one fresh `spec-builder-checker` before acceptance. Give it the draft spec plus minimal repository pointers, not the brainstorm conversation. Its job is to identify questions a capable implementer would still need answered, not to redesign the solution.
+
+Classify every returned gap with the same DEDUCED / ASSUMED / QUESTION rules above. Resolve facts and reversible engineering defaults without user interruption; ask only material QUESTION items. A builder check that returns no material gaps is evidence of buildability, not proof that the implementation is correct.
+
 ## Persistent artifacts
 
 Persist clarification state under the transient run directory:

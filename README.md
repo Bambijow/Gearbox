@@ -1,6 +1,6 @@
 # Gearbox
 
-Gearbox est un plugin Claude Code d'orchestration d'ingénierie. Il transforme une idée, une spec ou une issue GitHub en boucle de développement contrôlée : clarification proportionnée, plan lean, DAG/ready frontier, routage Claude/Codex, workers isolés, batching des micro-tâches, tests crédibles, optimisation mesurée, dogfooding produit, hardening par mutations/propriétés, audits sécurité ciblés, hygiène des skills, reviews croisées calibrées par le coût réel d'un échec, Ponytail, vérification, mémoire durable et PR documentée pour humains.
+Gearbox est un plugin Claude Code d'orchestration d'ingénierie et de production game-dev. Il transforme une idée, une spec ou une issue GitHub en boucle de développement contrôlée : clarification proportionnée, plan lean, DAG/ready frontier, routage Claude/Codex, workers isolés, batching des micro-tâches, tests crédibles, optimisation mesurée, dogfooding produit, hardening par mutations/propriétés, audits sécurité ciblés, hygiène des skills, reviews croisées calibrées par le coût réel d'un échec, Ponytail, vérification, mémoire durable et PR documentée pour humains.
 
 Le thread Claude principal agit comme **control plane** : il analyse, planifie, route, inspecte et arbitre, mais il ne modifie pas le code produit pendant un run orchestré. Les changements sont délégués à des workers et agents spécialisés, puis revus par le fournisseur opposé en mode `hybrid`. Un worker n'est candidat que s'il possède les MCP/outils externes requis par sa tâche.
 
@@ -61,6 +61,7 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | Je veux créer un asset image 2D pour un jeu | `/gearbox:asset-image <brief>` |
 | Je veux créer/éditer du pixel art | `/gearbox:pixel-art <brief>` |
 | Je veux modéliser un asset 3D game-ready | `/gearbox:model-3d <brief>` |
+| Je veux concevoir/produire du motion design ou une animation | `/gearbox:motion-design <brief>` |
 | Je veux auditer un modèle 3D | `/gearbox:review-3d <asset>` |
 
 Pour une issue classique, le mode autonome habituel est :
@@ -75,7 +76,7 @@ Pour continuer également après l'ouverture de la PR :
 /gearbox:issue https://github.com/acme/foo/issues/123 --auto --ship --follow-pr
 ```
 
-## Les 30 commandes
+## Les 31 commandes
 
 | Commande | Quand l'utiliser | Ce qu'elle fait exactement |
 | --- | --- | --- |
@@ -97,7 +98,8 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:clean-tests [scope] [--apply]` | Quand une suite historique contient doublons, anciens tests ou cas devenus peu utiles | Audit indépendant via `test-curator`. Classe `KEEP/MERGE/DELETE/REWRITE/BLOCKED`, exige une preuve de comportement/invariant avant toute suppression, et reste report-only sans `--apply`. Avec `--apply`, ne modifie que tests/fixtures/helpers de test puis rerun les checks ciblés. |
 | `/gearbox:asset-image <brief>` | Créer une image 2D game-ready hors pixel art | Route forcée vers Codex GPT-6.1 Sol. Le brief fixe dimensions, alpha, art direction, cible moteur et chemins source/export ; aucun fallback Claude n'est autorisé. |
 | `/gearbox:pixel-art <brief>` | Sprites, tiles, icons ou animation pixel art | Route forcée Codex GPT-6.1 Sol. Utilise Aseprite MCP quand disponible ; sinon fallback génération directe Sol, avec dimensions/palette/frames vérifiées. |
-| `/gearbox:model-3d <brief>` | Créer un modèle/prop/scène 3D game-ready | Route forcée Claude Opus 5.5/high, avec Blender préféré ou Godot pour les scènes/procédures. Chaque asset passe ensuite obligatoirement le gate `/gearbox:review-3d`. |
+| `/gearbox:model-3d <brief>` | Créer un modèle/prop/scène 3D game-ready | Opus 5.5/high garde la direction, les choix de silhouette/topologie/rig et l'acceptation. Il peut déléguer à Codex GPT-6.1 Sol des opérations Blender/Godot bornées, ou le tool pass concret si le MCP n'existe que côté Codex. Chaque asset passe ensuite obligatoirement le gate `/gearbox:review-3d`. |
+| `/gearbox:motion-design <brief>` | UI motion, caméra, boucles, animated props, transitions ou animation 2D/3D | Opus 5.5 dirige timing, hiérarchie et mouvement. Codex GPT-6.1 Sol peut exécuter les keyframes/curves/export/wiring via Blender, Godot ou Aseprite. Les motions qui modifient un asset/rig 3D passent aussi par la review Astra. |
 | `/gearbox:simplify [diff]` | Après intégration, pour réduire le code | Lance un agent frais de simplification. Utilise Ponytail s'il est installé ; sinon applique la discipline interne Gearbox : supprimer duplication, wrappers et abstractions inutiles, préférer stdlib/framework/existant, conserver validation, sécurité et accessibilité. Rejoue ensuite les checks nécessaires. |
 | `/gearbox:review [diff-ou-PR]` | Pour une review indépendante | Vérifie spec/correctness/sécurité/tests/opérations et calibre les findings par failure path + failure cost. Dans la boucle orchestrée, la review finale est routée `lite / focused / full` selon la conséquence : pas de nouveau reviewer si les task reviews suffisent, un adversarial reviewer pour le risque silencieux, spine complète uniquement sur les frontières à fort impact. |
 | `/gearbox:security-audit <scope>` | Pour auth, permissions, secrets, crypto, parsers, uploads, désérialisation, données sensibles ou autre frontière de confiance | Construit un mini threat model, cartographie entrées/trust boundaries/actifs, inspecte le diff et les appels adjacents, puis utilise les analyseurs disponibles (Semgrep/CodeQL/etc.) de façon ciblée. Les findings doivent décrire un chemin d'exploitation concret, l'impact et une preuve ; pas de pluie de best practices génériques. |
@@ -294,14 +296,15 @@ Gearbox ne suppose pas qu'écrire « utilise /gearbox:foo » dans un autre skill
 
 ## Game-dev asset lanes
 
-Gearbox possède quatre lanes spécialisées à routage dur :
+Gearbox possède cinq lanes spécialisées :
 
 - image 2D : Codex GPT-6.1 Sol ;
 - pixel art : Codex GPT-6.1 Sol + Aseprite MCP quand disponible, sinon génération directe Sol ;
-- modélisation 3D : Claude Opus 5.5/high avec Blender ou Godot ;
+- modélisation 3D : Opus 5.5 dirige, Codex Sol peut exécuter des opérations Blender/Godot bornées ;
+- motion design : Opus 5.5 dirige timing/mouvement, Codex Sol peut exécuter via Blender/Godot/Aseprite ;
 - review 3D : Codex GPT-6 Astra/high en read-only.
 
-Ces routes ne sont pas modifiées par `auto`, `claude-heavy`, `codex-heavy` ou `--no-codex`. Une route imposée indisponible produit `GAME_ASSET_ROUTE_BLOCKED`. Un asset 3D créé par Opus n'est jamais considéré prêt avant la review Astra.
+Les identités spécialistes ne sont pas remplacées par le routing économique. Quand seul Codex possède le MCP 3D/animation, Gearbox utilise une délégation explicite Opus→Codex plutôt qu'un fallback silencieux. Un asset 3D reste soumis à la review Astra.
 
 ## Capability-aware execution
 

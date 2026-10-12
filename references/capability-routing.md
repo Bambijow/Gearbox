@@ -64,4 +64,4 @@ Codex metadata additionally records CLI version, prompt/schema hashes, active MC
 
 ## Game-asset capability preferences
 
-Game-asset model identity is resolved by `scripts/game_asset_router.py`, not by generic capability economics. Aseprite is a preferred capability for `pixel-art`: when live it becomes required for that invocation, otherwise Codex GPT-6.1 Sol uses its direct-generation fallback. `model-3d` and `review-3d` require a live Blender or Godot 3D capability; missing 3D tooling blocks the forced route rather than changing models.
+Game-asset model identity is resolved by `scripts/game_asset_router.py`, not by generic capability economics. Pass Claude and Codex capability sets separately. Aseprite is preferred for `pixel-art` on Codex; otherwise Sol uses direct generation. For `model-3d` and `motion-design`, Opus directs the work, but the router may select Codex Sol as the declared execution delegate when Codex owns the useful Blender/Godot/Aseprite capability. `review-3d` specifically requires Blender or Godot on Codex because Astra must inspect the real asset. Missing tool access blocks rather than silently changing model identity.

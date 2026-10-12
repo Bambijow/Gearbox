@@ -13,10 +13,11 @@ Capture the applicable fields:
 - transparency/background rules;
 - palette/style/art-direction pointers;
 - animation states/frames when applicable;
+- motion duration/FPS/loop/timing/easing when applicable;
 - texture/material budgets;
 - poly/triangle, LOD, collision and rigging budgets for 3D;
 - naming conventions and owned paths;
-- verification/import command or manual probe.
+- verification/import/playback command or manual probe.
 
 Prefer repository-native conventions over inventing a second asset pipeline.
 
@@ -26,7 +27,8 @@ When the tool supports an editable source format, keep it alongside the runtime 
 
 - Aseprite source + PNG/sprite sheet;
 - Blender source + glTF/GLB/engine-native export;
-- layered/source image + runtime texture/image.
+- layered/source image + runtime texture/image;
+- animation/timeline source + runtime clip/state resource.
 
 Do not silently replace source art with only a flattened export.
 
@@ -36,15 +38,16 @@ Do not overwrite unrelated artist-authored files. Keep generated changes inside 
 
 ## Evidence
 
-File existence proves packaging, not visual correctness. Record the smallest useful evidence available: dimensions/metadata, engine import result, viewport/render screenshot, frame manifest, geometry/UV/material checks, or asset-review verdict.
+File existence proves packaging, not visual correctness. Record the smallest useful evidence available: dimensions/metadata, engine import result, viewport/render/playback screenshot or capture, frame manifest, geometry/UV/material checks, timing/loop checks, or asset-review verdict.
 
 ## Routing invariants
 
-Specialist routes are hard constraints:
+Specialist routes are constrained:
 
 - image asset -> Codex GPT-6.1 Sol;
 - pixel art -> Codex GPT-6.1 Sol, Aseprite MCP preferred;
-- 3D creation -> Claude Opus 5.5;
+- 3D creation -> Claude Opus 5.5 directs; Codex GPT-6.1 Sol may execute bounded modeling/tool work;
+- motion design -> Claude Opus 5.5 directs; Codex GPT-6.1 Sol may execute bounded animation/tool work;
 - 3D review -> GPT-6 Astra.
 
-Normal `auto`, `claude-heavy`, `codex-heavy`, `--no-codex` and economy routing do not override these. An unavailable forced route blocks instead of degrading silently.
+Normal economy routing does not replace these model identities. Missing tool capability blocks or forces the declared specialist delegation path rather than silently choosing an unrelated model.

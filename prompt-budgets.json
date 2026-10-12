@@ -121,6 +121,10 @@
     "clean-tests": {
       "max_bytes": 4608,
       "class": "maintenance"
+    },
+    "motion-design": {
+      "max_bytes": 4608,
+      "class": "creative-specialist"
     }
   }
 }

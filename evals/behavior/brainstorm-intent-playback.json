@@ -1,0 +1,25 @@
+{
+  "name": "brainstorm understands intent before sizing",
+  "context_files": [
+    "skills/brainstorm/SKILL.md"
+  ],
+  "prompt": "A user says only: 'I want a nicer onboarding'. What should Gearbox do before choosing a detailed design or heavyweight route?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(real moment|concrete|what.*want|outcome|why)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(play back|reflect|restate|understood|intent)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(guess|assumption)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2200
+    }
+  ]
+}

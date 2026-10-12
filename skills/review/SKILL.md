@@ -13,7 +13,7 @@ Read `references/review-calibration.md`, `references/test-credibility.md`, and `
 
 ## Scope
 
-Read repository instructions, relevant spec/issue/plan, final diff, changed files, direct dependencies, Review Focus, and current evidence pointers. Expand only on a concrete suspicion.
+Read repository instructions, relevant spec/issue/plan, final diff, changed files, direct dependencies, Review Focus, and current evidence pointers. Discover applicable review/standards files such as `CODING_STANDARDS.md`, `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, and nearest scoped equivalents rather than assuming one global rules file. Expand only on a concrete suspicion.
 
 For a **standalone user-invoked** `/review`, perform the review in the current context; optional extra reviewers still pass `references/delegation-gate.md`.
 
@@ -39,6 +39,15 @@ Classify:
 For each finding include location, evidence/failure path, consequence/failure cost, smallest useful remedy, and ownership (`repair|human|release|advisory`).
 
 Reconcile multiple reviewers centrally against code/spec/evidence. Agreement is corroboration, not proof.
+
+## Maintainability scope checks
+
+In addition to ordinary correctness, flag these when the diff provides concrete evidence:
+
+- **Unrequested surface**: a new public endpoint, flag, config key, parameter or export contradicts the accepted scope or is clearly outside a narrower requested contract. Mere omission from a brief is not proof; name the scope evidence and the surface to remove.
+- **Needless dependency**: a new package/dependency was added for behavior the standard library, platform, or an existing repository helper already provides. Name the concrete replacement, not just "avoid dependencies".
+
+These are review findings only when tied to real scope/maintenance cost, not aesthetic minimalism.
 
 ## Verification audit
 

@@ -8,7 +8,7 @@
     {
       "name": "gearbox",
       "source": "./",
-      "description": "Gearbox: capability-aware Claude/Codex engineering and game-dev orchestration with test-suite cleanup/hardening, forced specialist asset lanes, MCP pruning, evidence reuse, and durable memory.",
+      "description": "Gearbox: capability-aware Claude/Codex engineering and game-dev orchestration with intent-first shaping, motion/3D specialist lanes, Codex tool delegation, test cleanup/hardening, MCP pruning, evidence reuse, and durable memory.",
       "category": "engineering",
       "keywords": [
         "engineering",
@@ -82,7 +82,12 @@
         "3d-review",
         "test-cleanup",
         "test-maintenance",
-        "redundant-tests"
+        "redundant-tests",
+        "motion-design",
+        "animation",
+        "technical-art",
+        "intent-first",
+        "builder-check"
       ]
     }
   ]
