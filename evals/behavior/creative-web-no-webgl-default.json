@@ -1,0 +1,26 @@
+{
+  "name": "creative web does not default to WebGL",
+  "context_files": [
+    "skills/creative-web/SKILL.md",
+    "references/creative-web-workflow.md"
+  ],
+  "prompt": "A portfolio wants richer interaction, but the concept could be expressed with semantic DOM, SVG and CSS. Should Gearbox add Three.js/WebGL because creative sites are better with it?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|should not|least complex|simpler)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(DOM|CSS|SVG)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(WebGL|Three)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

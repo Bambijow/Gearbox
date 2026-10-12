@@ -53,6 +53,7 @@ Record decisions implementation cannot safely improvise:
 - palette/tokens and contrast intent;
 - spacing, density, radii/material treatment;
 - component language;
+- interaction contracts for material stateful components;
 - responsive behavior;
 - loading/empty/error/disabled/focus states;
 - motion grammar and reduced-motion behavior;
@@ -73,6 +74,10 @@ Reuse existing design-system docs. Keep the working contract in run artifacts. O
 ## Comp handoff
 
 When comp generation is enabled, read `references/web-design-comp-generation.md`. The comp visualizes an already-decided system. It does not replace the contract.
+
+## Interaction handoff
+
+Read `references/component-interaction.md`. A component with material state topology, focus movement, async feedback, interruption/reversal, gestures, drag/scrub behavior, or non-trivial keyboard semantics gets an interaction contract before implementation. Do not make animation the source of state.
 
 ## Motion handoff
 

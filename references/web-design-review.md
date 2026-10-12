@@ -28,6 +28,18 @@ A technically clean render still needs `REPAIR` when it visibly falls back to un
 
 Visual `PASS` requires `SLOP_GATE: PASS`.
 
+## Interaction gate
+
+Read `references/component-interaction.md` and return:
+
+```text
+INTERACTION_GATE: PASS | REPAIR | NOT_APPLICABLE
+```
+
+For material interactive components, exercise state transitions with the relevant pointer, keyboard and touch paths. Check immediate feedback, focus entry/restoration, loading/success/error, interruption/reversal, rapid repeated input, reduced motion and layout stability.
+
+A transition property existing in source is not proof of good interaction. Motion must follow state semantics and must not delay the real action.
+
 ## Comp fidelity
 
 When an approved comp exists, compare the implementation to both contract and comp.
@@ -70,9 +82,9 @@ Do not run endless screenshot/tiny-edit loops.
 
 ## Verdict
 
-Return `SLOP_GATE` first, then:
+Return `SLOP_GATE`, then `INTERACTION_GATE`, then:
 
-- `PASS`: contract met, SLOP_GATE passes, no material defect remains;
+- `PASS`: contract met, SLOP_GATE passes, INTERACTION_GATE passes or is not applicable, and no material defect remains;
 - `REPAIR`: concrete contract/comp/responsive/accessibility/runtime defects remain;
 - `BLOCKED`: rendered evidence is unavailable or a missing decision prevents fair judgment.
 

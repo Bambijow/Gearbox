@@ -11,6 +11,7 @@ Gearbox is an original implementation influenced by public engineering-agent pro
 
 - Impeccable: surface-mode design reasoning, refinement-vs-redesign boundaries, durable visual authority, bounded finish passes, and separating design critique from technical audit.
 - Inspo MCP: production-site visual-reference research, macrostructure/design-system evidence, category-gravity comparison, and reference triangulation for web-design direction. Inspo is optional and references are used as evidence, never cloned as identities.
+- Public creative-development practice, including Aristide Benoist's published motion/interaction and native-WebGL work: interaction-first thinking, bespoke motion, browser-native experimentation, runtime craft, and treating rendering complexity as a means rather than an aesthetic identity. Gearbox does not copy a named creator's distinctive style.
 
 The Gearbox skill text and orchestration code were written specifically for Gearbox rather than copied from these projects. Superpowers concepts are re-expressed as Gearbox policies rather than vendoring its skill prompts.
 

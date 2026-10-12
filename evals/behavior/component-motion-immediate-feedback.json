@@ -1,0 +1,25 @@
+{
+  "name": "component motion never delays real action",
+  "context_files": [
+    "references/component-interaction.md"
+  ],
+  "prompt": "A submit button currently plays a 350ms flourish before starting the network request. Is that acceptable? State the interaction rule.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|should not|must not)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(immediate|feedback|acknowledge|action).*?(before|without delay|prompt)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(network|async|request|real action)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1500
+    }
+  ]
+}

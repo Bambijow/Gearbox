@@ -1,0 +1,34 @@
+{
+  "name": "creative web requires runtime interaction and fallback evidence",
+  "context_files": [
+    "skills/creative-web/SKILL.md",
+    "references/creative-web-workflow.md"
+  ],
+  "prompt": "A cinematic WebGL experience looks excellent in one desktop screenshot. What evidence and gates are still required before Gearbox can pass it?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(interaction|input|runtime|playback)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(mobile|touch)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(reduced.motion|fallback|WebGL fails|keyboard)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(performance|frame|measure|trace)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(SLOP_GATE|INTERACTION_GATE|CREATIVE_GATE)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2400
+    }
+  ]
+}

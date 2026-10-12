@@ -55,6 +55,19 @@ Inspo is a preferred Claude-side evidence capability, not a requirement and neve
 
 The lane preserves provider separation: the director decides, Codex may first generate design-system-grounded desktop/mobile comps, Codex builds from the approved contract/comp, and a fresh Claude reviewer judges the rendered result including the anti-slop gate. Normal model economics do not downgrade the director or builder within this specialist lane.
 
+## Creative-web route
+
+`creative-web` composes the web-design lane with a harder interaction/creative-tech contract:
+
+- direction: `creative-web-director`, Claude Opus 5.5 / high;
+- optional comp generation: Codex GPT-6.1 Sol / high + configured GPT Image renderer;
+- implementation: Codex GPT-6.1 Sol / high;
+- review: fresh `creative-web-reviewer`, Claude Opus 5.5 / high.
+
+The reviewer requires `SLOP_GATE`, `INTERACTION_GATE`, and `CREATIVE_GATE`. Creative mode does not grant permission to add WebGL, smooth-scroll libraries, custom cursors, shaders or animation dependencies without a product-grounded interaction thesis and fallback/performance plan.
+
+Use `scripts/web_design_router.py --creative` for the deterministic route.
+
 ## Preferred Codex registry
 
 Use only three configured Codex model slots by default:

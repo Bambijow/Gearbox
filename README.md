@@ -63,7 +63,9 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | Je veux modéliser un asset 3D game-ready | `/gearbox:model-3d <brief>` |
 | Je veux concevoir/produire du motion design ou une animation | `/gearbox:motion-design <brief>` |
 | `/gearbox:web-design <brief> [--comp auto|require|skip] [--apply]` | Landing page, dashboard, app shell, docs, portfolio, pricing, onboarding ou refonte visuelle substantielle | Opus 5.5 dirige le design, Inspo calibre les références quand disponible, Codex GPT-6.1 Sol implémente le contrat, puis un reviewer Claude frais juge des rendus desktop/mobile. Une retouche locale reste une retouche, pas un redesign. |
+| `/gearbox:creative-web <brief> [--apply]` | Portfolio immersif, campagne interactive, éditorial expérimental, typographie cinétique, expérience canvas/WebGL ou narration spatiale | Opus 5.5 définit l’interaction thesis, les scènes/états, les fallbacks et la stack minimale nécessaire ; Codex Sol/high implémente ; un reviewer Opus frais exige SLOP_GATE + INTERACTION_GATE + CREATIVE_GATE et des preuves runtime/mobile/reduced-motion/perf. |
 | Je veux concevoir ou refondre une interface web avec direction artistique | `/gearbox:web-design <brief> [--comp auto|require|skip] [--apply]` |
+| Je veux une expérience web interactive/immersive où le mouvement fait partie du concept | `/gearbox:creative-web <brief> [--apply]` |
 | Je veux auditer un modèle 3D | `/gearbox:review-3d <asset>` |
 
 Pour une issue classique, le mode autonome habituel est :
@@ -78,7 +80,7 @@ Pour continuer également après l'ouverture de la PR :
 /gearbox:issue https://github.com/acme/foo/issues/123 --auto --ship --follow-pr
 ```
 
-## Les 32 commandes
+## Les 33 commandes
 
 | Commande | Quand l'utiliser | Ce qu'elle fait exactement |
 | --- | --- | --- |
@@ -295,6 +297,14 @@ Cette discipline augmente le parallélisme sans cacher les conflits à l'intégr
 Les règles destinées aux agents suivent une hiérarchie de contexte : instructions indispensables inline, référence conditionnelle derrière un pointeur, mécanique vérifiable dans lint/test/CI/hooks. `CLAUDE.md` et `AGENTS.md` doivent rester des cartes, pas des encyclopédies.
 
 Gearbox ne suppose pas qu'écrire « utilise /gearbox:foo » dans un autre skill charge magiquement ce skill : le comportement partagé vit dans `references/`, les actions déléguées dans `agents/`, et les mécanismes déterministes dans `scripts/`.
+
+## Interaction design & creative web
+
+Le web-design possède maintenant un contrat d'interaction pour les composants réellement stateful : états, triggers, focus, feedback async, interruption/réversibilité, clavier/pointer/touch, latency et reduced-motion. Le mouvement vient après la sémantique d'état. Une vraie review UI retourne aussi `INTERACTION_GATE: PASS|REPAIR|NOT_APPLICABLE`.
+
+`/gearbox:creative-web` monte d'un cran lorsque l'interaction devient le médium lui-même : expériences immersives, typographie cinétique, scroll/camera choreography, canvas/WebGL, visualiseurs et portfolios expérimentaux. Le directeur Opus choisit la stack la plus simple capable d'exprimer l'idée ; DOM/CSS/SVG passent avant Canvas/WebGL, et aucun effet n'est retenu uniquement parce qu'il est spectaculaire.
+
+Le runtime est la preuve : desktop, mobile/touch, keyboard, reduced-motion, fallback WebGL/canvas et mesures de performance pour les chemins coûteux. Le creative reviewer exige `SLOP_GATE`, `INTERACTION_GATE` et `CREATIVE_GATE`.
 
 ## Web-design lane
 

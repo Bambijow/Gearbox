@@ -21,7 +21,7 @@ A journey should be reproducible by another person without reading the implement
 Can the job complete? Are state transitions, persistence, validation, permissions and recovery correct?
 
 ### Interaction / comprehension
-Does the next action make sense? Are labels, hierarchy, feedback and irreversible actions understandable?
+Does the next action make sense? Are labels, hierarchy, feedback and irreversible actions understandable? For stateful components, exercise rapid reopen/reclose, interruption/reversal, keyboard/pointer/touch parity, async loading→success/error, focus restoration and reduced-motion behavior when relevant.
 
 ### Runtime
 Watch console/runtime errors, rejected promises, failed requests, duplicate calls, suspicious retries and obvious performance stalls.

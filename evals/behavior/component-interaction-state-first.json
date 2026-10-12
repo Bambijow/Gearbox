@@ -1,0 +1,30 @@
+{
+  "name": "component motion follows state topology",
+  "context_files": [
+    "references/component-interaction.md",
+    "skills/web-design/SKILL.md"
+  ],
+  "prompt": "A command palette needs open/search/empty/select/close states, keyboard navigation and async search. Should Gearbox start by adding fade/scale CSS? Describe the correct design order.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(state|topology|states).*?(interaction|semantics|focus|latency)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(motion|animation).*?(after|last|follows)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(keyboard|focus|async|loading)"
+    },
+    {
+      "type": "not_regex",
+      "value": "(?i)start.*?(fade|scale).*?(yes|should)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2000
+    }
+  ]
+}

@@ -25,6 +25,12 @@ Read `references/capability-routing.md`. Each DAG task carries `required_capabil
 
 Pure 3D creation is not asset-ready until the forced GPT-6 Astra `review-3d` gate passes. Motion that mutates a 3D model/rig/export contract uses the same Astra gate after Opus acceptance. If a 3D task also changes runtime code, keep the normal code/task review in addition to this asset gate.
 
+### Interaction design
+
+For material stateful UI, use `references/component-interaction.md` before motion is implemented. State topology owns motion, not the reverse. The fresh rendered reviewer emits `INTERACTION_GATE: PASS|REPAIR|NOT_APPLICABLE`.
+
+Use `interaction-designer` when focus, async feedback, gestures, interruption/reversal or keyboard/touch semantics require design judgment. Simple hover/color feedback does not justify a specialist dispatch.
+
 ### Web-design lane
 
 When a task owns a new substantial web surface, meaningful information hierarchy/design-system work, or an explicitly requested redesign, use `task_kind: web-design` and `scripts/web_design_router.py`. Do not invoke the lane for trivial copy, spacing or isolated styling bugs.
@@ -40,6 +46,12 @@ The sequence is:
 7. meaningful user flows enter `dogfood` when browser/E2E tooling is available.
 
 Material motion delegates to the existing motion-design lane. Missing rendered evidence blocks visual PASS rather than turning source inspection into fake design confidence.
+
+### Creative-web lane
+
+Use `/gearbox:creative-web` when interaction, motion, spatial behavior, kinetic type, canvas/WebGL or narrative browser behavior is part of the experience itself. Opus 5.5 owns the interaction thesis and creative-tech decision; Codex GPT-6.1 Sol/high implements; a fresh Opus reviewer applies SLOP, INTERACTION and CREATIVE gates.
+
+Choose the least complex rendering stack that can express the thesis. WebGL, smooth-scroll libraries, shader effects and custom cursors are never quality badges. Real runtime, mobile/touch, reduced-motion, failure fallback and measured performance evidence are required.
 
 ## Delegation economics
 
