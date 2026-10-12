@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import posixpath
 from collections import defaultdict
 from pathlib import Path
 
@@ -19,6 +20,10 @@ def norm_path(value:str)->str:
     p=value.replace("\\","/").strip()
     for suffix in ("/**","/*"):
         if p.endswith(suffix): p=p[:-len(suffix)]
+    p = posixpath.normpath(p)
+    # Ownership is repository-relative. Unbounded/glob scopes reserve the whole repo.
+    if p in {".", "/", ".."} or p.startswith(("../", "/")) or any(c in p for c in "*?["):
+        return "."
     return p.rstrip("/")
 
 def conflicts(a:list[str],b:list[str])->bool:
@@ -26,7 +31,7 @@ def conflicts(a:list[str],b:list[str])->bool:
     bb=[norm_path(x) for x in b if norm_path(x)]
     for x in aa:
         for y in bb:
-            if x==y or x.startswith(y+"/") or y.startswith(x+"/"):
+            if x=="." or y=="." or x==y or x.startswith(y+"/") or y.startswith(x+"/"):
                 return True
     return False
 
@@ -93,22 +98,32 @@ def plan(data:dict)->dict:
     ready.sort(key=lambda t:priority_key(t,t["_critical"],t["_descendants"]))
 
     used=set(); dispatch=[]
+    reserved_paths=list(active_paths)
     batch_enabled=bool(data.get("batch_same_shape",scheduler_cfg.get("batch_same_shape",True)))
     max_batch=max(1,int(data.get("max_batch_members",scheduler_cfg.get("max_batch_members",6))))
     for t in ready:
-        if len(dispatch)>=slots or t["id"] in used: break
+        if len(dispatch)>=slots:
+            break
+        if t["id"] in used:
+            continue
+        if conflicts(t.get("owned_paths",[]),reserved_paths):
+            waiting.append({"id":t["id"],"waiting_on_selected_ownership":True})
+            continue
         key=t.get("batch_key")
         risk=str(t.get("risk","medium")).casefold()
         if batch_enabled and key and risk in {"low","medium"}:
             members=[]
             for cand in ready:
                 if cand["id"] in used or cand.get("batch_key")!=key: continue
+                if conflicts(cand.get("owned_paths",[]),reserved_paths): continue
                 if str(cand.get("risk","medium")).casefold() not in {"low","medium"}: continue
                 if any(conflicts(cand.get("owned_paths",[]),m.get("owned_paths",[])) for m in members): continue
                 members.append(cand)
                 if len(members)>=max_batch: break
             if len(members)>=2:
-                for m in members: used.add(m["id"])
+                for m in members:
+                    used.add(m["id"])
+                    reserved_paths.extend(m.get("owned_paths",[]))
                 dispatch.append({
                     "kind":"batch","batch_key":key,"members":[m["id"] for m in members],
                     "critical_path":max(m["_critical"] for m in members),
@@ -116,6 +131,7 @@ def plan(data:dict)->dict:
                 })
                 continue
         used.add(t["id"])
+        reserved_paths.extend(t.get("owned_paths",[]))
         dispatch.append({
             "kind":"task","id":t["id"],"critical_path":t["_critical"],
             "descendant_count":t["_descendants"],"risk":t.get("risk","medium")

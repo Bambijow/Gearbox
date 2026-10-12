@@ -8,7 +8,7 @@
     {
       "name": "gearbox",
       "source": "./",
-      "description": "Gearbox: incremental Claude/Codex orchestration with controlled reviewer fusion, historical test-impact ranking, cached repo facts, deterministic precompute before approval, adaptive quality depth, safe read-only dispatch packing, web/creative and game-dev lanes.",
+      "description": "Gearbox: Claude/Codex orchestration with run-bound verified evidence, conflict-safe scheduling, conservative dependency reuse, read-only run inspection, and web/creative and game-dev lanes.",
       "category": "engineering",
       "keywords": [
         "engineering",

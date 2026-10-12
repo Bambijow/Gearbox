@@ -30,7 +30,7 @@ requirements + tests/gates/runtime proofs
 
 ## Scheduler
 
-The scheduler consumes task statuses/dependencies/ownership metadata only. It prioritizes ready work by critical-path length and descendant unlock count, respects active ownership conflicts, and batches compatible low/medium-risk same-shape work.
+The scheduler consumes task statuses/dependencies/ownership metadata only. It prioritizes ready work by critical-path length and descendant unlock count, respects both active ownership and ownership reserved earlier in the same dispatch wave, and batches compatible low/medium-risk same-shape work. A previously batched member is skipped without stopping selection of other ready work.
 
 It does not reread task prompts to compute readiness.
 
@@ -62,7 +62,7 @@ A broad check is not automatically better evidence than a targeted check.
 
 For supported local source imports, `evidence_deps.py` derives a bounded transitive closure from gate entry files. Add non-imported dependencies such as tokens, design contracts, schemas or scenario fixtures explicitly.
 
-Feed that list to `evidence.py fingerprint`. If dependency discovery is incomplete or dynamic, keep exact-SHA reuse.
+Prefer `evidence.py fingerprint --entry ... --extra ...` to keep discovery and the reuse decision together. The discovery report includes `complete`, `unresolved_imports`, `depth_limit_hit`, `truncated_edges`, and `missing_extras`. If it is incomplete, no scope fingerprint is emitted and only exact-SHA reuse may be considered. The helper is intentionally not a full TypeScript/bundler resolver; aliases and unresolved package imports fail closed.
 
 ## Context compression
 
@@ -191,3 +191,9 @@ Packing is allowed only when tasks:
 Implementation/mutation work is never packed by this mechanism. Independent reviewers remain separate.
 
 Controlled gate fusion and generic read-only packing are complementary: gate fusion understands gate semantics; generic packing handles other same-context read-only work.
+
+## Inspect without resuming
+
+`/gearbox:inspect <run-id>` uses `inspect_run.py --run-dir <run-directory> --json`. It reports approval drift, the current quality aggregate (including proof file hashes), recorded child states, ownership waits, usage and the next action. It does not normalize or migrate state, take or break a lock, reconcile children, approve a plan, dispatch, or query remote services. Recorded child states are not process liveness checks.
+
+The existing control-plane guard is unchanged in this release and may refuse the new inspector helper inside an already-guarded session. Report the denial; do not bypass the guard. The standalone inspector remains read-only.

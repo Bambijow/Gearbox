@@ -14,7 +14,7 @@ REGISTRY=ROOT/"orchestration-registry.json"
 def load_registry()->dict:
     return json.loads(REGISTRY.read_text(encoding="utf-8"))
 
-def compile_plan(task_kind:str|None,profile:str,surfaces:list[str],paths:list[str],hints:list[str],flags:dict[str,bool])->dict:
+def compile_plan(task_kind:str|None,profile:str,surfaces:list[str],paths:list[str],hints:list[str],flags:dict[str,bool],*,run_id:str|None=None,scope:str|None=None,input_fingerprint:str|None=None)->dict:
     registry=load_registry()
     if profile not in registry["quality_profiles"]:
         raise SystemExit(f"unknown quality profile: {profile}")
@@ -41,7 +41,7 @@ def compile_plan(task_kind:str|None,profile:str,surfaces:list[str],paths:list[st
             reasons.append(f"flag:{required_flag}=true")
 
         status="REQUIRED" if triggered else "NOT_APPLICABLE"
-        item={"gate":name,"status":status,"skill":rule.get("skill"),"probe_group":rule.get("probe_group"),"reason":"; ".join(reasons) if reasons else "no trigger"}
+        item={"gate":name,"status":status,"skill":rule.get("skill"),"probe_group":rule.get("probe_group"),"required_evidence_kinds":sorted(rule.get("probe_needs",[])),"reason":"; ".join(reasons) if reasons else "no trigger"}
         gates.append(item)
         if triggered and item["probe_group"]:
             required_groups.setdefault(item["probe_group"],[]).append(name)
@@ -52,7 +52,7 @@ def compile_plan(task_kind:str|None,profile:str,surfaces:list[str],paths:list[st
         for group,names in sorted(required_groups.items())
     ]
     payload={
-        "schema_version":1,"task_kind":task_kind,"quality_profile":profile,"profile":profile_cfg,
+        "schema_version":1,"gate_contract_version":2,"run_id":run_id,"scope":scope,"input_fingerprint":input_fingerprint,"task_kind":task_kind,"quality_profile":profile,"profile":profile_cfg,
         "surfaces":sorted(surface_set),"path_classification":detected["paths"],
         "flags":{k:bool(v) for k,v in sorted(flags.items())},"gates":gates,"probe_groups":probe_groups,
     }
@@ -90,11 +90,14 @@ def main()->int:
     ap.add_argument("--path",action="append",default=[])
     ap.add_argument("--hint",action="append",default=[])
     ap.add_argument("--baseline-exists",action="store_true")
+    ap.add_argument("--run-id")
+    ap.add_argument("--scope")
+    ap.add_argument("--input-fingerprint")
     ap.add_argument("--output")
     args=ap.parse_args()
     if args.self_test:
         self_test(); return 0
-    payload=compile_plan(args.task_kind,args.profile,args.surface,args.path,args.hint,{"baseline_exists":args.baseline_exists})
+    payload=compile_plan(args.task_kind,args.profile,args.surface,args.path,args.hint,{"baseline_exists":args.baseline_exists},run_id=args.run_id,scope=args.scope,input_fingerprint=args.input_fingerprint)
     text=json.dumps(payload,indent=2,ensure_ascii=False)+"\n"
     if args.output:
         Path(args.output).parent.mkdir(parents=True,exist_ok=True)

@@ -165,6 +165,10 @@
     "level-design": {
       "max_bytes": 4096,
       "class": "creative-specialist"
+    },
+    "inspect": {
+      "max_bytes": 2048,
+      "class": "maintenance"
     }
   }
 }

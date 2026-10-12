@@ -115,6 +115,8 @@ jobs:
         run: python3 scripts/retro_bundle.py --self-test
       - name: Gearbox repository solution audit
         run: python3 scripts/solutions_audit.py --dir docs/solutions --strict --check-index --allow-missing
+      - name: Runtime integration and regression tests
+        run: python3 -m unittest discover -s tests -v
       - name: Package plugin ZIP
         id: package
         shell: bash

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 
 import context_compiler
@@ -17,6 +18,10 @@ import test_impact
 import verification_plan
 
 def precompute(data:dict,output_dir:Path|None)->dict:
+    # IDs become filenames, so validate them before writing any output artifacts.
+    for item in data.get("context_descriptors",[]):
+        if not isinstance(item.get("id"),str) or not re.fullmatch(r"[A-Za-z0-9_-][A-Za-z0-9_.-]*",item["id"]):
+            raise ValueError("context descriptor id must be a safe filename component")
     profile=data.get("quality_profile","standard")
     task_kind=data.get("task_kind")
     expected_paths=data.get("expected_paths",[])
@@ -24,7 +29,7 @@ def precompute(data:dict,output_dir:Path|None)->dict:
     explicit_surfaces=data.get("surfaces",[])
     flags={"baseline_exists":bool(data.get("baseline_exists",False))}
 
-    q=quality_plan.compile_plan(task_kind,profile,explicit_surfaces,expected_paths,hints,flags)
+    q=quality_plan.compile_plan(task_kind,profile,explicit_surfaces,expected_paths,hints,flags,run_id=data.get("run_id"),scope=data.get("scope"),input_fingerprint=data.get("input_fingerprint"))
     p=probe_plan.compile_probe(q)
     review=review_plan.compile_review_plan(q,data.get("risk","medium"),task_kind)
 

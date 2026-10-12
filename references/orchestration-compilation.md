@@ -77,30 +77,54 @@ Use `experience-prober` + `scripts/experience_bundle.py`; independent reviewers 
 
 ## Gate envelopes
 
-Every dedicated quality gate persists a normalized result matching `schemas/gate-result.schema.json`.
+Every dedicated quality gate persists a version-2 envelope matching `schemas/gate-result.schema.json`.
 
-The human-facing domain verdict may remain richer, but the control plane receives:
+Before collecting integrated-time evidence, compile a bound quality plan with `--run-id`, `--scope`, and `--input-fingerprint`. The fingerprint must describe the current reviewed inputs, not merely the gate name. These fields and the required artifact kinds participate in `quality_plan_id`. An unbound plan remains useful for approval-safe precomputation, but cannot aggregate to PASS.
 
 ```json
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "gate": "A11Y_GATE",
   "status": "PASS",
+  "run_id": "checkout-123",
+  "quality_plan_id": "<copy from the current compiled plan>",
   "scope": "checkout",
-  "input_fingerprint": "...",
+  "input_fingerprint": "<copy from the current compiled plan>",
   "findings": [],
-  "evidence": [],
+  "evidence": [
+    {"kind": "accessibility", "path": "experience/accessibility.json", "sha256": "<actual 64-character file digest>"},
+    {"kind": "interaction", "path": "experience/interaction.json", "sha256": "<actual 64-character file digest>"}
+  ],
   "details": {}
 }
 ```
 
-Aggregate required results with `scripts/gate_result.py`. Missing required results are BLOCKED, not silently treated as PASS.
+The placeholders above are not valid evidence. The reviewer records real artifact paths and digests after inspecting the files. `required_evidence_kinds` is compiled from the registry's `probe_needs`; gates without runtime artifact requirements still attach a concrete report as `kind: other`.
+
+Aggregate with `scripts/gate_result.py aggregate --plan <quality-plan.json> --result <gate.json> --artifact-root <run-directory>`. The artifact root defaults to the plan's directory. Evidence must exist inside that root, including after symlink resolution, and its SHA-256 must match. A fused review still produces one separately bound result per gate.
+
+Missing results, duplicate verdicts, wrong run/plan/scope/fingerprint, missing artifact kinds and stale or inaccessible files are BLOCKED. No last-write-wins behavior is permitted. PASS exits 0; REPAIR and BLOCKED exit 6. `validate` checks envelope structure only; it is not a substitute for aggregation and artifact verification.
+
+### Upgrading from version-1 results
+
+Keep old records for diagnostics, but do not relabel them as version 2 or synthesize missing provenance. Recompile the plan with its current binding, revalidate or recollect the required proof files, and obtain fresh bound verdicts. Verified reusable artifacts can be copied into the current run; their old verdict does not automatically become a current PASS. Approve materially changed plans as usual.
 
 ## Evidence invalidation
 
-Exact-SHA reuse remains the conservative default. For expensive scoped gates, compute a dependency fingerprint with `evidence.py fingerprint` and record it on the evidence item.
+Exact-SHA reuse remains the conservative default. A process exit code of 0 cannot override a failed domain verdict; a successful verdict cannot override a failed process. Neither missing identity nor an empty dependency scope can qualify for reuse.
 
-Cross-SHA reuse is allowed only when the caller explicitly requests the same scope fingerprint and freshness/command/path rules still pass.
+For automatically discovered dependencies, prefer:
+
+```bash
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/evidence.py" fingerprint \
+  --repo-root . --entry src/Page.tsx --extra design/tokens.json
+```
+
+This performs dependency discovery and fingerprinting together. Unresolved aliases/packages, dynamic imports, unsupported source types, missing extras or a reached depth limit produce `scope_fingerprint: null` and `reuse_basis: exact_sha`. Do not pass a null or stale scope fingerprint into reuse. Verify the full input revision before exact-SHA reuse, including worktree changes and relevant environment differences.
+
+`--path` is still available for an explicitly complete dependency list maintained by a trusted repository contract. It does not discover imports. Do not feed an incomplete discovered list into that manual mode to bypass its fallback. Include non-imported tokens, schemas, configuration, fixtures and environment metadata as appropriate.
+
+Cross-SHA reuse requires an explicitly matching complete scope fingerprint plus passing freshness, command and path rules.
 
 ## Context compilation
 

@@ -4,6 +4,14 @@ Gearbox est un plugin Claude Code d'orchestration d'ingénierie, design produit 
 
 Le thread Claude principal agit comme **control plane** : il analyse, planifie, route, inspecte et arbitre, mais il ne modifie pas le code produit pendant un run orchestré. Les changements sont délégués à des workers et agents spécialisés, puis revus par le fournisseur opposé en mode `hybrid`. Un worker n'est candidat que s'il possède les MCP/outils externes requis par sa tâche.
 
+## Consolidation 1.18.0
+
+Le runtime réserve désormais les chemins pendant toute une vague de dispatch, poursuit la sélection après un micro-batch, et refuse les preuves dont le verdict contredit le code de sortie.
+
+Les résultats de gates passent au **schéma 2** : run, plan, scope et empreinte doivent correspondre, les types de preuves exigés doivent être présents et les fichiers sont vérifiés par SHA-256. Les résultats v1 restent consultables mais ne deviennent pas automatiquement des PASS v2. Voir la migration dans `references/orchestration-compilation.md`.
+
+La découverte incomplète de dépendances désactive la réutilisation par scope. La nouvelle commande `/gearbox:inspect <run-id>` explique un run sans le reprendre. Le guard existant n'est pas modifié dans cette version : une session où il est déjà actif peut refuser ce nouveau helper, sans contournement automatique. Les tests déterministes de non-régression sont exécutés en CI avec `python3 -m unittest discover -s tests -v`.
+
 ## Installation depuis GitHub
 
 Le repository `Bambijow/Gearbox` contient directement la source décompressée du plugin ainsi que son marketplace Claude Code.
@@ -48,6 +56,7 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | J'ai une initiative trop grosse ou trop floue pour une seule spec | `/gearbox:wayfinder "destination"` |
 | J'ai déjà une issue GitHub | `/gearbox:issue <URL-ou-numéro>` |
 | J'ai déjà une spec | `/gearbox:loop <chemin-spec>` |
+| Je veux comprendre un run sans le modifier | `/gearbox:inspect <run-id>` |
 | J'ai un run interrompu | `/gearbox:resume <run-id-ou-issue>` |
 | J'ai déjà une PR avec CI/reviews à traiter | `/gearbox:continue-pr <PR>` |
 | Je veux nettoyer la mémoire technique | `/gearbox:clean-solutions` |
@@ -86,7 +95,7 @@ Pour continuer également après l'ouverture de la PR :
 /gearbox:issue https://github.com/acme/foo/issues/123 --auto --ship --follow-pr
 ```
 
-## Les 41 commandes
+## Les 42 commandes
 
 | Commande | Quand l'utiliser | Ce qu'elle fait exactement |
 | --- | --- | --- |
@@ -119,6 +128,7 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:skill-doctor [scope]` | Quand le plugin/CLAUDE.md/AGENTS.md commence à accumuler règles, skills ou prompts | Audite triggers et descriptions, collisions/recouvrements, taille des prompts, progressive disclosure, références mortes, règles qui devraient devenir déterministes et trous d'evals. Préfère fusionner/réduire avant d'ajouter une nouvelle skill. `--fix` applique uniquement les remèdes bornés et vérifiables. |
 | `/gearbox:retro [run-id / issue/ PR / session] [--bundle]` | Après un run coûteux, confus ou riche en corrections | Produit une rétro **forensic** avec preuves `path:line`/artifact fields : plan adherence, repeated work, stumbles, request conflicts, dispatch/escalation/repair cost proxies et quality escapes. `--bundle` génère en plus un dossier redacted sous `.gearbox/diagnostics/` pour partager/analyser la session. |
 | `/gearbox:ship` | Quand le code est prêt à être publié | Vérifie les gates, délègue commit/push, crée ou met à jour la PR et son commentaire technique. La description de PR est compréhensible par un non-tech ; le commentaire technique contient les checks, reviews, changements Ponytail, screenshots UI/UX et 1 à 5 vrais extraits de code critique avec fichier:lignes, justification et focus de review. |
+| `/gearbox:inspect <run-id>` | Pour comprendre un blocage sans reprendre le travail | Inspecte l'approbation, la dérive du plan, les preuves et leurs empreintes, les états de workers enregistrés, les attentes d'ownership et l'usage. Ne modifie aucun état, ne casse aucun verrou et ne lance aucun worker. |
 | `/gearbox:resume <run-id/issue/PR>` | Après fermeture/crash/interruption ou pour approuver un plan en attente | Recharge l'état sans rejouer le travail. `--approve-plan` approuve uniquement le plan actuellement hashé ; s'il a changé depuis sa présentation, Gearbox refuse et redemande une approbation. |
 | `/gearbox:continue-pr <PR>` | Après création de la PR, quand CI ou un reviewer humain a parlé | Charge uniquement les nouveaux checks/commentaires, valide les findings au lieu de les accepter aveuglément, construit un repair DAG borné, corrige via workers, repousse sur la même branche et met à jour le même commentaire technique sans rejouer toute l'issue. |
 

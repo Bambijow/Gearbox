@@ -29,8 +29,13 @@ def save(path:Path,data:dict)->None:
     os.replace(tmp,path)
 
 def passing(item:dict)->bool:
-    status=str(item.get("status",""))
-    return status in PASS_STATES or item.get("exit_code")==0
+    # Process success cannot override a failed domain verdict (or vice versa).
+    code = item.get("exit_code")
+    if code is not None and (type(code) is not int or code != 0):
+        return False
+    if "status" in item:
+        return str(item["status"]) in PASS_STATES
+    return type(code) is int and code == 0
 
 def _sha_file(path:Path)->str:
     h=hashlib.sha256()
@@ -41,7 +46,10 @@ def _sha_file(path:Path)->str:
 
 def scope_fingerprint(repo_root:Path,paths:list[str],meta:dict)->dict:
     root=repo_root.resolve()
+    if not paths:
+        raise SystemExit("scope fingerprint requires at least one dependency")
     deps=[]
+    seen=set()
     for raw in sorted(set(paths)):
         p=(root/raw).resolve() if not Path(raw).is_absolute() else Path(raw).resolve()
         try:
@@ -55,14 +63,25 @@ def scope_fingerprint(repo_root:Path,paths:list[str],meta:dict)->dict:
         else:
             files=[p]
         for f in files:
+            try:
+                f.resolve().relative_to(root)
+            except ValueError:
+                raise SystemExit(f"dependency symlink escapes repo root: {f}")
             frel=str(f.relative_to(root))
-            deps.append({"path":frel,"sha256":_sha_file(f),"bytes":f.stat().st_size})
+            if frel not in seen:
+                seen.add(frel)
+                deps.append({"path":frel,"sha256":_sha_file(f),"bytes":f.stat().st_size})
+    if not deps:
+        raise SystemExit("scope fingerprint has no file dependencies")
+    deps.sort(key=lambda item:item["path"])
     payload={"dependencies":deps,"meta":meta}
     digest=hashlib.sha256(json.dumps(payload,sort_keys=True,separators=(",",":")).encode()).hexdigest()
     return {"scope_fingerprint":digest,"dependencies":deps,"meta":meta}
 
 def reuse(data:dict,kind:str,sha:str|None,command:str|None,path:str|None,scope_fp:str|None)->dict:
     now=int(time.time())
+    if not sha and not scope_fp:
+        return {"reusable":False,"kind":kind,"reasons":["sha or scope fingerprint is required"]}
     reasons=[]
     candidates=[]
     for item in reversed(data.get("items",[])):
@@ -130,7 +149,12 @@ def main()->int:
     a=sp.add_parser("init"); a.add_argument("--file",required=True)
 
     a=sp.add_parser("fingerprint")
-    a.add_argument("--repo-root",default="."); a.add_argument("--path",action="append",default=[],required=True); a.add_argument("--meta-json",default="{}")
+    a.add_argument("--repo-root",default="."); a.add_argument("--meta-json",default="{}")
+    sources=a.add_mutually_exclusive_group(required=True)
+    sources.add_argument("--path",action="append",default=[],help="Explicit complete dependency list")
+    sources.add_argument("--entry",action="append",default=[],help="Discover dependencies; incomplete discovery disables scoped reuse")
+    a.add_argument("--extra",action="append",default=[])
+    a.add_argument("--max-depth",type=int,default=8)
 
     a=sp.add_parser("add")
     a.add_argument("--file",required=True); a.add_argument("--kind",required=True); a.add_argument("--sha")
@@ -153,7 +177,20 @@ def main()->int:
         self_test(); return 0
     if args.cmd=="fingerprint":
         meta=json.loads(args.meta_json)
-        print(json.dumps(scope_fingerprint(Path(args.repo_root),args.path,meta),indent=2)); return 0
+        if args.entry:
+            from evidence_deps import dependency_closure
+            report=dependency_closure(Path(args.repo_root),args.entry,args.extra,args.max_depth)
+            if report["complete"]:
+                payload=scope_fingerprint(Path(args.repo_root),report["dependencies"],meta)
+                payload["reuse_basis"]="scope_fingerprint"
+            else:
+                payload={"scope_fingerprint":None,"reuse_basis":"exact_sha"}
+            payload["discovery"]=report
+        else:
+            if args.extra:
+                ap.error("--extra requires --entry; include explicit extras with --path instead")
+            payload=scope_fingerprint(Path(args.repo_root),args.path,meta)
+        print(json.dumps(payload,indent=2)); return 0
 
     path=Path(args.file); data=load(path)
     if args.cmd=="init":

@@ -1,8 +1,8 @@
 {
   "name": "gearbox",
   "displayName": "Gearbox",
-  "version": "1.17.0",
-  "description": "Claude Code engineering orchestration with controlled reviewer fusion, historical test-impact ranking, content-hashed repo-facts, approval-safe deterministic precompute, adaptive quality depth, read-only dispatch packing, and the existing incremental evidence runtime.",
+  "version": "1.18.0",
+  "description": "Claude Code engineering orchestration with run-bound verified evidence, conservative dependency reuse, conflict-safe scheduling, and read-only run diagnostics.",
   "author": {
     "name": "Bambijow"
   },
@@ -180,6 +180,7 @@
     "./skills/experience-perf",
     "./skills/art-direction",
     "./skills/audio-design",
-    "./skills/level-design"
+    "./skills/level-design",
+    "./skills/inspect"
   ]
 }

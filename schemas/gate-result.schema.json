@@ -8,11 +8,14 @@
     "status",
     "scope",
     "findings",
-    "evidence"
+    "evidence",
+    "run_id",
+    "quality_plan_id",
+    "input_fingerprint"
   ],
   "properties": {
     "schema_version": {
-      "const": 1
+      "const": 2
     },
     "gate": {
       "type": "string",
@@ -27,13 +30,12 @@
       ]
     },
     "scope": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "input_fingerprint": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string",
+      "minLength": 1
     },
     "summary": {
       "type": "string"
@@ -47,12 +49,71 @@
     "evidence": {
       "type": "array",
       "items": {
-        "type": "object"
+        "type": "object",
+        "required": [
+          "kind",
+          "path",
+          "sha256"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "additionalProperties": true
       }
     },
     "details": {
       "type": "object"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "quality_plan_id": {
+      "type": "string",
+      "minLength": 1
     }
   },
-  "additionalProperties": true
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "PASS"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence": {
+            "minItems": 1
+          },
+          "exit_code": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "enum": [
+              0,
+              null
+            ]
+          }
+        }
+      }
+    }
+  ]
 }
