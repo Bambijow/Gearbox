@@ -1,0 +1,26 @@
+{
+  "name": "quality profiles change depth not required truth",
+  "context_files": [
+    "references/orchestration-compilation.md",
+    "references/experience-probe.md"
+  ],
+  "prompt": "A material user-facing UI change requires accessibility. If the run uses the dev quality profile, may Gearbox drop A11Y_GATE entirely to go faster?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|cannot|must not)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(depth|states|probe).*?(change|focused|smaller)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)A11Y_GATE.*?(required|remain|still)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1600
+    }
+  ]
+}

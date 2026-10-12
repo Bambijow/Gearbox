@@ -54,7 +54,15 @@ OUTPUT
 Return JSON matching the provided schema. Keep it compact. The orchestrator will inspect your actual diff and task logs.
 ```
 
-Include relevant symbol names and paths discovered by reconnaissance. Before dispatch, apply `references/capability-routing.md`: capability-gate providers, preflight the selected provider, fingerprint the invocation, and register that fingerprint with the child lifecycle. Do not paste the whole chat, full plan, successful command logs, or huge files when the worker can read them in its worktree. Use the task packet as the sole handoff whenever possible.
+Include relevant symbol names and paths discovered by reconnaissance. Before dispatch, compile the packet, apply `references/capability-routing.md`, resolve specialist routes through `route_task.py` when applicable, preflight capabilities, fingerprint the exact compiled packet, and register it with the child lifecycle. Do not paste the whole chat, full plan, successful command logs, or huge files when the worker can read them in its worktree. Use the task packet as the sole handoff whenever possible.
+
+## Compiled packet invariant
+
+For substantial dispatches, build the structured task descriptor and compile it with `scripts/context_compiler.py` according to `references/context-compilation.md`. Persist the packet hash/byte count under the task run directory and use that exact compiled packet for dispatch/fingerprinting.
+
+Do not independently rewrite the packet for Claude and Codex. Provider-specific wrappers may add mechanical invocation instructions, but requirements/ownership/pointers/verification stay identical.
+
+Repairs receive the original packet pointer/hash plus the canonical finding, repair strategy and delta evidence. Resend broad context only when the finding proves the original packet omitted a required fact.
 
 ## Write isolation
 

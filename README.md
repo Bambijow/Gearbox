@@ -1,6 +1,6 @@
 # Gearbox
 
-Gearbox est un plugin Claude Code d'orchestration d'ingénierie, design produit et production game-dev. Il transforme une idée, une spec ou une issue GitHub en boucle contrôlée : clarification, plan/DAG, routage Claude/Codex, workers isolés, tests crédibles, design/interaction/a11y/performance gates, visual regression sémantique, production d'assets, dogfooding, reviews proportionnées, vérification, mémoire durable et PR documentée.
+Gearbox est un plugin Claude Code d'orchestration d'ingénierie, design produit et production game-dev. Il transforme une idée, une spec ou une issue GitHub en boucle contrôlée : clarification, plan/DAG, classification déterministe des surfaces, quality-plan compilé, routage Claude/Codex, contexts bornés, evidence partagée, tests crédibles, gates design/interaction/a11y/perf, production d'assets, vérification et mémoire durable.
 
 Le thread Claude principal agit comme **control plane** : il analyse, planifie, route, inspecte et arbitre, mais il ne modifie pas le code produit pendant un run orchestré. Les changements sont délégués à des workers et agents spécialisés, puis revus par le fournisseur opposé en mode `hybrid`. Un worker n'est candidat que s'il possède les MCP/outils externes requis par sa tâche.
 
@@ -270,7 +270,7 @@ CI, reviewer humain et review modèle peuvent signaler le même défaut. Gearbox
 
 ### Evidence reuse
 
-`evidence.py reuse` permet de réutiliser une preuve valide au **même SHA exact**, même commande/scope, tant qu'elle n'est ni invalidée, volatile ni expirée. Un reviewer frais n'a donc plus le droit de relancer une suite lourde uniquement pour se rassurer.
+`evidence.py reuse` conserve l'exact-SHA comme défaut, mais supporte aussi un scope fingerprint explicite pour les gates dont les dépendances sont connues. Un reviewer frais réutilise une preuve valide plutôt que relancer une suite/probe lourde pour se rassurer.
 
 ### Child reconciliation
 
@@ -304,6 +304,46 @@ Les règles destinées aux agents suivent une hiérarchie de contexte : instruct
 
 Gearbox ne suppose pas qu'écrire « utilise /gearbox:foo » dans un autre skill charge magiquement ce skill : le comportement partagé vit dans `references/`, les actions déléguées dans `agents/`, et les mécanismes déterministes dans `scripts/`.
 
+## Orchestration compilée
+
+Gearbox 1.15 déplace une partie du raisonnement répétitif hors des prompts :
+
+```text
+expected / actual paths + task kind
+            ↓
+change_surface.py
+            ↓
+consequence surfaces
+            ↓
+quality_plan.py
+            ↓
+required gates + shared probe groups
+            ↓
+route_task.py
+            ↓
+specialist backend / concrete model
+            ↓
+context_compiler.py
+            ↓
+bounded workers
+            ↓
+one shared runtime probe per group
+            ↓
+normalized gate envelopes
+            ↓
+gate_result.py aggregate
+            ↓
+PASS | REPAIR | BLOCKED
+```
+
+`orchestration-registry.json` est la source de vérité des routes spécialistes, modèles/efforts statiques, triggers de gates et profils `dev / standard / release / critical`. Les routers spécialisés ne gardent que la logique dynamique de capabilities/modes.
+
+Les reviewers A11Y, interaction, visual-regression, perf et creative peuvent partager le même bundle d'expérience sans partager leur jugement. L'indépendance cognitive ne repaie donc plus automatiquement un nouveau browser run.
+
+L'evidence reste exact-SHA par défaut. Un gate coûteux peut explicitement utiliser un **scope fingerprint** calculé sur ses vraies dépendances + scénario/environnement : un changement README ne force plus mécaniquement à rejouer une probe UI inchangée.
+
+Les packets workers/reviewers sont compilés depuis une structure minimale, hashés et bornés en bytes. Les repair packets réutilisent le packet initial + finding/delta au lieu de renvoyer tout le contexte.
+
 ## Product-quality gates
 
 Gearbox ne lance pas toutes les reviews spécialisées partout. Elles se déclenchent selon la surface réellement modifiée :
@@ -319,7 +359,7 @@ audio-system work             → AUDIO_GATE
 level/encounter/blockout      → PLAYTEST_GATE
 ```
 
-Le routing est déterministe via `scripts/product_quality_router.py`. Les gates dédiés réutilisent leurs preuves au lieu de faire relancer les mêmes audits par le reviewer final.
+Le quality plan est compilé via `scripts/quality_plan.py`; les routes spécialistes passent par `scripts/route_task.py`. Les gates dédiés réutilisent leurs preuves et leurs shared probe bundles au lieu de faire relancer les mêmes audits par le reviewer final.
 
 ## Interaction design & creative web
 
@@ -454,8 +494,10 @@ Un run substantiel garde son état temporaire ici :
 ├── spec.md
 ├── repo-facts.md
 ├── dag.yaml
+├── quality-plan.json
+├── experience/
 ├── learning-candidates.md
-└── tasks/
+└── tasks/              # context.json + packet/hash + worker evidence
 ```
 
 `state.json` rend le run reprenable et borné par budgets. `evidence.json` est la source des affirmations de vérification et peut réutiliser une preuve au SHA exact sans rerun inutile. `children.json` sert à réconcilier les travaux délégués et `usage.json` ne contient que la télémétrie réellement rapportée par les providers/hosts.

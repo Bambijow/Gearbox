@@ -31,4 +31,4 @@ CREATIVE_GATE fails when the experience is effects without a coherent interactio
 
 Do not reward WebGL, smooth scrolling, custom cursors or shader effects merely for existing. Judge whether each technique earns its cost.
 
-Findings must name evidence, consequence and the smallest useful correction.
+Findings must name evidence, consequence and the smallest useful correction. When orchestrated, return/persist normalized gate-result envelopes for the gates you own, pointing to shared bundle/specialist evidence rather than duplicating it.

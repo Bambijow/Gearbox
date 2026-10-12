@@ -1,0 +1,26 @@
+{
+  "name": "scoped evidence reuse is dependency based",
+  "context_files": [
+    "references/evidence-reuse.md",
+    "references/orchestration-compilation.md"
+  ],
+  "prompt": "A previously passing A11Y gate depends only on Button.tsx, tokens.css and the checkout mobile scenario. The next commit changes README.md only. May Gearbox reuse the A11Y proof across SHAs, and under what condition?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(yes|may|can).*?(scope|dependency).*?fingerprint"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(same|identical|unchanged).*?(fingerprint|dependencies|scenario)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(exact.SHA|default|opt.in|explicit)"
+    },
+    {
+      "type": "max_chars",
+      "value": 2000
+    }
+  ]
+}

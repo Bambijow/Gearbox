@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Maintain the design system as product infrastructure
 
-Read `references/design-system-lifecycle.md`, `references/web-design-contract.md`, and `references/component-interaction.md`.
+Read `references/design-system-lifecycle.md`, `references/web-design-contract.md`, `references/component-interaction.md`, and `references/orchestration-compilation.md`.
 
 Use the specialist route from `scripts/product_quality_router.py --task-kind design-system`.
 
@@ -19,4 +19,4 @@ With `--apply`, change canonical primitives first, migrate only the scoped consu
 
 Do not use a design-system cleanup as an excuse to redesign established surfaces. A one-off value can remain local when it truly represents a one-off role.
 
-Return `DESIGN_SYSTEM_GATE: PASS|DRIFT|BLOCKED`, changed canonical primitives, migrated consumers, deferred drift, and checks run.
+Return the domain verdict plus a normalized `DESIGN_SYSTEM_GATE` envelope matching `schemas/gate-result.schema.json`; persist it in the run when orchestrated.

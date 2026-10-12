@@ -21,7 +21,7 @@ The plugin `PreToolUse` guard enforces the main-thread boundary while orchestrat
 
 ## Capability-aware dispatch
 
-Read `references/capability-routing.md`. Each DAG task carries `required_capabilities`. Game-asset kinds (`asset-image`, `pixel-art`, `model-3d`, `motion-design`, `review-3d`) first resolve `scripts/game_asset_router.py`; specialist ownership overrides normal model-policy economics. `model-3d` and `motion-design` may record an explicit Opus→Codex execution delegate when Codex owns the required tool capability. Capability eligibility is resolved before model price/effort: do not dispatch a worker that cannot access a required external tool. For Codex, use a sanitized MCP inventory for planning and a live preflight immediately before launch; under the default policy expose only required MCPs to that worker. Before dispatch, fingerprint the exact base SHA + task packet + route + capability set and register it in `children.json`; a matching live/reusable child is reconciled rather than launched twice.
+Read `references/capability-routing.md` and `references/orchestration-compilation.md`. Each DAG task carries `required_capabilities`. Specialist task kinds route through the unified `scripts/route_task.py` facade; it delegates dynamic behavior to the game/web/product-quality backends while `orchestration-registry.json` owns static model identities. `model-3d` and `motion-design` may record an explicit Opus→Codex execution delegate when Codex owns the required tool capability. Capability eligibility is resolved before model price/effort: do not dispatch a worker that cannot access a required external tool. For Codex, use a sanitized MCP inventory for planning and a live preflight immediately before launch; under the default policy expose only required MCPs to that worker. Before dispatch, fingerprint the exact base SHA + task packet + route + capability set and register it in `children.json`; a matching live/reusable child is reconciled rather than launched twice.
 
 Pure 3D creation is not asset-ready until the forced GPT-6 Astra `review-3d` gate passes. Motion that mutates a 3D model/rig/export contract uses the same Astra gate after Opus acceptance. If a 3D task also changes runtime code, keep the normal code/task review in addition to this asset gate.
 
@@ -69,6 +69,27 @@ Use dedicated specialists only when the change surface triggers them:
 Resolve their models with `scripts/product_quality_router.py`. Do not run every gate on every change. A gate is justified by consequence/surface, not by availability.
 
 For web-design, material UI requires A11Y; visual regression is required when a baseline exists; content/design-system gates fire only when their surfaces changed. Creative-web additionally requires measured PERF. For game assets, inherit the current art-direction contract when one exists. Audio and level work require contextual listening/playtest evidence respectively.
+
+## Compiled quality topology
+
+Do not hand-author a review checklist after implementation.
+
+At plan time:
+
+1. classify expected owned/touch paths with `scripts/change_surface.py`;
+2. compile the provisional gate/probe topology with `scripts/quality_plan.py`;
+3. persist it under the run directory and record its `quality_plan_id` in `state.quality`;
+4. include required gates, shared probe groups and quality profile in plan approval.
+
+After integration/simplification, refresh the quality plan from the **actual changed paths**. A real new consequence surface may add a gate. A provisional gate may disappear only when the actual diff proves its trigger never occurred; record the delta.
+
+For required gates sharing `probe_group: experience`, dispatch `experience-prober` once and finalize one immutable bundle with `scripts/experience_bundle.py`. Independent reviewers consume that same bundle instead of reopening the browser.
+
+Every gate persists a normalized result matching `schemas/gate-result.schema.json`. Aggregate the required results with `scripts/gate_result.py`; a missing required result is BLOCKED.
+
+Use `references/evidence-reuse.md` before any re-probe/re-check. Exact-SHA is the default; expensive scoped evidence may opt into dependency fingerprints. Repair cycles invalidate only affected fingerprints/gates.
+
+Compile worker/reviewer handoffs through `scripts/context_compiler.py`; persist packet hash/size in `state.context_packets`. Repair packets point to the original packet plus canonical finding/delta instead of resending broad context.
 
 ## Delegation economics
 
@@ -161,7 +182,7 @@ On explicit approval, reacquire the run lock and call `run_state.py plan-approve
 1. Normalize intake and create or reuse the minimal spec.
 2. Run the spec clarification gate; stop at `SPEC_BLOCKED` when required.
 3. Reconcile architecture facts once, reusing facts already gathered during clarification.
-4. Build and pre-flight the lean DAG once using `references/planning-contract.md`; include Review Focus and run `scripts/plan_guard.py` for persisted plans. Resolve concrete implementation/reviewer routing, then pass the human plan approval gate above.
+4. Build and pre-flight the lean DAG once using `references/planning-contract.md`; run `plan_guard.py`, classify expected change surfaces, compile/persist the provisional quality plan, resolve specialist routes through `route_task.py`, then pass the human plan approval gate.
 5. Execute `references/frontier-scheduling.md`: batch qualifying low-risk same-shape micro-work, then dispatch bounded implementation workers continuously from the ready frontier. For background/long-lived delegated work apply `references/worker-lifecycle.md`: register the child/artifact before dispatch and avoid tight polling. Every product edit, including tiny edits and test/doc changes, belongs to a worker.
 6. Workers use RED -> GREEN -> REFACTOR where the failing check provides real signal. Before returning they synchronize the latest integration tip into their task branch/worktree, rerun focused verification, and report `integration_base_sha`, `head_sha`, actual diff/evidence and preferably one local unpushed task commit.
 7. Inspect every worker diff centrally without editing it. In `hybrid`, resolve and run exactly one opposite-provider task review before integration: Claude implementation → Codex review; Codex implementation → Claude review. The review is task-scoped and returns SPEC then QUALITY verdicts.
@@ -169,8 +190,10 @@ On explicit approval, reacquire the run lock and call `run_state.py plan-approve
 9. After the task review gate passes, delegate mechanical integration to `integrator`. Integration conflicts become repair tasks.
 10. After each accepted integration, delegate affected focused checks to `verifier`, but query reusable exact-SHA evidence first so identical valid checks are not rerun. Update task status, recompute the ready frontier, and immediately dispatch any newly-ready non-conflicting tasks.
 11. Run the post-integration `ponytail-simplifier` gate.
-12. Route the simplified integrated diff through `references/final-review-routing.md` and `scripts/final_review_router.py`, then persist the selected mode in `state.final_review`. `lite` buys no new model reviewer; `focused` buys exactly one fresh adversarial integration review; `full` buys the comprehensive spine and, in hybrid, an independent cross-provider peer. Required task-level review gates must already be satisfied.
-13. Delegate full-enough repository-native verification and required UI/UX evidence to `verifier` regardless of final-review mode.
+12. Refresh the compiled quality plan from actual changed paths. Query reusable evidence first; collect each required shared probe group once, then run only required gate reviewers and persist normalized gate envelopes.
+13. Aggregate required gates. REPAIR/BLOCKED quality results enter the ordinary finding/repair machinery; do not continue on vibes.
+14. Route the simplified integrated diff through `references/final-review-routing.md` and `scripts/final_review_router.py`, reusing gate evidence instead of duplicating specialist reviews. Persist the selected mode in `state.final_review`.
+15. Delegate remaining repository-native verification to `verifier`, reusing exact-SHA or explicitly scoped evidence.
 
 Record reusable surprises as compact learning candidates while they are fresh. Do not invoke `/learn` yet just because something was interesting.
 
@@ -187,6 +210,7 @@ All of these are true:
 - no validated Blocker or Important review finding remains;
 - no required migration/security/compatibility concern is unresolved;
 - required UI/UX evidence exists and was inspected;
+- the compiled quality plan aggregates to PASS with no missing required gate;
 - the simplification gate has no unresolved material simplification;
 - no worker or integration conflict is being hand-waved.
 
@@ -214,7 +238,7 @@ Apply `references/finding-dedup.md` before `references/repair-findings.md`. CI, 
 For each repair:
 
 1. Convert only validated, non-advisory failed gates into canonical findings. Apply `references/review-calibration.md`, normalize each failure identity, and ingest it through `scripts/finding_registry.py`; style preferences and advisory hardening do not create repair work.
-2. Reuse the existing spec, repo facts, DAG knowledge and prior finding evidence. Do not redo broad reconnaissance.
+2. Reuse the existing spec, repo facts, DAG, compiled context packet, quality plan, experience bundles and prior evidence. Recompute only fingerprints/gates affected by the repair; do not redo broad reconnaissance.
 3. Before dispatch, call `repair_findings.py attempt` with a short material strategy id. If it returns `rediagnose`, do not send the same strategy a third time; re-diagnose, split, change evidence seam/provider/model/ownership, or adjudicate the finding. If it returns `adjudicate`, classify the residual as load-bearing, human-decision, advisory, or invalid/stale.
 4. Dispatch the smallest worker topology that can fix the finding. Run focused RED/GREEN checks and the test-credibility gate where applicable.
 5. Record the attempt result in the finding ledger.

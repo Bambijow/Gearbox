@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Audio as a state and priority system
 
-Read `references/audio-design.md` and the project's audio/engine conventions.
+Read `references/audio-design.md`, `references/orchestration-compilation.md`, and the project's audio/engine conventions.
 
 Use `scripts/product_quality_router.py --task-kind audio-design`.
 
@@ -19,4 +19,4 @@ Without `--apply`, return the audio contract/event map and `AUDIO_GATE` readines
 
 With `--apply`, capability-preflight exact external tools, keep generated/supplied asset provenance, implement bounded wiring, and verify repeated events, concurrency, state transitions, loop seams, spatial falloff, missing assets and critical-cue alternatives.
 
-Return `AUDIO_GATE: PASS|REPAIR|BLOCKED`.
+Return `AUDIO_GATE: PASS|REPAIR|BLOCKED` plus the normalized gate envelope with runtime-evidence fingerprint.

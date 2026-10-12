@@ -93,11 +93,19 @@ def validate_hooks() -> int:
     redactor = ROOT / "scripts" / "redact.py"
     if not redactor.exists():
         fail("missing scripts/redact.py")
-    for helper in ("plan_guard.py", "repair_findings.py", "finding_registry.py", "solutions_audit.py", "retro_bundle.py", "prompt_budget.py", "behavior_eval.py", "agentic_bench.py", "child_jobs.py", "usage_ledger.py", "final_review_router.py", "capabilities.py", "invocation_fingerprint.py", "game_asset_router.py", "web_design_router.py", "product_quality_router.py"):
+    for helper in ("plan_guard.py", "repair_findings.py", "finding_registry.py", "solutions_audit.py", "retro_bundle.py", "prompt_budget.py", "behavior_eval.py", "agentic_bench.py", "child_jobs.py", "usage_ledger.py", "final_review_router.py", "capabilities.py", "invocation_fingerprint.py", "game_asset_router.py", "web_design_router.py", "product_quality_router.py", "change_surface.py", "quality_plan.py", "gate_result.py", "experience_bundle.py", "context_compiler.py", "route_task.py"):
         if not (ROOT / "scripts" / helper).exists():
             fail(f"missing scripts/{helper}")
     if not (ROOT / "prompt-budgets.json").exists():
         fail("missing prompt-budgets.json")
+    registry_path = ROOT / "orchestration-registry.json"
+    if not registry_path.exists():
+        fail("missing orchestration-registry.json")
+    registry = load_json(registry_path)
+    if registry.get("schema_version") != 1 or not registry.get("task_routes") or not registry.get("gates"):
+        fail("invalid orchestration-registry.json structure")
+    if not (ROOT / "schemas" / "gate-result.schema.json").exists():
+        fail("missing schemas/gate-result.schema.json")
     if not (ROOT / "evals" / "behavior").exists():
         fail("missing evals/behavior")
     if not (ROOT / "benchmarks" / "agentic" / "README.md").exists():
@@ -149,6 +157,12 @@ def main() -> int:
         missing = sorted(discovered - configured_paths)
         stale = sorted(configured_paths - discovered)
         fail(f"skill manifest drift; missing={missing}, stale={stale}")
+
+    registry = load_json(ROOT / "orchestration-registry.json")
+    registered = set(registry.get("task_routes", {}))
+    unknown_registered = sorted(registered - skill_names)
+    if unknown_registered:
+        fail(f"orchestration registry references unknown skills: {unknown_registered}")
 
     entries = market.get("plugins", [])
     if not any(entry.get("name") == name and entry.get("source") == "./" for entry in entries):

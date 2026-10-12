@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Keep the asset world coherent
 
-Read `references/art-direction.md` and `references/game-asset-contract.md`.
+Read `references/art-direction.md`, `references/game-asset-contract.md`, and `references/orchestration-compilation.md`.
 
 Use `scripts/product_quality_router.py --task-kind art-direction`.
 
@@ -17,4 +17,4 @@ Without `--apply`, audit assets as `COHERENT`, `DRIFT`, `INTENTIONAL_VARIANT`, o
 
 With `--apply`, update durable ART_DIRECTION.md/style-bible docs only when explicitly requested or already canonical. Actual asset repairs remain owned by the relevant image/pixel/3D/motion worker lane.
 
-Do not make every asset identical; intentional variants need a gameplay/narrative reason.
+Do not make every asset identical; intentional variants need a gameplay/narrative reason. Persist a normalized `ART_DIRECTION_GATE` envelope when orchestrated.

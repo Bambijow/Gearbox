@@ -22,6 +22,10 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/capabilities.py" inventory --codex-bin "<
 
 The helper emits only sanitized fields: server name, enabled/disabled state, auth-status label and transport type. It never emits MCP commands, URLs, environment contents, tokens or credentials. Persist only the `available` names as a planning hint; live preflight remains authoritative. Record Claude capabilities only when explicitly visible/configured.
 
+## Compiled capability routing
+
+Specialist planning should resolve through `scripts/route_task.py`. It reads the canonical registry, calls the appropriate dynamic backend and returns one normalized route payload. This prevents the DAG, docs and specialist scripts from carrying separate static model tables.
+
 ## Provider gate
 
 Capability eligibility happens before risk/cost/model routing:

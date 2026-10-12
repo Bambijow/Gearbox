@@ -33,6 +33,18 @@ jobs:
         run: python3 scripts/web_design_router.py --self-test
       - name: Product quality router self-test
         run: python3 scripts/product_quality_router.py --self-test
+      - name: Unified specialist route self-test
+        run: python3 scripts/route_task.py --self-test
+      - name: Change surface classifier self-test
+        run: python3 scripts/change_surface.py --self-test
+      - name: Quality plan compiler self-test
+        run: python3 scripts/quality_plan.py --self-test
+      - name: Gate result envelope self-test
+        run: python3 scripts/gate_result.py self-test
+      - name: Shared experience bundle self-test
+        run: python3 scripts/experience_bundle.py self-test
+      - name: Context compiler self-test
+        run: python3 scripts/context_compiler.py --self-test
       - name: Codex worker isolation/capability self-test
         run: python3 scripts/codex_worker.py --self-test
       - name: Run-state plan approval self-test

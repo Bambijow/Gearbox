@@ -1,0 +1,26 @@
+{
+  "name": "shared experience probe avoids duplicate browser work",
+  "context_files": [
+    "references/experience-probe.md",
+    "references/orchestration-compilation.md"
+  ],
+  "prompt": "The same checkout journey needs interaction, accessibility, visual-regression and performance review. Should four reviewers each launch their own browser journey?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|should not)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(one|single|shared).*?(probe|bundle|journey)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(independent).*?(review|judg)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

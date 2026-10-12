@@ -1,0 +1,330 @@
+{
+  "schema_version": 1,
+  "policy": "Single declarative source for specialist routing, static model/effort identities, gate triggers, probe sharing, and quality-depth profiles. Router code keeps only dynamic capability/mode logic.",
+  "task_routes": {
+    "asset-image": {
+      "router": "game_asset"
+    },
+    "pixel-art": {
+      "router": "game_asset"
+    },
+    "model-3d": {
+      "router": "game_asset"
+    },
+    "motion-design": {
+      "router": "game_asset"
+    },
+    "review-3d": {
+      "router": "game_asset"
+    },
+    "web-design": {
+      "router": "web_design",
+      "creative": false
+    },
+    "creative-web": {
+      "router": "web_design",
+      "creative": true
+    },
+    "design-system": {
+      "router": "product_quality"
+    },
+    "a11y-audit": {
+      "router": "product_quality"
+    },
+    "visual-regression": {
+      "router": "product_quality"
+    },
+    "content-design": {
+      "router": "product_quality"
+    },
+    "experience-perf": {
+      "router": "product_quality"
+    },
+    "art-direction": {
+      "router": "product_quality"
+    },
+    "audio-design": {
+      "router": "product_quality"
+    },
+    "level-design": {
+      "router": "product_quality"
+    }
+  },
+  "routing_defaults": {
+    "game_asset": {
+      "asset-image": {
+        "engine": "codex",
+        "model": "gpt-6.1-sol",
+        "effort": "medium"
+      },
+      "pixel-art": {
+        "engine": "codex",
+        "model": "gpt-6.1-sol",
+        "effort": "medium"
+      },
+      "model-3d": {
+        "engine": "claude",
+        "model": "claude-opus-5-5",
+        "effort": "high",
+        "review_engine": "codex",
+        "review_model": "gpt-6-astra",
+        "delegate_engine": "codex",
+        "delegate_model": "gpt-6.1-sol",
+        "delegate_effort": "high"
+      },
+      "motion-design": {
+        "engine": "claude",
+        "model": "claude-opus-5-5",
+        "effort": "high",
+        "delegate_engine": "codex",
+        "delegate_model": "gpt-6.1-sol",
+        "delegate_effort": "high"
+      },
+      "review-3d": {
+        "engine": "codex",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      }
+    },
+    "web_design": {
+      "director": {
+        "engine": "claude",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "comp_generator": {
+        "engine": "codex",
+        "model": "gpt-6.1-sol",
+        "effort_by_scope": {
+          "refine": "medium",
+          "surface": "medium",
+          "redesign": "high",
+          "creative": "high"
+        }
+      },
+      "builder": {
+        "engine": "codex",
+        "model": "gpt-6.1-sol",
+        "effort_by_scope": {
+          "refine": "medium",
+          "surface": "medium",
+          "redesign": "high",
+          "creative": "high"
+        }
+      },
+      "reviewer": {
+        "refine": {
+          "engine": "claude",
+          "model": "sonnet",
+          "effort": "high",
+          "agent": "web-design-reviewer"
+        },
+        "surface": {
+          "engine": "claude",
+          "model": "sonnet",
+          "effort": "high",
+          "agent": "web-design-reviewer"
+        },
+        "redesign": {
+          "engine": "claude",
+          "model": "claude-opus-5-5",
+          "effort": "high",
+          "agent": "web-design-reviewer"
+        },
+        "creative": {
+          "engine": "claude",
+          "model": "claude-opus-5-5",
+          "effort": "high",
+          "agent": "creative-web-reviewer"
+        }
+      }
+    },
+    "product_quality": {
+      "design-system": {
+        "owner_engine": "claude",
+        "owner_model": "claude-opus-5-5",
+        "owner_effort": "high",
+        "executor_engine": "codex",
+        "executor_model": "gpt-6.1-sol",
+        "executor_effort": "medium",
+        "reviewer_engine": "claude",
+        "reviewer_model": "sonnet",
+        "reviewer_effort": "high"
+      },
+      "a11y-audit": {
+        "owner_engine": "claude",
+        "owner_model": "sonnet",
+        "owner_effort": "high",
+        "executor_engine": "codex",
+        "executor_model": "gpt-6.1-sol",
+        "executor_effort": "medium"
+      },
+      "visual-regression": {
+        "owner_engine": "claude",
+        "owner_model": "sonnet",
+        "owner_effort": "high"
+      },
+      "content-design": {
+        "owner_engine": "claude",
+        "owner_model": "sonnet",
+        "owner_effort": "high",
+        "executor_engine": "codex",
+        "executor_model": "gpt-6.1-sol",
+        "executor_effort": "medium"
+      },
+      "experience-perf": {
+        "owner_engine": "codex",
+        "owner_model": "gpt-6.1-sol",
+        "owner_effort": "high",
+        "executor_engine": "codex",
+        "executor_model": "gpt-6.1-sol",
+        "executor_effort": "high",
+        "reviewer_engine": "claude",
+        "reviewer_model": "sonnet",
+        "reviewer_effort": "high"
+      },
+      "art-direction": {
+        "owner_engine": "claude",
+        "owner_model": "claude-opus-5-5",
+        "owner_effort": "high",
+        "reviewer_engine": "claude",
+        "reviewer_model": "sonnet",
+        "reviewer_effort": "high"
+      },
+      "audio-design": {
+        "owner_engine": "claude",
+        "owner_model": "claude-opus-5-5",
+        "owner_effort": "high",
+        "executor_engine": "codex",
+        "executor_model": "gpt-6.1-sol",
+        "executor_effort": "high",
+        "reviewer_engine": "claude",
+        "reviewer_model": "sonnet",
+        "reviewer_effort": "high"
+      },
+      "level-design": {
+        "owner_engine": "claude",
+        "owner_model": "claude-opus-5-5",
+        "owner_effort": "high",
+        "executor_engine": "codex",
+        "executor_model": "gpt-6.1-sol",
+        "executor_effort": "high",
+        "reviewer_engine": "claude",
+        "reviewer_model": "claude-opus-5-5",
+        "reviewer_effort": "high"
+      }
+    }
+  },
+  "quality_profiles": {
+    "dev": {
+      "probe_depth": "focused",
+      "state_matrix": "changed-only",
+      "review_depth": "focused",
+      "notes": "Fast local iteration; required correctness/safety gates remain required."
+    },
+    "standard": {
+      "probe_depth": "representative",
+      "state_matrix": "material-states",
+      "review_depth": "standard",
+      "notes": "Default Gearbox balance."
+    },
+    "release": {
+      "probe_depth": "broad",
+      "state_matrix": "representative-plus-edge",
+      "review_depth": "release",
+      "notes": "Shipping confidence across representative journeys."
+    },
+    "critical": {
+      "probe_depth": "strict",
+      "state_matrix": "risk-expanded",
+      "review_depth": "strict",
+      "notes": "High consequence paths; broader evidence and fresh adjudication."
+    }
+  },
+  "gates": {
+    "SLOP_GATE": {
+      "trigger_task_kinds": [
+        "web-design",
+        "creative-web"
+      ],
+      "probe_group": "experience",
+      "skill": "web-design"
+    },
+    "INTERACTION_GATE": {
+      "trigger_surfaces": [
+        "interactive_ui"
+      ],
+      "trigger_task_kinds": [
+        "creative-web"
+      ],
+      "probe_group": "experience",
+      "skill": "web-design"
+    },
+    "A11Y_GATE": {
+      "trigger_surfaces": [
+        "user_ui"
+      ],
+      "probe_group": "experience",
+      "skill": "a11y-audit"
+    },
+    "DESIGN_SYSTEM_GATE": {
+      "trigger_surfaces": [
+        "shared_design_system"
+      ],
+      "probe_group": "repository",
+      "skill": "design-system"
+    },
+    "CONTENT_GATE": {
+      "trigger_surfaces": [
+        "ux_copy"
+      ],
+      "probe_group": "experience",
+      "skill": "content-design"
+    },
+    "PERF_GATE": {
+      "trigger_surfaces": [
+        "performance_sensitive",
+        "creative_runtime"
+      ],
+      "probe_group": "experience",
+      "skill": "experience-perf"
+    },
+    "ART_DIRECTION_GATE": {
+      "trigger_surfaces": [
+        "art_direction",
+        "multi_asset"
+      ],
+      "probe_group": "asset",
+      "skill": "art-direction"
+    },
+    "AUDIO_GATE": {
+      "trigger_surfaces": [
+        "audio"
+      ],
+      "probe_group": "runtime",
+      "skill": "audio-design"
+    },
+    "PLAYTEST_GATE": {
+      "trigger_surfaces": [
+        "level"
+      ],
+      "probe_group": "gameplay",
+      "skill": "level-design"
+    },
+    "VISUAL_REGRESSION_GATE": {
+      "trigger_surfaces": [
+        "user_ui"
+      ],
+      "requires_flag": "baseline_exists",
+      "probe_group": "experience",
+      "skill": "visual-regression"
+    },
+    "CREATIVE_GATE": {
+      "trigger_task_kinds": [
+        "creative-web"
+      ],
+      "probe_group": "experience",
+      "skill": "creative-web"
+    }
+  }
+}

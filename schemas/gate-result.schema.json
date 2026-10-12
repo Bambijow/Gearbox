@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Gearbox Gate Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "gate",
+    "status",
+    "scope",
+    "findings",
+    "evidence"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "gate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "REPAIR",
+        "BLOCKED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "scope": {
+      "type": "string"
+    },
+    "input_fingerprint": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "details": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

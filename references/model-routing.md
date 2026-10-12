@@ -18,6 +18,12 @@ Recommended choices:
 
 Do not ask repeatedly once a repository policy is stored unless the user requests it or configured models are unavailable.
 
+## Unified specialist routing facade
+
+Planner/control-plane code uses `scripts/route_task.py` for registered specialist task kinds. `orchestration-registry.json` is the canonical static model/effort registry; backend routers add dynamic capability/mode behavior.
+
+Direct calls to the three backend routers remain supported for specialist skills and diagnostics, but new orchestration logic should not duplicate their model tables.
+
 ## Capability gate before model choice
 
 Read `references/capability-routing.md`. Every task records `required_capabilities`, including an explicit empty list. Capability eligibility is a hard gate before risk/cost/model scoring: a provider that cannot supply a required external capability is not a candidate, however cheap or capable its model is.

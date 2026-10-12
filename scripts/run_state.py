@@ -12,7 +12,7 @@ import tempfile
 import time
 from pathlib import Path
 
-SCHEMA_VERSION=6
+SCHEMA_VERSION=7
 DEFAULT_BUDGETS={
     "max_cycles":3,
     "max_worker_dispatches":10,
@@ -71,6 +71,16 @@ def normalize(d):
         d["orchestration"]={"mode":"delegated-control-plane","product_writes":"workers-only"}; changed=True
     if "repair_findings" not in d:
         d["repair_findings"]={"policy":{"same_strategy_limit":2,"max_attempts_per_finding":5},"items":{}}; changed=True
+    if "quality" not in d:
+        d["quality"]={"profile":"standard","plan_path":None,"plan_id":None,"gate_results":{},"experience_bundles":[]}; changed=True
+    else:
+        q=d["quality"]
+        defaults={"profile":"standard","plan_path":None,"plan_id":None,"gate_results":{},"experience_bundles":[]}
+        for k,v in defaults.items():
+            if k not in q:
+                q[k]=v; changed=True
+    if "context_packets" not in d:
+        d["context_packets"]={}; changed=True
     d.setdefault("budgets",{})
     for k,v in DEFAULT_BUDGETS.items():
         if k not in d["budgets"]:
@@ -106,6 +116,8 @@ def init(run,run_id):
         "model_assignments":{},
         "orchestration":{"mode":"delegated-control-plane","product_writes":"workers-only"},
         "repair_findings":{"policy":{"same_strategy_limit":2,"max_attempts_per_finding":5},"items":{}},
+        "quality":{"profile":"standard","plan_path":None,"plan_id":None,"gate_results":{},"experience_bundles":[]},
+        "context_packets":{},
         "clarification":{"status":"UNSET","round":0,"questions":[],"answers":{}},
         "plan_approval":default_plan_approval(required=True),
         "blocker":None,
@@ -230,6 +242,8 @@ def self_test():
         plan.write_text("tasks: [A]\n",encoding="utf-8")
         d=init(run,"test")
         assert d["plan_approval"]["required"] is True
+        assert d["quality"]["profile"]=="standard" and d["quality"]["gate_results"]=={}
+        assert d["context_packets"]=={}
         assert plan_gate_problem(d)
         set_plan_approval(d,str(plan),auto=False)
         assert d["status"]=="AWAITING_APPROVAL"

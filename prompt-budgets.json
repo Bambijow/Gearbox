@@ -39,7 +39,7 @@
       "class": "hot-path"
     },
     "plan": {
-      "max_bytes": 6144,
+      "max_bytes": 4608,
       "class": "hot-path"
     },
     "resume": {

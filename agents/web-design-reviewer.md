@@ -27,4 +27,4 @@ For each finding, include severity, surface/state, evidence, consequence and sma
 
 Treat missing rendered evidence as `BLOCKED` for a material design task. Dedicated specialist gates are authoritative in their domains; do not re-run them just to reassure yourself.
 
-This reviewer participates in a bounded finish loop: one batched review, one repair batch, and at most one confirmation review. Do not reopen endless polish cycles.
+When orchestrated, return/persist normalized gate-result envelopes for SLOP_GATE and INTERACTION_GATE, pointing to the shared bundle fingerprint/evidence. This reviewer participates in a bounded finish loop: one batched review, one repair batch, and at most one confirmation review. Do not reopen endless polish cycles.

@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Creative web as interaction-led production
 
-Read `references/web-design-contract.md`, `references/web-design-anti-slop.md`, `references/component-interaction.md`, `references/accessibility-audit.md`, `references/experience-performance.md`, `references/semantic-visual-regression.md`, `references/creative-web-workflow.md`, `references/web-design-comp-generation.md`, and `references/web-design-review.md`.
+Read `references/web-design-contract.md`, `references/web-design-anti-slop.md`, `references/component-interaction.md`, `references/accessibility-audit.md`, `references/experience-performance.md`, `references/semantic-visual-regression.md`, `references/experience-probe.md`, `references/orchestration-compilation.md`, `references/creative-web-workflow.md`, `references/web-design-comp-generation.md`, and `references/web-design-review.md`.
 
 Use this lane only when interaction/motion/spatial behavior is part of the requested experience, not merely because a page should look premium.
 
@@ -23,7 +23,7 @@ Without `--apply`, stop after the creative direction, interaction architecture, 
 
 With `--apply`, Codex GPT-6.1 Sol/high implements the approved experience. Use the repository's existing motion/render stack where capable; do not add Three.js/GSAP/Lenis/etc. by habit.
 
-Run real browser evidence. The final fresh reviewer must pass:
+Collect the representative runtime journey once through the compiled shared experience probe; A11Y/PERF/interaction/visual/creative reviewers consume the same bundle at their required depth. The final fresh reviewer must pass:
 
 ```text
 SLOP_GATE

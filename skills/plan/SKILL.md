@@ -1,69 +1,83 @@
 ---
 name: plan
-description: "Convert a shaped request or specification into an implementation-ready dependency graph of small vertical slices, with verification and rollout steps. Use before non-trivial implementation."
+description: "Convert a shaped request/spec into a lean executable DAG with ownership, capabilities, verification, specialist routing, and a compiled quality-gate topology. Use before non-trivial implementation."
 argument-hint: "[spec path, issue, or request]"
 disable-model-invocation: true
 ---
 
 # Plan executable engineering work
 
-Create a plan that another capable engineer or agent can execute without rediscovering the architecture.
+Create a plan another capable worker can execute without rediscovering architecture.
 
-## Ground the plan
+Read `.gearbox/config.md`, repository instructions, the accepted request/spec, relevant code/tests, and only needed pointers. Apply `references/planning-contract.md`, `references/domain-modeling.md`, `references/frontier-scheduling.md`, `references/delegation-gate.md`, and `references/orchestration-compilation.md`.
 
-Read `.gearbox/config.md` when present, repository instructions, the target spec or issue, and the relevant code/tests. Apply `references/planning-contract.md`, `references/domain-modeling.md` when domain language matters, and `references/frontier-scheduling.md` for executable DAG metadata. Verify important symbols and paths instead of fabricating likely filenames.
+Use fresh `design-proposer` judgment only for a hard-to-reverse shared seam with materially different valid designs. Do not buy discovery agents to summarize context already available.
 
-Before any auxiliary discovery/design dispatch, apply `references/delegation-gate.md` and record the dispatch reason. Broad discovery may be split only when flood protection or true independent parallel work pays for it. If a shared interface/seam is hard to reverse and reasonable designs differ, the fresh independent judgment of `design-proposer` satisfies that gate; apply the `references/codebase-design.md` design-it-twice contract before committing the plan.
+## Build the DAG
 
-## Build a dependency graph, not a shopping list
+Extract one compact **Global Constraints** block, then split work into the smallest coherent vertical slices. Each executable unit records:
 
-Break the work into the smallest coherent **vertical slices** that deliver or verify behavior end to end. Before listing units, extract a compact **Global Constraints** block containing only rules every unit must respect, such as compatibility floors, dependency limits, exact public copy/values, schema invariants, or repository-wide safety constraints. Do not repeat generic repository guidance.
+- outcome + exact acceptance/spec slice;
+- dependencies and `ready_when`;
+- consumed/produced interfaces;
+- owned paths + known shared seams;
+- context pointers, not pasted bulk;
+- `required_capabilities`, including explicit `[]`;
+- specialist `task_kind` when applicable;
+- concrete route from `scripts/route_task.py` for registered specialist kinds;
+- implementation decisions a capable worker cannot safely choose alone;
+- focused verification, including test credibility for behavior-bearing tests;
+- optional same-shape `batch_key`/members;
+- migration/rollout/rollback when relevant.
 
-Each unit should have:
+Prefer vertical integration over horizontal "all models / all services / all tests" phases. Continuously schedule the ready frontier; do not encode rigid waves.
 
-- outcome;
-- acceptance criteria/spec slice covered;
-- dependencies / blockers;
-- `ready_when`: the exact dependency/decision condition that places the task on the ready frontier;
-- interfaces consumed and produced;
-- owned write surface plus known shared seams;
-- context pointers (glossary/ADR/research/solution/source) needed by this task, without copied bulk context;
-- `required_capabilities`: external tool/MCP names needed by the task; use `[]` when none so Codex can prune unrelated MCPs;
-- specialist `task_kind`: game assets use `game_asset_router.py`; web/creative use `web_design_router.py`; design/quality/audio/level specialists use `product_quality_router.py`. Persist any delegate route separately;
-- exact or well-supported likely touch points;
-- implementation notes limited to decisions the capable implementer cannot safely choose alone; prefer exact signatures/values/assertions over function bodies;
-- tests or verification proving completion, including the `references/test-credibility.md` seam when behavior-bearing tests are planned;
-- optional `batch_key` + `batch_members` only for low-risk same-shape micro-work that qualifies under `references/frontier-scheduling.md`;
-- migration / rollout / rollback concerns when relevant.
+## Compile quality topology
 
-Prefer slices that cross layers and prove integration over horizontal tasks like "create all models", then "create all services", then "write all tests".
+Before finalizing the plan:
 
-Model parallelism as a ready frontier rather than a static wave. Keep shared-file contention in mind before declaring tasks simultaneously ready. A task whose dependencies are integrated may start immediately even while unrelated tasks continue. Collapse qualifying low-risk same-shape micro-tasks into one batch dispatch/review unit rather than paying one fresh worker and reviewer per trivial edit.
+1. classify expected owned/touch paths with `scripts/change_surface.py`;
+2. compile the provisional quality plan with `scripts/quality_plan.py` using the repository/default quality profile;
+3. persist the quality-plan path/id with the run;
+4. include only **required** gates and shared probe groups in the human plan summary.
 
-## Plan quality checks
+Quality profiles change evidence depth, not whether required correctness/safety gates are true. Do not manually add every available specialist gate.
 
-Before finalizing, challenge the plan:
+## Challenge the plan
 
-- Is there a smaller first slice that proves the risky assumption?
-- Are any tasks merely cleanup disguised as requirements?
-- Are data migrations reversible or at least recoverable?
-- Are compatibility boundaries explicit?
-- Does every requirement map to at least one implementation unit or verification step?
-- Is every implementation unit justified by a requirement, risk reduction, or necessary enabling work?
-- Are observability and operational validation included where production behavior could fail silently?
-- Do adjacent tasks agree on their interfaces?
-- Would any reviewer immediately reject something the plan itself requires?
-- Are tasks right-sized to earn one meaningful test cycle and one useful review unit, with trivial same-shape work batched instead of fragmented?
-- Can at least one provider satisfy every task's explicit external capabilities before model routing?
-- Material web-design uses `web-design`; use `creative-web` only when interaction/motion/spatial behavior is part of the experience itself.
-- Only schedule specialist quality gates when their surface changed: design-system, a11y, visual baseline, UX copy, measured perf, art direction, audio, or level/playtest.
-- Does `## Review Focus` contain at most five plausible failure modes implied by the requested behavior, each owned by a task/check when testable?
-- Is the plan proportionate to the spec, or has it started writing implementation bodies the worker can derive?
+Check:
 
-## Output format
+- smallest slice proves the riskiest assumption first;
+- every requirement maps to implementation or verification;
+- every task is justified by requirement/risk/enabling work;
+- compatibility/migration/operational boundaries are explicit;
+- adjacent interfaces agree;
+- expected capabilities exist before dispatch;
+- tasks earn one meaningful test/review unit;
+- low-risk same-shape work is batched;
+- `Review Focus` has at most five plausible failure modes;
+- plan records decisions, not future function bodies.
 
-Start with a short architecture summary, key decisions, canonical domain pointers, and compact Global Constraints. Add a `## Review Focus` section with 0-5 items. Then provide dependency-graph work units with explicit interfaces/ownership/`ready_when` and batch metadata when applicable. Add `## Initial ready frontier` with task ids. End with a verification matrix mapping requirements to checks.
+Material web UI uses `web-design`; use `creative-web` only when interaction/motion/spatial behavior is part of the experience itself. Other specialist kinds route through the unified facade rather than duplicating model tables in the plan.
 
-For substantial work, persist the plan in the configured plans directory. Link the originating spec by relative path when both are persisted. After writing, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/plan_guard.py" --plan <plan> --require-dag` and add `--spec <spec>` when the spec is persisted. Fix guard failures before handoff.
+## Output
 
-Do not implement while running `/plan` unless the user explicitly asks to combine planning and execution. `/flow` exists for that purpose.
+Produce:
+
+1. short architecture summary + key decisions/pointers;
+2. Global Constraints;
+3. `## Review Focus` with 0-5 items;
+4. dependency-graph work units;
+5. provisional quality topology: profile, required gates, shared probe groups;
+6. `## Initial ready frontier`;
+7. verification matrix mapping requirements to checks/gates.
+
+For substantial work, persist the plan in the configured plans directory and link the originating spec. Run:
+
+```bash
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/plan_guard.py" --plan <plan> --require-dag
+```
+
+Add `--spec <spec>` when persisted. Fix guard failures before handoff.
+
+Do not implement during `/plan` unless explicitly asked to combine planning/execution; `/flow` exists for that.

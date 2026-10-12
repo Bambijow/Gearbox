@@ -1,0 +1,22 @@
+{
+  "name": "quality compiler schedules only triggered gates",
+  "context_files": [
+    "references/orchestration-compilation.md",
+    "references/engineering-loop.md"
+  ],
+  "prompt": "A backend-only change modifies a pure data parser with no UI, audio, level, asset, design-system or performance-sensitive surface. Should Gearbox run every product-quality gate just because the specialists exist?",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(no|not|should not|only).*?(trigger|surface|required|applicable)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(quality plan|compile|surface classifier|consequence)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}

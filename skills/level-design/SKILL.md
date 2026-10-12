@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Level and encounter design through playable evidence
 
-Read `references/level-design.md`, repository game-design conventions, and relevant art-direction/gameplay contracts.
+Read `references/level-design.md`, `references/orchestration-compilation.md`, repository game-design conventions, and relevant art-direction/gameplay contracts.
 
 Use `scripts/product_quality_router.py --task-kind level-design`.
 
@@ -17,4 +17,4 @@ Without `--apply`, return the level contract, blockout plan and playtest hypothe
 
 With `--apply`, require a credible Godot/Blender execution path for blockout. Prove scale/navigation/pacing with cheap geometry before art polish.
 
-A level cannot pass from editor screenshots. Traverse the real blockout and return `PLAYTEST_GATE: PASS|REPAIR|BLOCKED` with orientation, readability, exploits, pacing, checkpoint and performance observations.
+A level cannot pass from editor screenshots. Traverse the real blockout and return `PLAYTEST_GATE: PASS|REPAIR|BLOCKED` with orientation, readability, exploits, pacing, checkpoint and performance observations, plus the normalized gate envelope.

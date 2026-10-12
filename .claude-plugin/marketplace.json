@@ -8,7 +8,7 @@
     {
       "name": "gearbox",
       "source": "./",
-      "description": "Gearbox: capability-aware Claude/Codex engineering with web/creative design, design-system/a11y/content/performance gates, semantic visual regression, art/audio/level game-dev specialists, runtime evidence, and durable memory.",
+      "description": "Gearbox: capability-aware Claude/Codex engineering with compiled quality/gate planning, shared runtime evidence, dependency-scoped reuse, bounded context, unified specialist routing, web/creative design and game-dev lanes.",
       "category": "engineering",
       "keywords": [
         "engineering",
@@ -112,7 +112,15 @@
         "art-direction",
         "audio-design",
         "level-design",
-        "playtesting"
+        "playtesting",
+        "quality-compiler",
+        "change-surface",
+        "shared-experience-probe",
+        "scope-fingerprint",
+        "context-compiler",
+        "gate-envelope",
+        "quality-profile",
+        "unified-routing"
       ]
     }
   ]

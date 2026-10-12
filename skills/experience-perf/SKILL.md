@@ -7,13 +7,13 @@ disable-model-invocation: true
 
 # Measure the experience, not theoretical performance
 
-Read `references/experience-performance.md` and the relevant web/creative interaction contract.
+Read `references/experience-performance.md`, `references/experience-probe.md`, `references/orchestration-compilation.md`, and the relevant web/creative interaction contract.
 
 Use `scripts/product_quality_router.py --task-kind experience-perf`.
 
-The Codex Sol profiler executes the bounded browser/runtime profiling pass; the fresh `experience-perf-reviewer` adjudicates whether the evidence meets the repository/user budget.
+The Codex Sol profiler executes the bounded browser/runtime profiling pass only when a matching shared experience bundle does not already contain credible performance artifacts. The fresh `experience-perf-reviewer` adjudicates the evidence.
 
-Without `--fix`, return measurements, dominant bottleneck, uncertainty and `PERF_GATE: PASS|REPAIR|BLOCKED`.
+Without `--fix`, return measurements, dominant bottleneck, uncertainty and `PERF_GATE: PASS|REPAIR|BLOCKED`, plus its normalized gate envelope.
 
 With `--fix`, repair the measured hot path only, then remeasure once. Do not micro-optimize absent/non-dominant code.
 
