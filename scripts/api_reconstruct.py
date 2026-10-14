@@ -169,7 +169,7 @@ def inspect_har(data: dict, digest: str) -> dict:
                                   "paths": openapi_paths},
             "limitations": ["Historical captures are not proof of deployed server identity or causality",
                             "No requests sent; no claim of API completeness or correct target implementation",
-                            "No response/request values, hostnames, query values or authentication headers retained"]}
+                            "Hostnames, query values, authentication headers and payload values are omitted; literal path segments and JSON keys may still require review before sharing"]}
 
 
 def main():

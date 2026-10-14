@@ -41,6 +41,8 @@ def route(args:argparse.Namespace)->FinalReviewRoute:
             raise ValueError("behavior transfer needs a current contract challenge result")
         if ch == "counterexample":
             raise ValueError("contract challenger found a counterexample; repair before final review")
+        if ch == "gaps":
+            raise ValueError("material transfer claims lack challenge proof; complete evidence before final review")
     uncovered=list(dict.fromkeys(args.uncovered_failure_mode or []))
     full=[]
     if args.risk=="critical":full.append("critical risk")
@@ -70,8 +72,6 @@ def route(args:argparse.Namespace)->FinalReviewRoute:
     focused=[]
     if getattr(args,"behavior_transfer",False):
         focused.append("behavior transfer requires independent contract-focused challenge")
-        if getattr(args,"contract_challenge_status",None)=="gaps":
-            focused.append("adversarial challenge evidence has gaps; review cannot substitute for proof")
     if missing:focused.append("legacy missing evidence requires focused review; it is not completion proof")
     if args.risk=="high":focused.append("high risk without a full-review boundary")
     if args.failure_visibility=="silent":focused.append("plausible failure is silent")

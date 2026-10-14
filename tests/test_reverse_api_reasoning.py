@@ -178,8 +178,9 @@ class ChallengeTests(unittest.TestCase):
             final_review_router.route(final_review_router.parser().parse_args(base))
         r = final_review_router.route(final_review_router.parser().parse_args(base + ["--contract-challenge-status", "reviewed"]))
         self.assertEqual(r.mode, "focused")
-        with self.assertRaises(ValueError):
-            final_review_router.route(final_review_router.parser().parse_args(base + ["--contract-challenge-status", "counterexample"]))
+        for status in ("counterexample", "gaps"):
+            with self.subTest(status=status), self.assertRaises(ValueError):
+                final_review_router.route(final_review_router.parser().parse_args(base + ["--contract-challenge-status", status]))
 
 
 if __name__ == "__main__":
