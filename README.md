@@ -89,6 +89,8 @@ Pour une issue classique, le mode autonome habituel est :
 /gearbox:issue https://github.com/acme/foo/issues/123 --auto --ship
 ```
 
+Sur les issues qui déclarent des dépendances (`Dépendances : US-XXX` ou `#NN`), un preflight GitHub **bloque** `--auto` tant que leurs PR de clôture ne sont pas fusionnées dans la branche par défaut ; un simple ticket fermé n'est pas suffisant. Les liens `Source spec` / `Fichier source` et `Document de conventions` sont vérifiés et leurs fichiers Markdown deviennent les références de l'implémentation. Une dépendance bloquée peut être revérifiée avec `/gearbox:resume` après fusion de la PR correspondante.
+
 Pour continuer également après l'ouverture de la PR :
 
 ```text

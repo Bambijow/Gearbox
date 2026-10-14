@@ -1,0 +1,30 @@
+name: Issue preflight regression tests
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/issue_preflight.py'
+      - 'scripts/run_state.py'
+      - 'scripts/orchestrator_guard.py'
+      - 'tests/test_issue_preflight*.py'
+      - '.github/workflows/issue-preflight-guard.yml'
+  push:
+    branches: [staging]
+    paths:
+      - 'scripts/issue_preflight.py'
+      - 'scripts/run_state.py'
+      - 'scripts/orchestrator_guard.py'
+      - 'tests/test_issue_preflight*.py'
+
+jobs:
+  test-issue-preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Python syntax
+        run: python3 -m py_compile scripts/issue_preflight.py scripts/run_state.py scripts/orchestrator_guard.py
+      - name: Dependency and state regression tests
+        run: python3 -m unittest discover -s tests -p 'test_issue_preflight*.py' -v
