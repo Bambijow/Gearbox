@@ -40,6 +40,10 @@ Return `QUALITY: PASS`, `QUALITY: WARN`, or `QUALITY: FAIL`.
 
 A finding must include location, reachable failure/requirement mismatch, consequence/failure cost, smallest useful fix direction, and action owner (`repair|human|release|advisory`). Avoid generic style comments and speculative defensive-I/O findings already caught by an existing guard.
 
+## Behavioral transfer challenge (conditional)
+
+When the task ports a reconstructed API, UI or game behavior, read `references/reasoning-quality.md` and the accepted destination contract. Challenge the implementation with a concrete *counterexample-seeking* input at a real caller seam: boundaries, malformed input, retries/idempotency, state transitions, authz and side effects when relevant. Observe/reuse actual candidate test evidence, bound to its revision. If no reliable oracle or run evidence exists, report `UNVERIFIABLE` or a gap; never turn agreement between two agents into a test PASS. Persist one normalized challenge report per material claim when the plan requests `scripts/contract_challenge.py`. Remain read-only. Do not independently execute external/production requests without explicit authorization.
+
 ## Output
 
 Keep the answer compact:

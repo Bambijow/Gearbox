@@ -12,6 +12,8 @@ Les résultats de gates passent au **schéma 2** : run, plan, scope et empreinte
 
 La découverte incomplète de dépendances désactive la réutilisation par scope. La nouvelle commande `/gearbox:inspect <run-id>` explique un run sans le reprendre. Le guard existant n'est pas modifié dans cette version : une session où il est déjà actif peut refuser ce nouveau helper, sans contournement automatique. Les tests déterministes de non-régression sont exécutés en CI avec `python3 -m unittest discover -s tests -v`.
 
+Pour récupérer un comportement backend disparu depuis des traces HTTP, `/gearbox:reverse --mode api` analyse les HAR hors ligne, prépare un contrat et un brouillon OpenAPI **non vérifié**. Les probes actifs exigent une autorisation et un environnement d’essai séparés. Voir [le protocole reverse API](references/reverse-api.md) et [les décisions fondées sur les preuves](references/reasoning-quality.md).
+
 ## Installation depuis GitHub
 
 Le repository `Bambijow/Gearbox` contient directement la source décompressée du plugin ainsi que son marketplace Claude Code.
@@ -56,6 +58,8 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | J'ai une initiative trop grosse ou trop floue pour une seule spec | `/gearbox:wayfinder "destination"` |
 | J'ai déjà une issue GitHub | `/gearbox:issue <URL-ou-numéro>` |
 | J'ai déjà une spec | `/gearbox:loop <chemin-spec>` |
+| Je veux retrouver un comportement sans source et l’adapter à un autre projet | `/gearbox:reverse <ancien-projet> --target <nouveau-projet>` |
+| Je veux reconstruire une API à partir de captures HTTP historiques | `/gearbox:reverse ancien.har --mode api --target <projet>` |
 | Je veux comprendre un run sans le modifier | `/gearbox:inspect <run-id>` |
 | J'ai un run interrompu | `/gearbox:resume <run-id-ou-issue>` |
 | J'ai déjà une PR avec CI/reviews à traiter | `/gearbox:continue-pr <PR>` |
@@ -97,7 +101,7 @@ Pour continuer également après l'ouverture de la PR :
 /gearbox:issue https://github.com/acme/foo/issues/123 --auto --ship --follow-pr
 ```
 
-## Les 42 commandes
+## Les 43 commandes
 
 | Commande | Quand l'utiliser | Ce qu'elle fait exactement |
 | --- | --- | --- |
@@ -112,6 +116,7 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:flow <demande>` | Compatibilité avec l'ancien point d'entrée générique | Alias de compatibilité vers la logique de boucle pour du travail substantiel hors issue. Pour un nouveau workflow, préfère `/gearbox:loop`. |
 | `/gearbox:plan <spec-ou-issue>` | Quand tu veux seulement produire/inspecter le plan | Produit un **plan lean** : décisions, interfaces/signatures, valeurs imposées, tests/assertions et vérification, sans transcrire les corps de code. Ajoute `Review Focus` (0-5 failure modes), la ready frontier, ownership, routing et éventuels micro-batches. `plan_guard.py` contrôle la proportion du plan. |
 | `/gearbox:build <plan-ou-tâche>` | Pour implémenter manuellement un plan déjà approuvé | Exécute via workers délégués, RED → GREEN → REFACTOR et **Test Credibility Gate**. Les petites tâches indépendantes de même forme peuvent être batchées en un worker + une cross-review, tout en gardant la traçabilité de chaque membre. Dans un run orchestré, le parent n’a toujours aucune exception « petit edit ». |
+| `/gearbox:reverse <référence> [--target projet]` | Retrouver un comportement existant, même sans son source | Reconstruit un contrat étayé depuis les artefacts disponibles, distingue observations/inconnues et propose ce qui doit être conservé, adapté ou écarté. REA est un fournisseur optionnel, détecté dans la session réelle ; `--execute` autorise seulement une capture bornée. S’arrête avant implémentation. Voir [installation, détection et dépannage](docs/reverse-engineering-rea.md). |
 | `/gearbox:debug <symptôme>` | Bug, test rouge, incident ou comportement mystérieux | Construit une boucle red-capable, minimise, falsifie les hypothèses et protège par un test crédible. Après root cause, un scan ciblé cherche la même classe de bug : à **3+ occurrences** (ou risque catastrophique), Gearbox traite le motif systémique/défense plutôt que de jouer au whack-a-bug. |
 | `/gearbox:optimize <cible>` | Quand le système fonctionne déjà mais qu'une métrique doit réellement bouger | Fixe une métrique et une baseline reproductible, protège correctness/safety, formule une hypothèse, change une variable à la fois et ne conserve que les variantes dont le gain est mesuré. Pas de victoire déclarée sur intuition, micro-benchmark non représentatif ou déplacement de coût caché. |
 | `/gearbox:dogfood <parcours>` | Avant livraison d'une UX, ou pour éprouver un produit comme un vrai utilisateur | Suit un persona et un parcours réels plutôt qu'une simple checklist de tests. Observe comportement, erreurs console/réseau, états vides/erreurs, accessibilité et frictions ; conserve captures et preuves ; distingue défaut fonctionnel, dette UX et polish. `--fix` délègue seulement les corrections acceptées. |
@@ -133,6 +138,28 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:inspect <run-id>` | Pour comprendre un blocage sans reprendre le travail | Inspecte l'approbation, la dérive du plan, les preuves et leurs empreintes, les états de workers enregistrés, les attentes d'ownership et l'usage. Ne modifie aucun état, ne casse aucun verrou et ne lance aucun worker. |
 | `/gearbox:resume <run-id/issue/PR>` | Après fermeture/crash/interruption ou pour approuver un plan en attente | Recharge l'état sans rejouer le travail. `--approve-plan` approuve uniquement le plan actuellement hashé ; s'il a changé depuis sa présentation, Gearbox refuse et redemande une approbation. |
 | `/gearbox:continue-pr <PR>` | Après création de la PR, quand CI ou un reviewer humain a parlé | Charge uniquement les nouveaux checks/commentaires, valide les findings au lieu de les accepter aveuglément, construit un repair DAG borné, corrige via workers, repousse sur la même branche et met à jour le même commentaire technique sans rejouer toute l'issue. |
+
+## Reverse engineering et installation de REA
+
+`/gearbox:reverse` sert à retrouver un comportement dans un ancien programme, une application, un bundle, des traces ou des captures, puis à préparer son adaptation à un autre projet. Il ne promet pas de récupérer le source original et ne lance pas implicitement le développement.
+
+```text
+/gearbox:reverse /archives/ancienne-app --mode auto --target /projets/nouvelle-app
+```
+
+**Gearbox n’installe pas REA automatiquement.** Pour connecter uniquement son MCP à Claude Code, sans ajouter le skill upstream en doublon, lancer dans un terminal utilisateur :
+
+```bash
+npx rea-agents@latest setup --client claude_code --skill=false --dry-run
+# Examiner le plan, puis lancer et approuver :
+npx rea-agents@latest setup --client claude_code --skill=false
+```
+
+Redémarrer Claude Code, vérifier `claude mcp list` puis `/mcp`. Le setup standard est au niveau utilisateur ; le guide explique aussi l’installation locale à un projet, les profils, PowerShell et l’épinglage de version entre plan et application. Ajouter `--client codex` au plan uniquement si les workers Codex doivent accéder à REA.
+
+**La détection distingue quatre niveaux : paquet présent, MCP configuré, connexion active, opération disponible.** L’agent découvre les outils réels et utilise le `binary_session` REA disponible pour consulter l’identité et les capacités de cette session. `doctor` et l’inventaire Codex sont des diagnostics de configuration, pas cette preuve live. Ghidra/Hopper/IDA ne sont nécessaires que pour les analyses qui les demandent.
+
+Guide complet : **[Reverse engineering avec Gearbox et REA](docs/reverse-engineering-rea.md)**. Il couvre prérequis, détection, installation, vérification sans cible, moteurs, transfert de comportement, preuves, sécurité, mises à jour, désinstallation et dépannage. La capture REA n’est pas un sandbox ; aucune installation ni exécution de cible n’est autorisée par sa seule disponibilité.
 
 ## Flags les plus utiles
 

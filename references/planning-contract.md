@@ -50,3 +50,7 @@ After drafting:
 If the plan is several times longer than the spec and code blocks dominate, it is probably implementing in prose. Replace bodies with signatures, assertions, exact values and pointers until it is lean without becoming ambiguous.
 
 For persisted plans, run `scripts/plan_guard.py` when a spec path is available.
+
+## Reconstruction-sourced plans
+
+When porting behavior from unavailable sources, point tasks at the accepted target contract and separately at the source characterization evidence. Name the approved preserve/adapt/discard decision for each affected behavior and the reference/candidate replay scenario; do not infer missing mandatory API fields, idempotency or hidden server-side effects from traffic alone. Include the decision-ledger IDs and falsifying tests as critical, noncompressible context. For technical uncertainty, read the risk/uncertainty protocol in `references/reasoning-quality.md` before freezing the plan. User-facing semantics still require the normal approval gate.

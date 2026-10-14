@@ -169,6 +169,10 @@
     "inspect": {
       "max_bytes": 2048,
       "class": "maintenance"
+    },
+    "reverse": {
+      "max_bytes": 5120,
+      "class": "investigation"
     }
   }
 }

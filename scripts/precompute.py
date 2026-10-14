@@ -22,6 +22,9 @@ def precompute(data:dict,output_dir:Path|None)->dict:
     for item in data.get("context_descriptors",[]):
         if not isinstance(item.get("id"),str) or not re.fullmatch(r"[A-Za-z0-9_-][A-Za-z0-9_.-]*",item["id"]):
             raise ValueError("context descriptor id must be a safe filename component")
+    # Validate all packets before creating any artifact, including later descriptors.
+    for item in data.get("context_descriptors",[]):
+        context_compiler.validate_packet(item["data"],item.get("max_bytes",12288))
     profile=data.get("quality_profile","standard")
     task_kind=data.get("task_kind")
     expected_paths=data.get("expected_paths",[])
@@ -125,7 +128,8 @@ def self_test():
       ]},
       "route_requests":[{"task_kind":"web-design","scope":"surface","claude_capabilities":[],"codex_capabilities":[]}],
       "context_descriptors":[{"id":"A","max_bytes":2048,"data":{
-        "role":"worker","outcome":"button","task":"implement","required_capabilities":[],"ownership":["src/a"],"verify":["vitest"]
+        "role":"worker","outcome":"button","task":"implement","spec_slice":"button accepts activation",
+        "required_capabilities":[],"ownership":["src/a"],"verify":["vitest"],"output_contract":"diff and evidence"
       }}],
     }
     with __import__("tempfile").TemporaryDirectory() as td:

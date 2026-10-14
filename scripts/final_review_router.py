@@ -8,8 +8,8 @@ from dataclasses import asdict, dataclass
 RISKS={"low","medium","high","critical"}
 VISIBILITY={"loud-local","mixed","silent"}
 TASK_GATES={"passed","not-applicable","failed"}
-COVERAGE={"complete","gaps","blocked","not-provided"}
-QUALITY={"pass","repair","blocked","not-provided"}
+COVERAGE={"complete","gaps","blocked","not-provided","not-applicable"}
+QUALITY={"pass","repair","blocked","not-provided","not-applicable"}
 
 @dataclass
 class FinalReviewRoute:
@@ -22,6 +22,12 @@ class FinalReviewRoute:
     review_focus:list[str]
 
 def route(args:argparse.Namespace)->FinalReviewRoute:
+    missing=args.coverage_status=="not-provided" or args.quality_aggregate=="not-provided"
+    if missing and not getattr(args,"legacy_incomplete_evidence",False):
+        raise ValueError("coverage and quality evidence must be supplied; absence is not non-applicability")
+    for key in ("coverage_status","quality_aggregate"):
+        if getattr(args,key)=="not-applicable" and not (getattr(args,"evidence_not_applicable_reason",None) or "").strip():
+            raise ValueError("not-applicable evidence requires --evidence-not-applicable-reason")
     if args.task_review_gates=="failed":
         raise ValueError("required task review gate is failed; final review cannot substitute for it")
     if args.quality_aggregate in {"repair","blocked"}:
@@ -29,6 +35,14 @@ def route(args:argparse.Namespace)->FinalReviewRoute:
     if args.coverage_status=="blocked":
         raise ValueError("coverage matrix contains blocked proof; repair/adjudicate before final review")
 
+    if getattr(args,"behavior_transfer",False):
+        ch = getattr(args,"contract_challenge_status","not-provided")
+        if ch == "not-provided":
+            raise ValueError("behavior transfer needs a current contract challenge result")
+        if ch == "counterexample":
+            raise ValueError("contract challenger found a counterexample; repair before final review")
+        if ch == "gaps":
+            raise ValueError("material transfer claims lack challenge proof; complete evidence before final review")
     uncovered=list(dict.fromkeys(args.uncovered_failure_mode or []))
     full=[]
     if args.risk=="critical":full.append("critical risk")
@@ -56,6 +70,9 @@ def route(args:argparse.Namespace)->FinalReviewRoute:
         )
 
     focused=[]
+    if getattr(args,"behavior_transfer",False):
+        focused.append("behavior transfer requires independent contract-focused challenge")
+    if missing:focused.append("legacy missing evidence requires focused review; it is not completion proof")
     if args.risk=="high":focused.append("high risk without a full-review boundary")
     if args.failure_visibility=="silent":focused.append("plausible failure is silent")
     elif args.failure_visibility=="mixed":focused.append("failure visibility is mixed")
@@ -91,6 +108,10 @@ def parser()->argparse.ArgumentParser:
     p.add_argument("--coverage-status",choices=sorted(COVERAGE),default="not-provided")
     p.add_argument("--quality-aggregate",choices=sorted(QUALITY),default="not-provided")
     p.add_argument("--uncovered-failure-mode",action="append",default=[])
+    p.add_argument("--behavior-transfer",action="store_true",help="An observed legacy contract was ported to another product")
+    p.add_argument("--contract-challenge-status",choices=["not-provided","reviewed","gaps","counterexample"],default="not-provided")
+    p.add_argument("--legacy-incomplete-evidence",action="store_true",help="Compatibility only: missing evidence forces at least focused review, never completion.")
+    p.add_argument("--evidence-not-applicable-reason")
     p.add_argument("--hybrid",action="store_true");p.add_argument("--shared-seam",action="store_true");p.add_argument("--integration-repair",action="store_true")
     p.add_argument("--auth-permissions",action="store_true");p.add_argument("--billing-money",action="store_true");p.add_argument("--secrets-crypto",action="store_true");p.add_argument("--destructive-migration",action="store_true");p.add_argument("--persistence-data",action="store_true");p.add_argument("--public-contract",action="store_true");p.add_argument("--production-config",action="store_true");p.add_argument("--concurrency",action="store_true");p.add_argument("--architecture-change",action="store_true")
     p.add_argument("--exec-lines",type=int);p.add_argument("--full-exec-line-min",type=int,default=200);p.add_argument("--json",action="store_true");p.add_argument("--self-test",action="store_true")
@@ -98,6 +119,7 @@ def parser()->argparse.ArgumentParser:
 
 def self_test():
     p=parser()
+    defaults=["--coverage-status","complete","--quality-aggregate","pass"]
     cases=[
         (["--risk","low","--failure-visibility","loud-local","--task-review-gates","passed","--coverage-status","complete","--quality-aggregate","pass"],"lite",0),
         (["--risk","medium","--failure-visibility","silent","--task-review-gates","passed"],"focused",1),
@@ -106,16 +128,21 @@ def self_test():
         (["--risk","critical","--failure-visibility","silent","--task-review-gates","passed","--hybrid"],"full",2),
     ]
     for argv,mode,n in cases:
-        result=route(p.parse_args(argv));assert result.mode==mode,(argv,asdict(result));assert result.fresh_reviewers==n
-    focus=route(p.parse_args(["--risk","low","--failure-visibility","loud-local","--task-review-gates","passed","--coverage-status","gaps","--uncovered-failure-mode","x"]))
+        result=route(p.parse_args(defaults+argv));assert result.mode==mode,(argv,asdict(result));assert result.fresh_reviewers==n
+    focus=route(p.parse_args(defaults+["--risk","low","--failure-visibility","loud-local","--task-review-gates","passed","--coverage-status","gaps","--uncovered-failure-mode","x"]))
     assert focus.review_focus==["x"]
     for bad in [
         ["--risk","low","--failure-visibility","loud-local","--task-review-gates","failed"],
         ["--risk","low","--failure-visibility","loud-local","--task-review-gates","passed","--quality-aggregate","repair"],
         ["--risk","low","--failure-visibility","loud-local","--task-review-gates","passed","--coverage-status","blocked"],
     ]:
-        try:route(p.parse_args(bad));raise AssertionError("invalid precondition should fail")
+        try:route(p.parse_args(defaults+bad));raise AssertionError("invalid precondition should fail")
         except ValueError:pass
+    try:
+        route(p.parse_args(defaults+["--risk","low","--failure-visibility","loud-local","--task-review-gates","passed","--behavior-transfer"]))
+        raise AssertionError("transfer without challenge must block")
+    except ValueError: pass
+    assert route(p.parse_args(defaults+["--risk","low","--failure-visibility","loud-local","--task-review-gates","passed","--behavior-transfer","--contract-challenge-status","reviewed"])).mode=="focused"
     print("PASS: final-review-router")
 
 def main():

@@ -147,6 +147,10 @@ Every gap becomes DEDUCED, ASSUMED, or QUESTION. Only low-impact reversible engi
 
 Repository facts gathered to settle clarifications are reused later; do not pay for the same reconnaissance twice. Seed deterministic structural facts through `repo_facts_cache.py` so unchanged manifests/configs are not reparsed every run.
 
+## Porting behavior from a legacy system
+
+For a run consuming `/reverse` or another characterization contract, read `references/reverse-engineering.md`, `references/reverse-api.md` for API captures, and `references/reasoning-quality.md`. Before planning, verify source and candidate identity, human transfer decisions, scenario completeness and evidence freshness. Use `decision_trace.py` to surface dependencies invalidated by changed evidence; do not silently reuse old claims. Use `investigation_plan.py` only when a material technical uncertainty could change the implementation, and ask product-intent questions through the existing SPEC blocker. Carry critical evidence pointers into context packets. Material transfers require a fresh adversarial contract challenge with candidate-run proof; `final_review_router.py --behavior-transfer --contract-challenge-status ...` enforces at least focused review. A missing challenge cannot become lite; a counterexample requires repair. Candidate proofs must bind to the destination revision, not the old system.
+
 ## Domain language before architecture
 
 Before shaping architecture or naming new concepts, apply `references/domain-modeling.md`.

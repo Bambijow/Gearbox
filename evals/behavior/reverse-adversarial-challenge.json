@@ -1,0 +1,26 @@
+{
+  "name": "reverse-adversarial-challenge",
+  "context_files": [
+    "agents/task-reviewer.md",
+    "references/reasoning-quality.md"
+  ],
+  "prompt": "A migration worker says a legacy POST endpoint is idempotent because it saw a single 200 response. Both agents agree. No second request was run and no destination trace exists. Can you mark behavior transfer PASS? Respond in English under 1300 characters.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(cannot|not|unverifiable|unknown|gap)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(replay|repeat|idempotenc|counterexample)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(proof|evidence|test|trace)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1300
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "recover and adapt an old game behavior",
+  "context_files": [
+    "skills/reverse/SKILL.md",
+    "references/reverse-engineering.md"
+  ],
+  "prompt": "Only an old executable survives; its source code is lost. Port its jump input buffering into a different engine. One recorded case exists, wall-jump semantics are unknown, and REA is not installed. Explain your next bounded step and the source-to-target contract. Answer in English, no more than 1600 characters.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(preserve|adapt)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(unknown|partial|unobserved)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(optional|without REA|existing.*tool)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(scenario|characterization|acceptance)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(approval|authoriz|permission)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}
