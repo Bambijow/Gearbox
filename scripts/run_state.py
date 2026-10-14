@@ -67,6 +67,8 @@ def normalize(d):
                 d["plan_approval"][k]=v; changed=True
     if "blocker" not in d:
         d["blocker"]=None; changed=True
+    if "issue_preflight" not in d:
+        d["issue_preflight"]=None; changed=True
     if "orchestration" not in d:
         d["orchestration"]={"mode":"delegated-control-plane","product_writes":"workers-only"}; changed=True
     if "repair_findings" not in d:
@@ -132,6 +134,7 @@ def init(run,run_id):
         "clarification":{"status":"UNSET","round":0,"questions":[],"answers":{}},
         "plan_approval":default_plan_approval(required=True),
         "blocker":None,
+        "issue_preflight":None,
         "learning":{},
         "last_error":None,
         "updated_at":int(time.time()),
@@ -156,6 +159,9 @@ def digest_file(path_value):
     return hashlib.sha256(p.read_bytes()).hexdigest(),p
 
 def plan_gate_problem(d):
+    preflight=d.get("issue_preflight")
+    if preflight and preflight.get("status") != "PASS":
+        return "GitHub issue prerequisites have not passed preflight"
     pa=d.get("plan_approval") or {}
     if not pa.get("required"):
         return None
@@ -288,6 +294,7 @@ def main():
     a=sp.add_parser("cleanup-worktrees"); a.add_argument("--run-dir",required=True); a.add_argument("--repo",default=".")
     a=sp.add_parser("spec-block"); a.add_argument("--run-dir",required=True); a.add_argument("--clarification-file",required=True); a.add_argument("--message",default="Material product decisions are required before planning")
     a=sp.add_parser("spec-resolve"); a.add_argument("--run-dir",required=True); a.add_argument("--answers-file",required=True)
+    a=sp.add_parser("issue-preflight"); a.add_argument("--run-dir",required=True); a.add_argument("--report",required=True)
     a=sp.add_parser("plan-await"); a.add_argument("--run-dir",required=True); a.add_argument("--plan",required=True); a.add_argument("--auto",action="store_true")
     a=sp.add_parser("plan-approve"); a.add_argument("--run-dir",required=True); a.add_argument("--approved-by",default="user")
     a=sp.add_parser("plan-check"); a.add_argument("--run-dir",required=True)
@@ -378,9 +385,28 @@ def main():
         current["answers"]=answers; current["status"]="ANSWERED"
         d["clarification"]=current; d["blocker"]=None; d["status"]="ACTIVE"; d["phase"]="SPEC"; d["pending"]=[]
 
+    elif args.cmd=="issue-preflight":
+        report=read_json_file(args.report)
+        if report.get("status") not in {"PASS","BLOCKED"}:
+            die("invalid issue preflight status",5)
+        d["issue_preflight"]=report
+        if report["status"]=="BLOCKED":
+            d["phase"]="INTAKE"; d["status"]="BLOCKED"
+            d["blocker"]={
+                "code":"ISSUE_DEPENDENCY_BLOCKED",
+                "message":"Unmet GitHub issue prerequisites or invalid referenced specifications",
+            }
+            d["pending"]=["issue-preflight"]
+        elif (d.get("blocker") or {}).get("code")=="ISSUE_DEPENDENCY_BLOCKED":
+            d["blocker"]=None
+            d["pending"]=[p for p in d.get("pending",[]) if p!="issue-preflight"]
+            d["status"]="ACTIVE"; d["phase"]="INTAKE"
+
     elif args.cmd=="plan-await":
-        if (d.get("blocker") or {}).get("code")=="SPEC_BLOCKED":
-            die("cannot create plan approval gate while SPEC_BLOCKED",5)
+        if (d.get("blocker") or {}).get("code") in {"SPEC_BLOCKED","ISSUE_DEPENDENCY_BLOCKED"}:
+            die("cannot approve a plan while an intake/spec preflight is blocked",5)
+        if d.get("issue_preflight") and d["issue_preflight"].get("status")!="PASS":
+            die("issue preflight has not passed",5)
         set_plan_approval(d,args.plan,args.auto)
 
     elif args.cmd=="plan-approve":
