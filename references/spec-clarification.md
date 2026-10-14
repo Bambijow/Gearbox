@@ -158,3 +158,7 @@ A spec may contain documented low-risk assumptions, but it is not implementation
 - blockers that force `SPEC_BLOCKED` before planning.
 
 Never hide a product blocker inside an `Open decisions` section and dispatch workers anyway.
+
+## Existing behavior recovered without source
+
+When the request reuses behavior from an old application, executable or retained capture, consume `references/reverse-engineering.md` as an investigation protocol. `/reverse` is the optional user entry, not a dependency on slash-command loading. Preserve observed source behavior, proposed target adaptations and unknowns separately. Validate the supplied reconstruction bundle with `scripts/reconstruction.py`; its readiness result checks integrity, not semantic truth or implementation authorization. Classify transfer decisions with the same DEDUCED / ASSUMED / QUESTION gate. Reference characterization evidence never substitutes for destination acceptance proof. Missing source alone does not block investigation; missing material behavior/intent still blocks implementation.

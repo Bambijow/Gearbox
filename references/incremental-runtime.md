@@ -82,6 +82,8 @@ The default cache lives under the user/XDG cache directory, namespaced by Git co
 
 ## Coverage matrix
 
+Use the schema-2 input and migration rules in `references/reasoning-contracts.md`. Coverage now verifies run-bound proof files; bare historical PASS declarations do not qualify.
+
 Assign stable requirement ids in the accepted spec/plan. Map each to required proof kinds and concrete proof ids.
 
 Completion requires every requirement to be covered by passing evidence. Missing/partial/blocked requirements become explicit proof gaps rather than something a final reviewer is expected to notice accidentally.

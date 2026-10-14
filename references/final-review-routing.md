@@ -84,6 +84,8 @@ The fresh reviewer receives only `review_focus` gaps plus final integration cont
 
 ## Preconditions
 
+Missing coverage or quality inputs are rejected by default. `not-applicable` is distinct from `not-provided` and requires `--evidence-not-applicable-reason`. The explicit `--legacy-incomplete-evidence` compatibility switch forces at least focused review and never supplies missing completion proof. See `references/reasoning-contracts.md` for input migration.
+
 A final review route is invalid when a required task review gate is still failed. Fix/adjudicate that gate first rather than hoping a bigger final reviewer catches it.
 
 ## Persist the decision

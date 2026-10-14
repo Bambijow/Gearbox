@@ -16,3 +16,7 @@ Gearbox is an original implementation influenced by public engineering-agent pro
 The Gearbox skill text and orchestration code were written specifically for Gearbox rather than copied from these projects. Superpowers concepts are re-expressed as Gearbox policies rather than vendoring its skill prompts.
 
 Ponytail is not bundled in this repository. Install it separately when you want Gearbox's `/simplify` phase to use the actual Ponytail plugin; otherwise Gearbox uses its own fallback simplification checklist.
+
+## Behavioral reconstruction
+
+`morluto/rea` (Reverse Engineer Anything, https://github.com/morluto/rea) informs Gearbox's feature-scoped investigation, evidence/limitations discipline, optional provider discovery and reference-versus-reconstruction comparisons. Gearbox adds explicit cross-project preserve/adapt/discard/defer decisions and retains its own approval/build/verification flow. The Gearbox implementation is original; no REA code or skill text is vendored. REA and native providers are optional, separately installed tools, not bundled or auto-installed dependencies.

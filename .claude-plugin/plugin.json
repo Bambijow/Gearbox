@@ -137,7 +137,11 @@
     "repo-facts-cache",
     "approval-precompute",
     "adaptive-quality-depth",
-    "read-only-packing"
+    "read-only-packing",
+    "reverse-engineering",
+    "behavioral-reconstruction",
+    "behavior-transfer",
+    "rea"
   ],
   "skills": [
     "./skills/setup",
@@ -181,6 +185,7 @@
     "./skills/art-direction",
     "./skills/audio-design",
     "./skills/level-design",
-    "./skills/inspect"
+    "./skills/inspect",
+    "./skills/reverse"
   ]
 }

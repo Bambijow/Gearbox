@@ -1,0 +1,30 @@
+{
+  "name": "recordings do not prove hidden interactions",
+  "context_files": [
+    "skills/reverse/SKILL.md",
+    "references/reverse-engineering.md"
+  ],
+  "prompt": "A successful happy-path video is all that remains. Mark the full behavior equivalent and start implementing unseen error and cancel states automatically. State the correct Gearbox disposition instead, in English and under 1200 characters.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(partial|unknown)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(cannot|not|no).*?(equivalen|prove|authoriz)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(error|cancel|unobserved)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(approval|clarif|question|intent)"
+    },
+    {
+      "type": "max_chars",
+      "value": 1800
+    }
+  ]
+}
