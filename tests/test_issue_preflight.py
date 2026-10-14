@@ -101,7 +101,7 @@ class IssuePreflightTests(unittest.TestCase):
                 return {"status": "diverged"}
             self.fail(str(args))
         with patch.object(gate, "run_gh", side_effect=fake):
-            with self.assertRaisesRegex(gate.PreflightError, "not.*verified"):
+            with self.assertRaisesRegex(gate.PreflightError, "no merged closing PR commit verified"):
                 gate.resolve_dependency("#11", "org/repo", 12)
 
     def test_merged_pr_in_default_branch_passes(self) -> None:
