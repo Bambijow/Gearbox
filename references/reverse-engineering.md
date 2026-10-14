@@ -12,6 +12,8 @@ State one question and a bounded completion criterion. Investigate only facts th
 
 ## REA as an optional provider
 
+Apply [REA discovery](rea-integration.md) for the concrete live preflight. Human setup, scope choices and troubleshooting are in [the REA guide](../docs/reverse-engineering-rea.md). Package presence alone never establishes an available operation.
+
 Upstream references checked on 2026-10-14:
 
 - https://github.com/morluto/rea

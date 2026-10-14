@@ -16,7 +16,7 @@ Detect specs/ADR/runbook locations, existing `GLOSSARY.md` / `GLOSSARY-MAP.md` c
 
 ## Capability preflight
 
-Read `references/capability-routing.md`. If Codex exists, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/capabilities.py" inventory`; persist only `available` names, never raw MCP config/secrets. Record Claude capabilities only when explicit; live preflight wins. Keep `inspo`, browser and game-tool availability. For web comps, record only image-generation availability, never credentials.
+Read `references/capability-routing.md`; for REA setup use `references/rea-integration.md`. If Codex exists, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/capabilities.py" inventory`; persist only `available` names, never config/secrets. Record explicit Claude capabilities; live preflight wins. Keep Inspo, browser, game and image-generation availability, never credentials. No automatic REA installation.
 
 ## Model preflight
 
