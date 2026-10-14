@@ -6,7 +6,7 @@ Shared protocol for `/reverse`, Wayfinder research, shaping, planning and focuse
 
 A source checkout is helpful, not required. Start from a runnable installed app, executable, served website, packaged JS/Electron assets, native/managed binary, logs, saved network captures, exports or recordings. Inventory the actual authority, version, artifact/configuration fingerprints and available runtime. Version labels without a pinned artifact or capture are insufficient for repeatable comparisons.
 
-Modes: `source` maps code/contracts; `behavior` probes observable inputs and effects; `interface` reconstructs UI states and interactions; `binary` uses static/native tooling when useful. These are investigation strategies, not guarantees that every platform/tool is installed. If only recordings remain, reconstruct the demonstrated behavior and mark unobservable branches unknown. If nothing executable or observable survives, work from user examples as new requirements, not as recovered facts.
+Modes: `source` maps code/contracts; `behavior` probes observable inputs and effects; `api` inventories HTTP interactions and reconstructs a *candidate* backend contract; `interface` reconstructs UI states and interactions; `binary` uses static/native tooling when useful. These are investigation strategies, not guarantees that every platform/tool is installed. If only recordings remain, reconstruct the demonstrated behavior and mark unobservable branches unknown. If nothing executable or observable survives, work from user examples as new requirements, not as recovered facts.
 
 State one question and a bounded completion criterion. Investigate only facts that would change an implementation or transfer decision. Treat knowledge uncertainty separately from consequence risk: a cheap read/probe can resolve an unknown without buying a full architecture exercise. It cannot remove an applicable safety gate or authorize product edits.
 
@@ -48,6 +48,14 @@ Store a feature-sized bundle under `.gearbox/runs/<run-id>/reconstruction/<featu
 Use `scripts/reconstruction.py --input <bundle>/contract.json` to inspect referential integrity and proof files. It writes nothing and never launches tools, installs packages, imports upstream instructions or runs commands embedded in JSON. It reports `READY_FOR_SHAPING`, `PARTIAL` or `BLOCKED`, always with `implementation_authorized: false` and `runtime_equivalence_proven: false`. Its exit codes are 0 for ready, 6 for gaps/invalid evidence and 2 for CLI/input errors. Hash validity proves file integrity, not that an agent interpreted it correctly. Inspect the semantics independently before acceptance.
 
 Partial evidence can support a narrow observation; it cannot justify universal behavior or absence claims. Record these limits on both evidence and claims. If a material fact remains inferred/unknown, preserve the gap. Recordings-only inputs never establish unobserved interaction or runtime equivalence.
+
+## API / backend reconstruction
+
+Read `references/reverse-api.md` for HAR/SAZ/mitmproxy inspection, passive safety boundaries, candidate OpenAPI, stateful API probes and decisions about what may be legitimately transferred. `scripts/api_reconstruct.py --har <path>` is strictly offline and only produces *observations*, never server implementation or authorization to query a live endpoint. REA's `inspect_web_network_capture` may parse additional supported capture formats; use the live-discovered schema, never assume it is installed. Active probes require explicit authority, environment, rate budget and state-reset strategy. Historical recordings are partial authority, not evidence of all server branches. No `api-surface` projection alone certifies a stable OpenAPI contract.
+
+## Evidence-to-decision reasoning
+
+Read `references/reasoning-quality.md` where material behavior depends on inference: `scripts/decision_trace.py` binds decisions to local, SHA-verified evidence and propagates invalidation to dependent tasks; `scripts/investigation_plan.py` keeps risk and uncertainty independent and selects at most one discriminating, explicitly predicted probe before recalculation. A human product choice must not be silently upgraded from hypothesis to accepted intent. For material transfers, request a bounded adversarial probe and validate its report through `scripts/contract_challenge.py` before final review; even a reviewed result does not prove universal equivalence.
 
 ## Recover a contract, not the original implementation
 

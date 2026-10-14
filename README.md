@@ -12,6 +12,8 @@ Les résultats de gates passent au **schéma 2** : run, plan, scope et empreinte
 
 La découverte incomplète de dépendances désactive la réutilisation par scope. La nouvelle commande `/gearbox:inspect <run-id>` explique un run sans le reprendre. Le guard existant n'est pas modifié dans cette version : une session où il est déjà actif peut refuser ce nouveau helper, sans contournement automatique. Les tests déterministes de non-régression sont exécutés en CI avec `python3 -m unittest discover -s tests -v`.
 
+Pour récupérer un comportement backend disparu depuis des traces HTTP, `/gearbox:reverse --mode api` analyse les HAR hors ligne, prépare un contrat et un brouillon OpenAPI **non vérifié**. Les probes actifs exigent une autorisation et un environnement d’essai séparés. Voir [le protocole reverse API](references/reverse-api.md) et [les décisions fondées sur les preuves](references/reasoning-quality.md).
+
 ## Installation depuis GitHub
 
 Le repository `Bambijow/Gearbox` contient directement la source décompressée du plugin ainsi que son marketplace Claude Code.
@@ -57,6 +59,7 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | J'ai déjà une issue GitHub | `/gearbox:issue <URL-ou-numéro>` |
 | J'ai déjà une spec | `/gearbox:loop <chemin-spec>` |
 | Je veux retrouver un comportement sans source et l’adapter à un autre projet | `/gearbox:reverse <ancien-projet> --target <nouveau-projet>` |
+| Je veux reconstruire une API à partir de captures HTTP historiques | `/gearbox:reverse ancien.har --mode api --target <projet>` |
 | Je veux comprendre un run sans le modifier | `/gearbox:inspect <run-id>` |
 | J'ai un run interrompu | `/gearbox:resume <run-id-ou-issue>` |
 | J'ai déjà une PR avec CI/reviews à traiter | `/gearbox:continue-pr <PR>` |

@@ -9,7 +9,7 @@ from pathlib import Path
 
 from gate_result import SHA256, verify_proofs
 
-KINDS = {"source", "behavior", "interface", "binary"}
+KINDS = {"source", "behavior", "interface", "binary", "api"}
 AVAILABILITY = {"runnable", "artifact-only", "recordings-only"}
 DISPOSITIONS = {"preserve", "adapt", "discard", "defer"}
 EVIDENCE_KINDS = {"source", "static-analysis", "runtime", "recording", "trace", "test"}

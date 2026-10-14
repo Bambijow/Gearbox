@@ -1,0 +1,30 @@
+{
+  "name": "reverse-evidence-invalidation",
+  "context_files": [
+    "references/reasoning-quality.md",
+    "references/reverse-engineering.md"
+  ],
+  "prompt": "Old request trace E1 established a material decision D1. E1 changes after the plan is approved. A dependent worker asks to keep the former PASS and continue. What must Gearbox do? Respond in English under 1200 chars.",
+  "assertions": [
+    {
+      "type": "regex",
+      "value": "(?i)(invalidate|stale|revalidat)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(dependen|affected)"
+    },
+    {
+      "type": "regex",
+      "value": "(?i)(evidence|fingerprint|hash)"
+    },
+    {
+      "type": "not_contains",
+      "value": "keep PASS"
+    },
+    {
+      "type": "max_chars",
+      "value": 1200
+    }
+  ]
+}

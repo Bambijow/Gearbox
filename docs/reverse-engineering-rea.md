@@ -426,3 +426,28 @@ Sources REA consultées au commit `1438422dfedf1de29368b595e09a04f1fc10750d`. Le
 - [S9 : Claude Code, développement local de plugins](https://code.claude.com/docs/en/plugins-reference)
 
 Les fichiers agent-facing [rea-integration.md](../references/rea-integration.md) et [reverse-engineering.md](../references/reverse-engineering.md) portent les instructions opérationnelles ; ce guide explique l'installation et l'exploitation humaine.
+
+<a id="api-backend"></a>
+## Reverse engineering de backend/API à partir des captures
+
+Le mode `api` complète `behavior` pour les projets dont le code serveur est perdu. Ce mode **ne décompile pas un serveur à travers HTTP** : il reconstruit une ébauche des comportements observables et des scénarios candidats à partir des traces conservées. Voir [le protocole API](../references/reverse-api.md) et [les contrats de raisonnement](../references/reasoning-quality.md).
+
+Avec un fichier HAR 1.2 disponible localement, et sans démarrer l'ancien serveur :
+
+```bash
+python3 scripts/api_reconstruct.py --har /chemin/vers/ancien-backend.har
+```
+
+Le helper fonctionne hors ligne et renvoie un inventaire de méthodes/routes (certains segments dynamiques sont regroupés), statuts HTTP, formes JSON observées, ordinals des enregistrements, scénarios de probes proposés et `openapi_candidate`. **Aucun champ requis, politique de permissions, formule métier, idempotence ou comportement caché n'est affirmé sans preuve.** Il n'émet pas d'exemples de payload, valeurs des headers, noms d'hôtes ni valeurs de query. Ce JSON n'est pas une spec OpenAPI prête à publier. Le fichier HAR brut reste sensible, notamment avec cookies/jetons : l'inspecter et le protéger avant tout partage.
+
+REA, si disponible, sait aussi analyser les captures HAR et certains autres formats avec `inspect_web_network_capture`, dont SAZ ; `inspect_analysis_view` peut projeter les routes observées pour des HAR compatibles. Vérifier la disponibilité réelle dans `binary_session`. Voir [l'analyse de captures REA](https://github.com/morluto/rea/blob/main/docs/web-network-captures.md). L'analyse passive n'a pas besoin d'un moteur Ghidra/Hopper.
+
+Avec Gearbox, après chargement de la branche contenant le nouveau skill :
+
+```text
+/gearbox:reverse /chemin/ancien-backend.har --mode api --target /chemin/nouveau-projet
+```
+
+L'agent produit d'abord un contrat comportemental, distingue observation/hypothèse/inconnue et demande des décisions explicites d'adaptation. Une requête GET 200 ne permet pas d'inférer automatiquement les erreurs, contraintes, permissions ou effets de bord absents de la capture. Toute **requête active** sur une API exige une autorisation distincte, un environnement de test contrôlé et des budgets/reset explicites ; aucune exploration automatisée de la production par défaut.
+
+Le contrat matérialisé peut être suivi avec `scripts/decision_trace.py` (preuves/invalidations), `scripts/investigation_plan.py` (prochaine expérience discriminante, risque séparé de l'incertitude) et `scripts/contract_challenge.py` (contre-exemple sur la nouvelle implémentation). Les preuves cible doivent être fraîches, et une revue terminée ne vaut jamais démonstration d'équivalence universelle. Les tests déterministes couvrent ces garde-fous, mais aucun benchmark de qualité agentique réelle n'est inclus dans la CI.

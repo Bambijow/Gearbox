@@ -35,6 +35,12 @@ def route(args:argparse.Namespace)->FinalReviewRoute:
     if args.coverage_status=="blocked":
         raise ValueError("coverage matrix contains blocked proof; repair/adjudicate before final review")
 
+    if getattr(args,"behavior_transfer",False):
+        ch = getattr(args,"contract_challenge_status","not-provided")
+        if ch == "not-provided":
+            raise ValueError("behavior transfer needs a current contract challenge result")
+        if ch == "counterexample":
+            raise ValueError("contract challenger found a counterexample; repair before final review")
     uncovered=list(dict.fromkeys(args.uncovered_failure_mode or []))
     full=[]
     if args.risk=="critical":full.append("critical risk")
@@ -62,6 +68,10 @@ def route(args:argparse.Namespace)->FinalReviewRoute:
         )
 
     focused=[]
+    if getattr(args,"behavior_transfer",False):
+        focused.append("behavior transfer requires independent contract-focused challenge")
+        if getattr(args,"contract_challenge_status",None)=="gaps":
+            focused.append("adversarial challenge evidence has gaps; review cannot substitute for proof")
     if missing:focused.append("legacy missing evidence requires focused review; it is not completion proof")
     if args.risk=="high":focused.append("high risk without a full-review boundary")
     if args.failure_visibility=="silent":focused.append("plausible failure is silent")
@@ -98,6 +108,8 @@ def parser()->argparse.ArgumentParser:
     p.add_argument("--coverage-status",choices=sorted(COVERAGE),default="not-provided")
     p.add_argument("--quality-aggregate",choices=sorted(QUALITY),default="not-provided")
     p.add_argument("--uncovered-failure-mode",action="append",default=[])
+    p.add_argument("--behavior-transfer",action="store_true",help="An observed legacy contract was ported to another product")
+    p.add_argument("--contract-challenge-status",choices=["not-provided","reviewed","gaps","counterexample"],default="not-provided")
     p.add_argument("--legacy-incomplete-evidence",action="store_true",help="Compatibility only: missing evidence forces at least focused review, never completion.")
     p.add_argument("--evidence-not-applicable-reason")
     p.add_argument("--hybrid",action="store_true");p.add_argument("--shared-seam",action="store_true");p.add_argument("--integration-repair",action="store_true")
@@ -126,6 +138,11 @@ def self_test():
     ]:
         try:route(p.parse_args(defaults+bad));raise AssertionError("invalid precondition should fail")
         except ValueError:pass
+    try:
+        route(p.parse_args(defaults+["--risk","low","--failure-visibility","loud-local","--task-review-gates","passed","--behavior-transfer"]))
+        raise AssertionError("transfer without challenge must block")
+    except ValueError: pass
+    assert route(p.parse_args(defaults+["--risk","low","--failure-visibility","loud-local","--task-review-gates","passed","--behavior-transfer","--contract-challenge-status","reviewed"])).mode=="focused"
     print("PASS: final-review-router")
 
 def main():

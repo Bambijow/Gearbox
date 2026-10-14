@@ -29,7 +29,8 @@
             "source",
             "behavior",
             "interface",
-            "binary"
+            "binary",
+            "api"
           ]
         },
         "version": {
