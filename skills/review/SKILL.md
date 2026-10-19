@@ -42,9 +42,7 @@ Reconcile multiple reviewers centrally against code/spec/evidence. Agreement is 
 
 ## Cross-provider receipt
 
-When an independent cross-provider review was requested, emit a machine-readable receipt alongside the human summary. Record `peer_outcome` as exactly one of `folded` (an identifiable independent result was received and its findings reconciled), `fallback` (independent result unavailable; another route was explicitly used), `failed` (the requested peer failed or returned an unusable result), or `not_required` (no peer was requested by the route). Also record `requested_provider`, `verified_provider` (null if unverifiable), `peer_evidence_ref` (null if none), and `fallback_reason` (null unless applicable). A launched job is not a received review; an unverifiable provider is never `folded`.
-
-For `full` + `hybrid`, do not report independent cross-provider review as complete unless `peer_outcome=folded`. Any `fallback` or `failed` outcome must be surfaced for explicit adjudication against the persisted route; never silently downgrade to a local-only PASS. The receipt is a review provenance record, not a substitute for the quality-gate evidence envelope.
+Persist actual independent peer outcomes per `references/peer-review-receipt.md`. A dispatched peer is not proof of a received review.
 
 ## Maintainability scope checks
 
