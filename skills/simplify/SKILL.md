@@ -26,11 +26,7 @@ Do not ask the original implementation agent to grade its own architecture.
 
 ## Protected acceptance proof
 
-Before dispatch, the orchestrator must supply a **protected proof manifest**: the paths and test identifiers (including parameterized cases), baseline blob/diff identity, and verification commands for tests already accepted as evidence of this change. Include both newly added and existing tests relied on as acceptance proof. If the manifest cannot be established, do not authorize test-file edits.
-
-The simplifier must not delete, skip, weaken, rewrite, rename, or change fixtures/assertions of a protected test, even when cleanup looks harmless. It may simplify non-proof test helpers only when the proof is unaffected and focused verification succeeds. A cleanup that genuinely needs to modify protected coverage is a separate `/gearbox:clean-tests --apply` decision with its own equivalence proof, never an implicit side effect of `/simplify`.
-
-After editing, compare protected test paths and identifiers against the pre-simplification baseline (content hashes for protected files or a reviewed identifier-level diff), report any attempted alteration, and reject/revert it before accepting the simplification. A green rerun alone does not authorize rewriting the tests that supplied the green evidence.
+Before dispatch and after edits, enforce `references/protected-proof-tests.md`. Never rewrite or weaken accepted proof tests during simplification.
 
 ## Ponytail path
 
