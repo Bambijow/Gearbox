@@ -27,6 +27,23 @@ def main():
  kinds={i.get('kind') for i in ev.get('items',[]) if i.get('valid',True) and i.get('status') in ('PASS','passed','success','0')}
  for k in sc.get('required_evidence_kinds',[]):
   if k not in kinds: errors.append(f'missing passing evidence kind: {k}')
+ # Caller-shaped evals must inspect the actual changed-path report, not just final status.
+ # File format: JSON list of changed repository paths, or {"changed_paths": [...]}.
+ if 'forbidden_changed_paths' in sc:
+  manifest=run/sc.get('changed_paths_file','changed_paths.json')
+  if not manifest.is_file(): errors.append(f'missing changed-path manifest: {manifest.name}')
+  else:
+   try:
+    payload=json.loads(manifest.read_text())
+    paths=payload.get('changed_paths') if isinstance(payload,dict) else payload
+    if not isinstance(paths,list) or any(not isinstance(p,str) for p in paths):
+     errors.append('invalid changed-path manifest: expected string path list')
+    else:
+     from fnmatch import fnmatchcase
+     for pattern in sc['forbidden_changed_paths']:
+      for path in paths:
+       if fnmatchcase(path,pattern): errors.append(f'out-of-scope change: {path} matches {pattern}')
+   except (OSError,ValueError) as exc: errors.append(f'cannot read changed-path manifest: {exc}')
  forbidden=sc.get('forbidden_product_paths',[])
  for p in forbidden:
   if (run/p).exists(): errors.append(f'forbidden run artifact exists: {p}')
