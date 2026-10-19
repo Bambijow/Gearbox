@@ -100,3 +100,11 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/run_state.py" set \
 ```
 
 PR technical evidence should state the selected mode and why, especially when `lite` intentionally avoided another model dispatch.
+
+## Peer outcome provenance
+
+For every final review persist a peer receipt in run state under `final_review.peer_receipt`, separate from the router's requested mode. The receipt must include `peer_outcome` (`folded|fallback|failed|not_required`), `requested_provider`, `verified_provider`, `peer_evidence_ref`, and `fallback_reason`. See `skills/review/SKILL.md` for the precise meanings.
+
+In a `full` + `hybrid` route, `folded` requires a received independent review, verified provider identity, inspectable evidence reference, and central reconciliation. Starting a peer invocation is not sufficient. A failed invocation, missing output or unverifiable identity must never be labeled `folded`. Persist the non-success receipt and block claims of completed cross-provider review until the route is satisfied or an explicit human exception is documented. In `lite` and non-peer `focused` routes use `not_required`, not a fake success.
+
+Evals should exercise success, unavailable peer with explicit fallback, invocation without usable result, and unverified provider identity. A terminal PASS must never be inferred from peer dispatch alone.

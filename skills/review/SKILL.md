@@ -40,6 +40,10 @@ For each finding include location, evidence/failure path, consequence/failure co
 
 Reconcile multiple reviewers centrally against code/spec/evidence. Agreement is corroboration, not proof.
 
+## Cross-provider receipt
+
+Persist actual independent peer outcomes per `references/peer-review-receipt.md`. A dispatched peer is not proof of a received review.
+
 ## Maintainability scope checks
 
 In addition to ordinary correctness, flag these when the diff provides concrete evidence:

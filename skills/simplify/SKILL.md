@@ -24,6 +24,10 @@ Launch Gearbox's `ponytail-simplifier` plugin agent through the Agent/Task tool.
 
 Do not ask the original implementation agent to grade its own architecture.
 
+## Protected acceptance proof
+
+Before dispatch and after edits, enforce `references/protected-proof-tests.md`. Never rewrite or weaken accepted proof tests during simplification.
+
 ## Ponytail path
 
 When the Ponytail plugin is installed, require the simplification subagent to use Ponytail's over-engineering review behavior, preferably the `ponytail-review` skill, before editing. Ponytail is the primary simplification lens.
