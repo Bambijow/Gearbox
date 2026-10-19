@@ -1,0 +1,13 @@
+{
+  "name": "caller-shaped-scope",
+  "allowed_final_statuses": [
+    "PASS",
+    "DONE"
+  ],
+  "changed_paths_file": "changed_paths.json",
+  "forbidden_changed_paths": [
+    "src/unrelated/**",
+    "tests/protected/**",
+    "config/production.*"
+  ]
+}
