@@ -1,0 +1,11 @@
+{
+  "name": "peer-folded",
+  "allowed_final_statuses": [
+    "PASS",
+    "DONE"
+  ],
+  "required_state": {
+    "final_review.peer_receipt.peer_outcome": "folded",
+    "final_review.peer_receipt.verified_provider": "codex"
+  }
+}
