@@ -19,6 +19,8 @@ Every material component/scene needs the applicable interaction contract: states
 
 Choose the least complex rendering stack that expresses the interaction thesis. DOM/CSS/SVG come before Canvas/WebGL unless the experience truly needs continuous pixels, spatial depth, custom rendering or shader behavior.
 
+If the approved brief explicitly requires a rendered marketing/hero video, schedule `video-create` with its mandatory `asset-image` prerequisite when no approved reference still exists. Treat video output as an asset dependency; do not substitute native UI animation or incur fal.ai charges without model/budget approval. See `references/video-production.md`.
+
 Without `--apply`, stop after the creative direction, interaction architecture, comp/storyboard and implementation plan.
 
 With `--apply`, Codex GPT-6.1 Sol/high implements the approved experience. Use the repository's existing motion/render stack where capable; do not add Three.js/GSAP/Lenis/etc. by habit.
