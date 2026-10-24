@@ -31,6 +31,8 @@ Comp policy:
 
 The comp pass is owned by Codex Sol. It distills the approved design system/contract, then orchestrates a configured GPT Image renderer. Opus approves the pair before implementation. Exact product truth, copy, accessibility and behavior always outrank raster contents.
 
+If the approved brief explicitly requires a rendered marketing/hero video, schedule `video-create` with its mandatory `asset-image` prerequisite when no approved reference still exists. Treat video output as an asset dependency; do not substitute native UI animation or incur fal.ai charges without model/budget approval. See `references/video-production.md`.
+
 Without `--apply`, stop after the approved design contract and, when enabled, approved comps.
 
 With `--apply`, dispatch `web-builder-dispatcher`. The builder may derive idiomatic implementation details but may not invent a new visual direction or fill gaps with generic AI/SaaS defaults. It must run the anti-slop self-check before handoff.
