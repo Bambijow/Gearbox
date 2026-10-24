@@ -53,13 +53,15 @@ def main() -> int:
         print("BLOCKED: install fal-client explicitly in the execution environment");return 7
     if not start.startswith("https://"):start=fal_client.upload_file(start)
     if end and not end.startswith("https://"):end=fal_client.upload_file(end)
-    payload={"prompt":args.prompt,"resolution":args.resolution,"duration":str(args.duration)}
+    payload={"prompt":args.prompt,"duration":str(args.duration)}
     model=choice["model"]
     if model.endswith("first-last-frame-to-video"):
-        payload.update({"first_frame_url":start,"last_frame_url":end})
+        payload.update({"first_frame_url":start,"last_frame_url":end,"duration":f"{args.duration}s","resolution":args.resolution,"generate_audio":False})
     else:
         payload["image_url"]=start
-        if model=="wan/v2.6/image-to-video":payload["multi_shots"]=args.multi_shot
+        if model=="wan/v2.6/image-to-video":
+            payload["resolution"]=args.resolution
+            payload["multi_shots"]=args.multi_shot
     # No automatic retries: a timeout may represent an already billable job.
     try:
         result=fal_client.subscribe(model,arguments=payload,with_logs=False)
