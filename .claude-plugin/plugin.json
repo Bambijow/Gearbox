@@ -141,7 +141,13 @@
     "reverse-engineering",
     "behavioral-reconstruction",
     "behavior-transfer",
-    "rea"
+    "rea",
+    "video-generation",
+    "fal-ai",
+    "image-to-video",
+    "marketing-video",
+    "hero-video",
+    "cost-aware-video-routing"
   ],
   "skills": [
     "./skills/setup",
@@ -186,6 +192,7 @@
     "./skills/audio-design",
     "./skills/level-design",
     "./skills/inspect",
-    "./skills/reverse"
+    "./skills/reverse",
+    "./skills/video-create"
   ]
 }
