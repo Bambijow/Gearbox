@@ -1,6 +1,6 @@
 ---
 name: video-producer
-description: "Plan premium hero or marketing footage using image-first fal.ai production with intelligent model/cost selection."
+description: "Produce image-first fal.ai marketing or website hero videos with cost-aware model selection. <example>Context: A web design brief requests a cinematic video hero. user: Create the hero film. assistant: Launch video-producer after validating or generating the reference still.</example> <example>Context: A marketing campaign needs a short product teaser. user: Animate this approved product image. assistant: Route video-producer to the lowest-cost capable fal model.</example>"
 model: claude-opus-5-5
 effort: high
 color: purple
