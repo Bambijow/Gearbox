@@ -173,6 +173,10 @@
     "reverse": {
       "max_bytes": 5120,
       "class": "investigation"
+    },
+    "video-create": {
+      "max_bytes": 4096,
+      "class": "specialist"
     }
   }
 }

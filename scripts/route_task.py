@@ -65,6 +65,9 @@ def self_test()->None:
     assert r["router_backend"]=="game_asset" and r["route"]["model"]=="claude-opus-5-5"
     r=route_task("creative-web",["inspo"],["browser"],image_generation_available=True)
     assert r["router_backend"]=="web_design" and r["route"]["creative"] is True
+    r=route_task("video-create",["fal-video"],[])
+    assert r["route"]["mode"]=="image-first-fal-model-selection" and not r["route"]["blocked"]
+    assert route_task("video-create",[],[])["route"]["blocked"]
     r=route_task("a11y-audit",[],[])
     assert r["router_backend"]=="product_quality" and r["route"]["owner_model"]=="sonnet"
     print("PASS: unified route-task self-test")

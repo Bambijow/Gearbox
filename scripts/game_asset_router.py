@@ -93,10 +93,18 @@ def route(task_kind:str,claude_capabilities:list[str],codex_capabilities:list[st
             required=[codex_tool]; mode=f"{codex_tool.casefold()}-review"
         else:
             blocked=True; blocker="3D Astra review requires Blender or Godot available to Codex"; mode="capability-blocked"
+    elif task_kind=="video-create":
+        preferred=["fal-video"]
+        tool=_pick(claude,("fal-video",)) or _pick(codex,("fal-video",))
+        if tool:
+            required=[tool]; mode="image-first-fal-model-selection"
+        else:
+            blocked=True; blocker="Video requires FAL_KEY and fal-client on an available execution worker"; mode="capability-blocked"
     elif task_kind=="asset-image":
         mode="direct-sol-generation"
 
     rationale={
+        "video-create":"Opus video producer chooses the cheapest capable fal image-to-video model after image dependency and spend approval",
         "asset-image":"game image generation is pinned to Codex GPT-6.1 Sol",
         "pixel-art":"pixel art is pinned to Codex GPT-6.1 Sol; Aseprite MCP is preferred when available",
         "model-3d":"Opus 5.5 directs 3D creation; Codex Sol may execute tool-bounded modeling; Astra remains mandatory review",
