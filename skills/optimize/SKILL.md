@@ -23,6 +23,10 @@ Read `references/optimization-loop.md`, `references/test-credibility.md`, `refer
 
 Never report an optimization from code inspection alone. Never compare unlike workloads, warmed vs cold runs without saying so, or a micro-benchmark that bypasses the real bottleneck.
 
+## Independent validation
+
+For behavior-bearing optimizations, apply blind held-out workloads and anti-gaming checks from `references/optimization-loop.md`. Record costs and invoke `scripts/optimization_holdout.py` before KEEP. Never optimize the held-out fixture directly or count skipped required work as a gain.
+
 ## Applying changes
 
 Without `--apply`, return the baseline, hypotheses, experiment plan and expected decision rule.

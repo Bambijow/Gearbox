@@ -88,6 +88,10 @@ Missing coverage or quality inputs are rejected by default. `not-applicable` is 
 
 A final review route is invalid when a required task review gate is still failed. Fix/adjudicate that gate first rather than hoping a bigger final reviewer catches it.
 
+## Independent Codex review configuration
+
+The Codex worker wrapper defaults `--kind review` to `--ignore-user-config` to exclude personal Codex plugins and user-level configuration while retaining the existing authentication home. If a reviewer genuinely needs configured MCP tools, it must be explicitly invoked with `--allow-review-user-config`, recorded as a non-isolated exception, and must not be represented as an isolated independent judgment. Treat inability to satisfy needed capabilities in the isolated environment as blocked, never silently load personal plugins. See `scripts/codex_worker.py`.
+
 ## Persist the decision
 
 Record the router JSON in run state, for example:

@@ -164,6 +164,7 @@ def self_test() -> None:
         ignore_user_config=True,
     )
     assert "--ignore-user-config" in isolated
+    assert "--ignore-user-config" not in cmd
 
     dispatch = canonical_payload(
         base_sha="abc",
@@ -213,7 +214,13 @@ def main() -> int:
         action="store_true",
         help="Explicit hard-isolation escape hatch. Not the default because it removes configured MCP capabilities.",
     )
+    parser.add_argument("--allow-review-user-config", action="store_true", help="Explicit exception for reviews needing user-configured tools; independent isolation is not claimed.")
     args = parser.parse_args()
+    if args.kind == "review" and args.required_capability and not args.allow_review_user_config:
+        die("review requires user-configured capabilities; explicitly authorize --allow-review-user-config or use an isolated review", 7)
+    effective_ignore_user_config = args.ignore_user_config or (args.kind == "review" and not args.allow_review_user_config)
+    if effective_ignore_user_config and args.required_capability:
+        die("isolated config cannot guarantee configured capabilities", 7)
 
     worktree = args.worktree.resolve()
     prompt = args.prompt.resolve()
@@ -273,6 +280,7 @@ def main() -> int:
         "dedicated_tools": False,
     }
     environment = {
+        "review_plugin_isolation": "not-isolated-explicit-exception" if args.kind == "review" and args.allow_review_user_config else ("isolated-user-config" if args.kind == "review" else "not-applicable"),
         "sandbox": sandbox,
         "mcp_policy": mcp_policy,
         "memory_policy": memory_policy,
@@ -313,11 +321,12 @@ def main() -> int:
         "started_at": int(time.time()),
         "effective_effort_verified": False,
         "codex_version": version,
+        "review_plugin_isolation": environment["review_plugin_isolation"],
         "base_sha": base_sha,
         "prompt_sha256": prompt_sha,
         "schema_sha256": sha256_file(schema),
-        "codex_user_config_loaded": not args.ignore_user_config,
-        "configured_capabilities_preserved": not args.ignore_user_config,
+        "codex_user_config_loaded": not effective_ignore_user_config,
+        "configured_capabilities_preserved": not effective_ignore_user_config,
         "memory_policy": memory_policy,
         "capability_preflight": capability_check,
         "mcp_policy": mcp_policy,
@@ -354,7 +363,7 @@ def main() -> int:
         schema=schema,
         result=result,
         sandbox=sandbox,
-        ignore_user_config=args.ignore_user_config,
+        ignore_user_config=effective_ignore_user_config,
         model=args.model,
         effort=args.effort,
         mcp_config_overrides=mcp_overrides,
