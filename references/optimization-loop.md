@@ -41,6 +41,12 @@ Prefer one material change per variant. For each variant:
 
 A variant loses if it improves the primary number by moving unacceptable cost into memory, reliability, startup, network, operator complexity, security or another user-visible dimension.
 
+## Blind holdouts and anti-gaming
+
+Split workload fixtures into tuning and held-out sets before implementation. Keep holdout cases hidden from the optimizing worker and unchanged across baseline/variant. For behavior-sensitive optimizations, also include adversarial cases that detect skipped work, altered semantics, deleted validations or changed sampling populations.
+
+Require raw baseline/candidate samples for both splits, a bounded attempts/time/cost budget, and independently verified `correctness_pass`, `workload_equivalent`, `required_work_skipped=false`, and `holdout_mutated=false`. Record these in a run-local JSON report. Run `python3 scripts/optimization_holdout.py report.json` as a deterministic keep/reject gate; it cannot establish truth of those booleans alone, so provenance and independent checks are mandatory. Never accept a training-only improvement.
+
 ## Decision
 
 Report baseline, variant measurements, relative/absolute delta, guardrails, caveats and the exact kept change. Do not overstate statistical confidence from tiny samples.
