@@ -33,4 +33,6 @@ Without `--fix`, produce a ranked remediation plan.
 
 With `--fix`, prefer deletions, merges and reference extraction before adding new skills. Preserve public command names unless there is a migration path. Update manifests, prompt budgets, docs and behavior evals together so the environment cannot drift half-migrated.
 
+For changes that alter trigger or agent behavior, require a fresh read-only semantic reviewer following `references/skill-semantic-review.md`. Review only modified instructions and caller-shaped examples; do not authorize the original editor to certify its own rewrite.
+
 Finish by running the repository's deterministic plugin validation, prompt-budget check and eval-schema validation when available.
