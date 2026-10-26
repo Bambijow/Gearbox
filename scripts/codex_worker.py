@@ -326,7 +326,7 @@ def main() -> int:
         "prompt_sha256": prompt_sha,
         "schema_sha256": sha256_file(schema),
         "codex_user_config_loaded": not effective_ignore_user_config,
-        "configured_capabilities_preserved": not args.ignore_user_config,
+        "configured_capabilities_preserved": not effective_ignore_user_config,
         "memory_policy": memory_policy,
         "capability_preflight": capability_check,
         "mcp_policy": mcp_policy,
