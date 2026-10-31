@@ -12,6 +12,7 @@ from pathlib import Path
 
 from capabilities import preflight, prune_overrides, run_codex_mcp_inventory, usable_names
 from invocation_fingerprint import canonical_payload, fingerprint, sha256_file
+import usage_ledger
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = {
@@ -74,6 +75,54 @@ def codex_version(codex_bin: str) -> str | None:
 
 def git_head(worktree: Path) -> str | None:
     return command_output(["git", "rev-parse", "HEAD"], worktree)
+
+
+# The Codex sandbox keeps a linked worktree's gitdir read-only even with --add-dir, so the wrapper commits.
+NO_COMMIT_NOTE = "\n\nDo not run git add/commit: the sandbox cannot write git metadata. Leave changes in the worktree; the wrapper commits them after you finish.\n"
+
+
+def commit_worktree(worktree: Path, message: str) -> str | None:
+    if not command_output(["git", "status", "--porcelain"], worktree):
+        return None
+    for argv in (["git", "add", "-A"], ["git", "commit", "-q", "-m", message]):
+        if subprocess.run(argv, cwd=worktree, check=False).returncode:
+            return None
+    return git_head(worktree)
+
+
+def run_dir_for(result: Path) -> Path | None:
+    for parent in result.parents:
+        if parent.parent.name == "runs" and parent.parent.parent.name == ".gearbox":
+            return parent
+    return None
+
+
+def reported_usage(events: Path) -> dict:
+    usage: dict = {}
+    for line in events.read_text(encoding="utf-8", errors="replace").splitlines():
+        try:
+            event = json.loads(line)
+        except ValueError:
+            continue
+        if event.get("type") == "turn.completed":
+            for k, v in (event.get("usage") or {}).items():
+                if isinstance(v, int):
+                    usage[k] = usage.get(k, 0) + v
+    return usage
+
+
+def changed_paths(worktree: Path, base_sha: str) -> list[str]:
+    committed = command_output(["git", "diff", "--name-only", base_sha, "HEAD"], worktree) or ""
+    status = command_output(["git", "status", "--porcelain", "--untracked-files=all"], worktree) or ""
+    paths = set(committed.splitlines()) | {line[3:].split(" -> ")[-1] for line in status.splitlines()}
+    return sorted(p for p in paths if p)
+
+
+def outside_ownership(paths: list[str], owned: list[str]) -> list[str]:
+    def inside(path: str, root: str) -> bool:
+        root = root.rstrip("/")
+        return path == root or path.startswith(root + "/")
+    return [p for p in paths if not any(inside(p, o) for o in owned)]
 
 
 def stable_hash(payload: dict) -> str:
@@ -144,15 +193,15 @@ def self_test() -> None:
         model="test-model",
         effort="high",
         mcp_config_overrides=[
-            'mcp_servers."blender".enabled=false',
-            'mcp_servers."context7".enabled=false',
+            'mcp_servers.blender.enabled=false',
+            'mcp_servers.context7.enabled=false',
         ],
     )
     assert "--ephemeral" in cmd
     assert "--ignore-user-config" not in cmd
     for override in MEMORY_OVERRIDES:
         assert override in cmd
-    assert 'mcp_servers."blender".enabled=false' in cmd
+    assert 'mcp_servers.blender.enabled=false' in cmd
     assert 'model_reasoning_effort="high"' in cmd
 
     isolated = build_command(
@@ -165,6 +214,26 @@ def self_test() -> None:
     )
     assert "--ignore-user-config" in isolated
     assert "--ignore-user-config" not in cmd
+
+    assert run_dir_for(Path("/r/.gearbox/runs/issue-8/tasks/T1/result.json")) == Path("/r/.gearbox/runs/issue-8")
+    assert run_dir_for(Path("/tmp/result.json")) is None
+    assert outside_ownership(
+        ["engine/formats/src/env.rs", "engine/formats/src/envx.rs", "docs/port/CONVENTIONS.md"],
+        ["engine/formats/src/env.rs", "engine/render/"],
+    ) == ["engine/formats/src/envx.rs", "docs/port/CONVENTIONS.md"]
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        ev = Path(td) / "events.jsonl"
+        ev.write_text('{"type":"turn.started"}\nnot json\n{"type":"turn.completed","usage":{"input_tokens":7,"output_tokens":2}}\n', encoding="utf-8")
+        assert reported_usage(ev) == {"input_tokens": 7, "output_tokens": 2}
+        repo = Path(td) / "repo"
+        subprocess.run(["git", "init", "-q", str(repo)], check=True)
+        subprocess.run(["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "--allow-empty", "-m", "init"], check=True)
+        assert commit_worktree(repo, "noop") is None
+        (repo / "a.txt").write_text("hi", encoding="utf-8")
+        before = git_head(repo)
+        head = commit_worktree(repo, "add a")
+        assert head and head != before and changed_paths(repo, before) == ["a.txt"]
 
     dispatch = canonical_payload(
         base_sha="abc",
@@ -215,6 +284,9 @@ def main() -> int:
         help="Explicit hard-isolation escape hatch. Not the default because it removes configured MCP capabilities.",
     )
     parser.add_argument("--allow-review-user-config", action="store_true", help="Explicit exception for reviews needing user-configured tools; independent isolation is not claimed.")
+    parser.add_argument("--run-dir", type=Path, help="Gearbox run directory for budget/usage accounting; inferred from --result under .gearbox/runs/<run>/ when omitted.")
+    parser.add_argument("--commit-message", help="Commit message for the wrapper's post-run commit of the worker's changes.")
+    parser.add_argument("--owned-path", action="append", default=[], help="Task owns/touches path or directory prefix; changes outside them are reported in meta as ownership_violations.")
     args = parser.parse_args()
     if args.kind == "review" and args.required_capability and not args.allow_review_user_config:
         die("review requires user-configured capabilities; explicitly authorize --allow-review-user-config or use an isolated review", 7)
@@ -355,6 +427,19 @@ def main() -> int:
             7,
         )
 
+    run_dir = args.run_dir.resolve() if args.run_dir else run_dir_for(result)
+    if run_dir and (run_dir / "state.json").is_file():
+        budget = "review" if args.kind == "review" else "codex"
+        proc = subprocess.run(
+            [sys.executable, str(Path(__file__).with_name("run_state.py")), "consume", "--run-dir", str(run_dir), "--kind", budget],
+            capture_output=True, text=True, check=False,
+        )
+        if proc.returncode != 0:
+            metadata["status"] = "BUDGET_BLOCKED"
+            metadata["finished_at"] = int(time.time())
+            meta.write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            die(f"budget refused dispatch: {(proc.stderr or proc.stdout).strip()}", proc.returncode)
+
     meta.write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     cmd = build_command(
@@ -372,7 +457,7 @@ def main() -> int:
     with events.open("w", encoding="utf-8") as event_file:
         proc = subprocess.run(
             cmd,
-            input=prompt.read_text(encoding="utf-8"),
+            input=prompt.read_text(encoding="utf-8") + (NO_COMMIT_NOTE if args.kind == "implementation" else ""),
             text=True,
             stdout=event_file,
             stderr=subprocess.PIPE,
@@ -383,7 +468,28 @@ def main() -> int:
     metadata["finished_at"] = int(time.time())
     metadata["exit_code"] = proc.returncode
     metadata["status"] = "COMPLETED" if proc.returncode == 0 else "FAILED"
+    metadata["usage"] = reported_usage(events)
+    if args.owned_path and args.kind == "implementation":
+        metadata["ownership_violations"] = outside_ownership(changed_paths(worktree, base_sha), args.owned_path)
+        if metadata["ownership_violations"]:
+            print("codex-worker: changes outside ownership: " + ", ".join(metadata["ownership_violations"]), file=sys.stderr)
     meta.write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    if run_dir:
+        ledger_path = run_dir / "usage.json"
+        ledger = usage_ledger.load(ledger_path)
+        item = {
+            "dispatch_id": f"{result.relative_to(run_dir) if result.is_relative_to(run_dir) else result}@{metadata['started_at']}",
+            "kind": args.kind,
+            "provider": "codex",
+            "model": args.model,
+            "effort": args.effort,
+            "outcome": "success" if proc.returncode == 0 else "failure",
+            "recorded_at": int(time.time()),
+            "estimated": False,
+        }
+        item.update({k: metadata["usage"][k] for k in ("input_tokens", "output_tokens", "cached_input_tokens") if k in metadata["usage"]})
+        ledger["items"].append(item)
+        usage_ledger.save(ledger_path, ledger)
 
     if proc.stderr:
         sys.stderr.write(proc.stderr)
@@ -391,6 +497,11 @@ def main() -> int:
         die(f"Codex exited with status {proc.returncode}", proc.returncode)
 
     payload = validate_result(result, args.kind)
+    if args.kind == "implementation" and payload.get("status") != "failed":
+        head = commit_worktree(worktree, args.commit_message or f"{result.parent.name}: Codex worker changes")
+        if head:
+            payload["head_sha"] = head
+            result.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps(payload, indent=2, ensure_ascii=False))
     return 0
 
