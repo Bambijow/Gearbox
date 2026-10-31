@@ -2,7 +2,6 @@
 name: security-audit
 description: "Perform a focused defensive security audit around explicit trust boundaries by building a small threat model, tracing entry points and data flows, reviewing the diff plus adjacent code, and using available static analyzers selectively. Use for auth, permissions, secrets, crypto, untrusted parsing/uploads/deserialization, sensitive data, or security-critical changes."
 argument-hint: "[diff/PR/path/scope]"
-disable-model-invocation: true
 ---
 
 # Audit concrete attack paths

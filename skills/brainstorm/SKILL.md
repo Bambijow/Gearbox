@@ -2,7 +2,6 @@
 name: brainstorm
 description: "Interactive product/engineering front door: talk through a fuzzy idea, converge on a compact accepted spec, optionally create the GitHub issue, then enter the normal Gearbox engineering loop without re-deriving the spec."
 argument-hint: "[idea or existing spec path] [--issue] [--auto] [--ship] [--models ask|auto|hybrid|claude-heavy|codex-heavy] [--follow-pr] [--max-cycles N] [--workers N] [--no-codex] [--token-profile efficient|strict]"
-disable-model-invocation: true
 ---
 
 # Brainstorm -> spec -> issue -> engineering loop

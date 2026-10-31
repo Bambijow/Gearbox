@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -123,7 +124,9 @@ def preflight(entries: list[dict], required: list[str]) -> dict:
 
 
 def toml_key_segment(name: str) -> str:
-    return json.dumps(str(name), ensure_ascii=False)
+    # `codex -c` splits keys on "." without unquoting: a quoted bare name creates a phantom server ("invalid transport").
+    name = str(name)
+    return name if re.fullmatch(r"[A-Za-z0-9_-]+", name) else json.dumps(name, ensure_ascii=False)
 
 
 def prune_overrides(entries: list[dict], required: list[str]) -> tuple[list[str], list[str]]:
@@ -200,7 +203,7 @@ def self_test() -> None:
     assert blocked["ok"] is False and blocked["missing"] == ["missing"]
     disabled_names, overrides = prune_overrides(inv, [])
     assert disabled_names == ["cloud", "godot"]
-    assert 'mcp_servers."godot".enabled=false' in overrides
+    assert 'mcp_servers.godot.enabled=false' in overrides
     assert toml_key_segment('a"b') == '"a\\\"b"'
     gate = provider_gate(["godot"], ["browser"], ["godot", "browser"])
     assert gate["selected"] == "codex" and gate["blocked"] is False

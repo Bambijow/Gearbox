@@ -2,7 +2,6 @@
 name: flow
 description: "Compatibility entry for the Gearbox engineering loop on substantial non-issue work. Prefer /loop for new usage."
 argument-hint: "[request or spec] [--auto] [--ship] [--max-cycles N]"
-disable-model-invocation: true
 ---
 
 # Run the Gearbox loop

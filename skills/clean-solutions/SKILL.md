@@ -2,7 +2,6 @@
 name: clean-solutions
 description: "Audit Gearbox durable memory in docs/solutions against the current repository and newer knowledge; refresh, merge, or delete notes that are stale, contradicted, duplicate, or no longer applicable. Use periodically and after removals, migrations, or architecture changes."
 argument-hint: "[scope/path/domain] [--dry-run]"
-disable-model-invocation: true
 ---
 
 # Keep `docs/solutions/` true, small, and useful

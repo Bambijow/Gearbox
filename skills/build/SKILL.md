@@ -2,7 +2,6 @@
 name: build
 description: "Implement an approved plan or scoped change with SDD traceability, TDD where useful, isolated workers when warranted, minimal scope, and explicit verification."
 argument-hint: "[plan path, issue, or scoped task]"
-disable-model-invocation: true
 ---
 
 # Build with short evidence loops

@@ -2,7 +2,6 @@
 name: content-design
 description: "Design and audit UX copy for product surfaces: labels, actions, empty/loading/success/error states, validation, onboarding, destructive confirmations, and recovery. Preserves product truth and domain language while removing generic AI/marketing copy."
 argument-hint: "[scope/surface] [--apply]"
-disable-model-invocation: true
 ---
 
 # UX writing as interaction design

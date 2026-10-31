@@ -72,7 +72,7 @@ Prefer one local task commit after focused verification, scoped strictly to owne
 
 ## Stateless Codex invocation
 
-Preferred execution uses `codex exec --ephemeral` with the worktree as cwd, a JSON output schema, and a last-message output file. `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/codex_worker.py"` wraps that shape when Gearbox is installed as a plugin.
+Preferred execution uses `codex exec --ephemeral` with the worktree as cwd, a JSON output schema, and a last-message output file. `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/codex_worker.py"` wraps that shape when Gearbox is installed as a plugin. Pass the task's `owns`/`touches` paths as `--owned-path`; the wrapper records changes outside them as `ownership_violations` in the meta. The Codex sandbox cannot write a linked worktree's git metadata, so the wrapper tells the worker not to commit and commits the worktree itself after a non-failed run (`--commit-message`), updating `head_sha` in the result. It also consumes the run's codex/review budget, and appends provider-reported usage to `usage.json`.
 
 Do not use Codex's own nested multi-agent orchestration for these workers. Gearbox owns the DAG and wants one disposable context per worker.
 
@@ -80,7 +80,7 @@ Do not use Codex's own nested multi-agent orchestration for these workers. Gearb
 
 A worker result is accepted only after the orchestrator verifies:
 
-- changed paths fit ownership;
+- changed paths fit ownership (`ownership_violations` in the Codex meta is empty);
 - diff implements the assigned spec slice;
 - test changes are legitimate and not weakened;
 - focused verification passes;
@@ -89,7 +89,7 @@ A worker result is accepted only after the orchestrator verifies:
 
 ## Review package
 
-When a task needs independent review, do not paste its diff into the reviewer dispatch. Write the diff and compact review metadata under the transient task directory, then pass only those file paths to the read-only reviewer. The package should identify the task packet, base/head refs, changed paths, focused verification status, and diff file.
+When a task needs independent review, do not paste its diff into the reviewer dispatch. Write the diff and compact review metadata under the transient task directory, then pass only those file paths to the read-only reviewer. The package should identify the task packet, base/head refs, changed paths, focused verification status, and diff file. Include the verifier's exact-SHA check log for the head: read-only reviewers cannot run build tools that take write locks (for example `cargo`), so without it the review can only restate the worker's claims.
 
 ## Incomplete work
 

@@ -2,7 +2,6 @@
 name: model-3d
 description: "Create game-ready 3D assets under Claude Opus 5.5 direction. Opus owns art direction/topology decisions; bounded modeling/tool execution may be delegated to Codex GPT-6.1 Sol when useful or when Blender/Godot is available only to Codex."
 argument-hint: "[brief/spec/scope] [--apply]"
-disable-model-invocation: true
 ---
 
 # Model game-ready 3D assets with Opus direction

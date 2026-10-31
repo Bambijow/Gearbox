@@ -2,7 +2,6 @@
 name: visual-regression
 description: "Compare current UI renders against approved baselines semantically, separating intended change, real regression, ambiguity, and rendering noise. Use after material UI changes or when maintaining visual baselines without freezing the product to pixel identity."
 argument-hint: "[route/surface/baseline] [--record]"
-disable-model-invocation: true
 ---
 
 # Semantic visual regression

@@ -2,7 +2,6 @@
 name: reverse
 description: "Recover one existing behavior, even when source code is lost, and prepare its adaptation to another project. Builds an evidence-backed behavioral contract, replay scenarios and explicit preserve/adapt/discard decisions. REA is an optional inspection provider."
 argument-hint: "[target or retained bundle] [--mode auto|source|behavior|interface|binary|api] [--target project] [--execute]"
-disable-model-invocation: true
 ---
 
 # Recover behavior, then adapt it

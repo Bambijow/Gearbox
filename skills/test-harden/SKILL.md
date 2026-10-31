@@ -2,7 +2,6 @@
 name: test-harden
 description: "Stress important tests with targeted mutation, property/invariant checks, and bounded fuzzing to find false confidence after ordinary tests are green. Use for high-cost invariants, parsers, state machines, auth/money/data-integrity logic, or when test credibility is uncertain."
 argument-hint: "[scope/test/invariant] [--apply]"
-disable-model-invocation: true
 ---
 
 # Harden tests against plausible faults

@@ -2,7 +2,6 @@
 name: skill-doctor
 description: "Audit and reduce an agent skill/prompt ecosystem: trigger quality, overlap, progressive disclosure, prompt budgets, dead references, duplicated policy, deterministic-rule opportunities, and missing behavioral evals. Use when CLAUDE.md/AGENTS.md/plugins/skills have grown, collide, or become hard to maintain."
 argument-hint: "[scope] [--fix]"
-disable-model-invocation: true
 ---
 
 # Keep the agent environment small and legible

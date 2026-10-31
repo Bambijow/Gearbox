@@ -2,7 +2,6 @@
 name: review-3d
 description: "Review game-ready 3D assets with GPT-6 Astra only. Use after 3D creation or when auditing an existing model for topology, transforms, UVs, materials, engine import, performance budgets, rigging, collision, LODs, and production readiness."
 argument-hint: "[asset/path/scope]"
-disable-model-invocation: true
 ---
 
 # Review 3D assets with Astra

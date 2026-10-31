@@ -2,7 +2,6 @@
 name: retro
 description: "Retrospect on a Gearbox coding run or session and suggest concrete improvements to the agent environment: navigation, deterministic checks, coding standards, steering files, tooling, model routing, task packets, evidence and review placement. Does not re-review the feature code."
 argument-hint: "[run-id|issue|PR|session] [--bundle]"
-disable-model-invocation: true
 ---
 
 # Retrospect on the engineering environment

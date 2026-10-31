@@ -2,7 +2,6 @@
 name: review
 description: "Review a diff, branch, PR, or completed plan for requirement coverage, correctness, security, regressions, tests, operational risk, and post-simplification architecture."
 argument-hint: "[diff, branch, PR, plan, or scope]"
-disable-model-invocation: true
 ---
 
 # Review the actual change

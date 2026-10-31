@@ -2,7 +2,6 @@
 name: setup
 description: "Configure Gearbox for the current repository: paths, validation, solution memory, model/effort routing, risk gates, execution budgets, Codex/Ponytail availability, and resumable run state."
 argument-hint: "[optional setup preferences]"
-disable-model-invocation: true
 ---
 # Configure Gearbox for this repository
 

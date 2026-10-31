@@ -2,7 +2,6 @@
 name: art-direction
 description: "Create or audit cross-asset art direction so independently generated 2D, pixel, 3D, UI, VFX, and motion assets remain in one coherent visual world. Use for style bibles, asset drift, family consistency, and translating one direction across media."
 argument-hint: "[scope/asset-set] [--apply]"
-disable-model-invocation: true
 ---
 
 # Keep the asset world coherent

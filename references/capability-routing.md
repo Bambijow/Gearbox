@@ -45,7 +45,7 @@ Immediately before Codex dispatch, read the effective MCP inventory from the wor
 Default policy: `required-only`. Call Codex workers with `--prune-mcp` plus one `--required-capability <name>` per required MCP. Gearbox keeps normal Codex config/credentials loaded but adds one-run overrides for every unrelated enabled server:
 
 ```text
---config 'mcp_servers."<name>".enabled=false'
+--config 'mcp_servers.<name>.enabled=false'   # quote <name> only if it is not a bare TOML key: codex -c does not unquote
 ```
 
 Do not use `mcp_servers={}` as a clearing mechanism. Disable discovered servers individually. If a task declares no external capability, pruning disables all discovered MCP servers for that worker only.

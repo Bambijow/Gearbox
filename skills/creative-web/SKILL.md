@@ -2,7 +2,6 @@
 name: creative-web
 description: "Create high-craft interactive web experiences where motion, interaction, typography, spatial composition, canvas/WebGL, or narrative behavior are part of the product. Uses Opus 5.5 creative direction, optional Inspo/comp generation, Codex GPT-6.1 Sol implementation, explicit interaction contracts, anti-slop/anti-gimmick gates, performance fallbacks, and fresh rendered review."
 argument-hint: "[brief/experience] [--comp auto|require|skip] [--apply]"
-disable-model-invocation: true
 ---
 
 # Creative web as interaction-led production

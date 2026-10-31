@@ -2,7 +2,6 @@
 name: clean-tests
 description: "Audit and safely reduce a test suite by finding redundant, obsolete, superseded, implementation-coupled, or low-value tests without weakening meaningful behavioral coverage. Default is report-only; use --apply to merge/delete/rewrite proven cleanup candidates."
 argument-hint: "[scope/path/domain] [--apply]"
-disable-model-invocation: true
 ---
 
 # Remove test-suite noise without removing confidence

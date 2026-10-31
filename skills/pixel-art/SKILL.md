@@ -2,7 +2,6 @@
 name: pixel-art
 description: "Create or edit game-ready pixel art through Codex GPT-6.1 Sol. Prefer the local Aseprite MCP when capability `aseprite` is available; otherwise use direct Sol generation. Use for sprites, tiles, icons, sprite sheets, frame animation, palettes, and pixel-art cleanup."
 argument-hint: "[brief/spec/scope] [--apply]"
-disable-model-invocation: true
 ---
 
 # Pixel art: Aseprite first, Codex Sol always

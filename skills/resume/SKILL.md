@@ -2,7 +2,6 @@
 name: resume
 description: "Resume an interrupted Gearbox run from persistent state without replaying completed workers or broad discovery. Reconcile git drift, stale locks, budgets, evidence and remote IDs before continuing."
 argument-hint: "[run-id | issue number | PR number] [--approve-plan] [--break-stale-lock]"
-disable-model-invocation: true
 ---
 # Resume a Gearbox run
 
