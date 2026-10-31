@@ -2,7 +2,6 @@
 name: optimize
 description: "Improve an explicit measurable engineering metric with a reproducible baseline, correctness/safety guardrails, bounded hypotheses, one-variable experiments, and evidence-backed keep/revert decisions. Use for latency, throughput, memory, bundle/image size, build time, cost, token usage, or similarly measurable targets."
 argument-hint: "[target/metric/scope] [--apply] [--budget N]"
-disable-model-invocation: true
 ---
 
 # Optimize what can be measured

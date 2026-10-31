@@ -2,7 +2,6 @@
 name: shape
 description: "Turn a feature, change, or fuzzy engineering request into a decision-complete specification grounded in the current codebase. Use before planning when requirements or domain boundaries are still unclear."
 argument-hint: "[feature, problem, GitHub issue, spec, or change request]"
-disable-model-invocation: true
 ---
 
 # Shape the work before planning it

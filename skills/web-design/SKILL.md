@@ -2,7 +2,6 @@
 name: web-design
 description: "Design, redesign, or materially refine production web surfaces with an Opus 5.5 design director, optional Codex-driven high-fidelity comp generation from the design system, Codex GPT-6.1 Sol implementation, anti-AI-slop gates, responsive/accessibility constraints, and bounded rendered review."
 argument-hint: "[brief/surface] [--scope refine|surface|redesign] [--comp auto|require|skip] [--apply]"
-disable-model-invocation: true
 ---
 
 # Directed web design with anti-slop and optional visual comps

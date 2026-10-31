@@ -2,7 +2,6 @@
 name: asset-image
 description: "Create game-ready 2D image assets from a visual brief. Always routes actual generation through Codex GPT-6.1 Sol; never silently falls back to Claude. Use for icons, props, backgrounds, UI art, textures, concept-to-production images, and other non-pixel game imagery."
 argument-hint: "[brief/spec/scope] [--apply]"
-disable-model-invocation: true
 ---
 
 # Create game-ready image assets through Codex Sol

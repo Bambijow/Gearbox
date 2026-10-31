@@ -2,7 +2,6 @@
 name: debug
 description: "Diagnose and fix a bug from a tight red-capable feedback loop: reproduce, minimise, rank falsifiable hypotheses, instrument deliberately, fix the root cause, add regression protection, clean up, and capture reusable learning when warranted."
 argument-hint: "[symptom, failing test, incident, or issue]"
-disable-model-invocation: true
 ---
 
 # Debug from a tight loop, not edit roulette

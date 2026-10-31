@@ -2,7 +2,6 @@
 name: audio-design
 description: "Design and implement game/product audio systems: semantic events, one-shots/loops/layers, variation, priority/concurrency, buses, spatialization, attenuation, ducking, state transitions, import constraints, and accessibility alternatives."
 argument-hint: "[brief/system/scope] [--apply]"
-disable-model-invocation: true
 ---
 
 # Audio as a state and priority system

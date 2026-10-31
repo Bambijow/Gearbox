@@ -2,7 +2,6 @@
 name: spec-to-issue
 description: "Turn an accepted engineering spec into a concise GitHub implementation issue that preserves outcome, scope, acceptance criteria, constraints, and verification without dumping the whole spec. Optionally create the issue."
 argument-hint: "[spec path] [--create] [--title '...'] [--labels a,b]"
-disable-model-invocation: true
 ---
 
 # Convert a spec into a GitHub issue

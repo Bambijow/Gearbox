@@ -2,7 +2,6 @@
 name: design-system
 description: "Audit, extract, reconcile, and maintain a production design system: tokens, component roles, states, interaction contracts, and drift. Use when UI primitives diverge, repeated one-off values accumulate, or a coherent system must be documented without redesigning the product."
 argument-hint: "[scope/path] [--apply]"
-disable-model-invocation: true
 ---
 
 # Maintain the design system as product infrastructure

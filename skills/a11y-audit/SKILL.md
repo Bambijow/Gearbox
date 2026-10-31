@@ -2,7 +2,6 @@
 name: a11y-audit
 description: "Run a focused accessibility audit on a component, page, or user journey using runtime/browser evidence plus repository-native automated tooling when available. Covers keyboard/focus, semantics, names, contrast, reflow, forms/errors, reduced motion, touch, and sensory alternatives."
 argument-hint: "[scope/journey] [--fix]"
-disable-model-invocation: true
 ---
 
 # Accessibility as a runtime gate

@@ -2,7 +2,6 @@
 name: loop
 description: "Run Gearbox as a convergent engineering loop from a GitHub issue, accepted spec, or grounded request until quality gates pass, the work is blocked, or the cycle limit is reached. Includes adaptive repairs, conditional learn, and optional shipping."
 argument-hint: "[GitHub issue | spec path | request] [--auto] [--ship] [--max-cycles N] [--workers N] [--no-codex] [--token-profile efficient|strict] [--models ask|auto|hybrid|claude-heavy|codex-heavy] [--follow-pr]"
-disable-model-invocation: true
 ---
 
 # Run the engineering loop

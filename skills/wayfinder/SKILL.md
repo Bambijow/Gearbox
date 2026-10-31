@@ -2,7 +2,6 @@
 name: wayfinder
 description: "Map a large or foggy initiative as a decision graph before implementation. Creates/resolves decision issues, uses focused research and domain modeling, and hands off only when the route to a spec or implementation plan is clear."
 argument-hint: "[idea | map issue URL/number] [--create] [--auto-research]"
-disable-model-invocation: true
 ---
 
 # Wayfind before you build

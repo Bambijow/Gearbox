@@ -2,7 +2,6 @@
 name: learn
 description: "Capture a non-obvious engineering lesson from completed work into durable repo memory so future humans and agents do not repeat the same investigation. Use after notable bugs, decisions, migrations, or tricky changes."
 argument-hint: "[incident, change, decision, or lesson]"
-disable-model-invocation: true
 ---
 
 # Compound the lesson, not the paperwork

@@ -2,7 +2,6 @@
 name: level-design
 description: "Design, block out, and review game levels or encounters from player verbs, movement metrics, sightlines, pacing, landmarks, checkpoints, rewards, spawn rules, traversal/combat/puzzle beats, and real playtest evidence."
 argument-hint: "[brief/scene/scope] [--apply]"
-disable-model-invocation: true
 ---
 
 # Level and encounter design through playable evidence

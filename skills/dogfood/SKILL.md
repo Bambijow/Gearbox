@@ -2,7 +2,6 @@
 name: dogfood
 description: "Exercise a real product journey as a user, collecting functional, UX, console/network, accessibility, and visual evidence that scripted happy-path tests can miss. Use before shipping meaningful UI/product flows or when the user asks for hands-on product evaluation."
 argument-hint: "[journey/persona/scope] [--fix]"
-disable-model-invocation: true
 ---
 
 # Dogfood the product, not the test suite

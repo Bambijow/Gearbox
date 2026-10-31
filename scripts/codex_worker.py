@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -226,9 +227,10 @@ def self_test() -> None:
         ev = Path(td) / "events.jsonl"
         ev.write_text('{"type":"turn.started"}\nnot json\n{"type":"turn.completed","usage":{"input_tokens":7,"output_tokens":2}}\n', encoding="utf-8")
         assert reported_usage(ev) == {"input_tokens": 7, "output_tokens": 2}
+        os.environ.update(GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@t", GIT_COMMITTER_NAME="t", GIT_COMMITTER_EMAIL="t@t")
         repo = Path(td) / "repo"
         subprocess.run(["git", "init", "-q", str(repo)], check=True)
-        subprocess.run(["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "--allow-empty", "-m", "init"], check=True)
+        subprocess.run(["git", "-C", str(repo), "commit", "-q", "--allow-empty", "-m", "init"], check=True)
         assert commit_worktree(repo, "noop") is None
         (repo / "a.txt").write_text("hi", encoding="utf-8")
         before = git_head(repo)

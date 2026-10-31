@@ -2,7 +2,6 @@
 name: experience-perf
 description: "Profile and improve real user-experience performance for web/product/creative surfaces using measured browser/runtime evidence. Covers web vitals, input latency, long tasks, image/font loading, frame pacing, canvas/WebGL cost, textures, DPR, disposal, and graceful fidelity reduction."
 argument-hint: "[journey/scene/scope] [--fix]"
-disable-model-invocation: true
 ---
 
 # Measure the experience, not theoretical performance

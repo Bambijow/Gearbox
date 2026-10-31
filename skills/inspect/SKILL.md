@@ -2,7 +2,6 @@
 name: inspect
 description: "Explain a Gearbox run's blockers, plan approval, verified quality evidence, recorded worker states, scheduling conflicts and usage without resuming or mutating the run."
 argument-hint: "[run-id | run-directory]"
-disable-model-invocation: true
 ---
 
 # Inspect a run without changing it

@@ -2,7 +2,6 @@
 name: simplify
 description: "Run a fresh post-integration simplification agent, using Ponytail when available, to remove over-engineering and then apply safe simplifications without changing required behavior."
 argument-hint: "[diff/base ref]"
-disable-model-invocation: true
 ---
 
 # Simplify after integration, before final review

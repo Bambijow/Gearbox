@@ -2,7 +2,6 @@
 name: plan
 description: "Convert a shaped request/spec into a lean executable DAG with ownership, capabilities, verification, specialist routing, and a compiled quality-gate topology. Use before non-trivial implementation."
 argument-hint: "[spec path, issue, or request]"
-disable-model-invocation: true
 ---
 
 # Plan executable engineering work

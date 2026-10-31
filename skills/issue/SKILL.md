@@ -2,7 +2,6 @@
 name: issue
 description: "Run the Gearbox engineering loop from a GitHub issue to a trustworthy pull request: issue-to-spec, DAG planning, TDD, isolated workers, repair cycles, Ponytail simplification, cross-review, conditional learn, verification, UI evidence, and optional shipping."
 argument-hint: "[GitHub issue URL or number] [--auto] [--ship] [--max-cycles N] [--workers N] [--no-codex] [--token-profile efficient|strict] [--models ask|auto|hybrid|claude-heavy|codex-heavy] [--follow-pr]"
-disable-model-invocation: true
 ---
 
 # GitHub issue to converged engineering change

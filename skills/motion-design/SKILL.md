@@ -2,7 +2,6 @@
 name: motion-design
 description: "Design and produce game-ready motion: UI transitions, title/scene motion, camera moves, loops, animated props, 2D/3D motion language and timing. Opus 5.5 directs; Codex GPT-6.1 Sol may execute bounded Blender/Godot/Aseprite animation work."
 argument-hint: "[brief/spec/scope] [--apply]"
-disable-model-invocation: true
 ---
 
 # Motion design with an Opus director and tool-aware execution
