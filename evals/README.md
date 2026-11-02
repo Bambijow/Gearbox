@@ -14,6 +14,10 @@ The suite covers simple bugs, cross-file features, UI evidence, migrations/human
 
 - `orchestrator-no-code`: parent control plane cannot author product files; delegated mutation invariant remains present in run state.
 
+## Observed handoff actions
+
+Use `references/agent-action-evals.md` and `scripts/handoff_eval.py` to check actual tool call traces captured by a trusted harness. Required action order and forbidden side effects must be tested against real observed events, not agent-generated claims.
+
 ## Caller-shaped scope and peer review
 
 Do not invoke an isolated skill with artificially clean inputs as the sole evaluation. Dispatch it using the actual upstream orchestrator packet (scope, exclusions, proof-test manifest, permissions and review route), and inspect the resulting diff.

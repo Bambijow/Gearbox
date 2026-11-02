@@ -32,3 +32,7 @@ A successful check only proves the SHA it ran against. After any new push, wait 
 ## Stop states
 
 `PR_PASS`, `PR_BLOCKED`, `PR_BUDGET_EXHAUSTED`, or `PR_MAX_CYCLES`. Never auto-merge unless separately requested.
+
+## Base relevance preflight
+
+Before autonomous PR repair, compare original base SHA, current target SHA and PR head with `scripts/pr_relevance.py`. Overlapping changed paths force `REASSESS` and explicit acceptance-criteria reconciliation; a path-disjoint result is only a quick preflight, not semantic proof of continued relevance. Never continue automatically when the PR's goal has been superseded, contradicted, or already delivered by the target branch.
