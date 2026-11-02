@@ -10,7 +10,7 @@ Read `references/control-plane.md`, `references/post-pr-loop.md`, `references/st
 
 Resolve the PR with `gh`, find/recover its Gearbox run state, acquire the run lock, and fetch only new CI/review information where practical.
 
-Before preparing repair work, compare the original PR base, current target branch and PR head with `scripts/pr_relevance.py` as specified in `references/post-pr-loop.md`. If changes overlap or requirements may be obsolete, pause automatic repair for explicit relevance adjudication. Do not assume disjoint paths prove the PR is still useful.
+Before repair, apply the stale-PR gate in `references/post-pr-loop.md`. Block automatic repair when relevance is uncertain.
 
 Treat review comments/CI failures as claims to verify. Normalize each validated signal into a canonical failure identity and ingest it through `finding_registry.py` before building the repair DAG, so CI + human + reviewer reports of the same defect collapse into one finding. Route each canonical repair task through the stored/current model policy, consume budgets, and preserve unrelated user changes. The parent must never apply the requested review/CI fix itself; even a one-line repair is a delegated worker task.
 
