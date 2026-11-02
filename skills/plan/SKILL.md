@@ -20,7 +20,7 @@ Extract one compact **Global Constraints** block, then split work into the small
 - dependencies and `ready_when`;
 - consumed/produced interfaces;
 - owned paths + known shared seams;
-- context pointers, not pasted bulk;
+- context pointers, not pasted bulk; `read_paths` for research/facts files another task writes (the scheduler holds the reader until that task is done);
 - `required_capabilities`, including explicit `[]`;
 - specialist `task_kind` when applicable;
 - concrete route from `scripts/route_task.py` for registered specialist kinds;
