@@ -90,6 +90,10 @@ def plan(data:dict)->dict:
             blocked.append({"id":tid,"missing_dependencies":missing,"failed_dependencies":bad})
         elif pending:
             waiting.append({"id":tid,"waiting_on":pending})
+        elif writers:=[o for o,ot in tasks.items() if o!=tid and o not in desc[tid] and ot.get("status","PENDING") not in DONE
+                       and conflicts(t.get("read_paths",[]),ot.get("owned_paths",[]))]:
+            # A task must not start from facts another unfinished task is still writing (issue-20 T2 vs T0b).
+            waiting.append({"id":tid,"waiting_on_read_owner":sorted(writers)})
         elif conflicts(t.get("owned_paths",[]),active_paths):
             waiting.append({"id":tid,"waiting_on_active_ownership":True})
         else:
@@ -165,6 +169,13 @@ def self_test():
     ]}
     p2=plan(data2)
     assert not p2["dispatch_units"] and p2["waiting"][0]["waiting_on_active_ownership"]
+    data3={"max_parallel_workers":2,"tasks":[
+        {"id":"R2","status":"RUNNING","dependencies":[],"owned_paths":["run/facts-2.md"]},
+        {"id":"I","status":"READY","dependencies":[],"owned_paths":["src/i"],"read_paths":["run/facts-2.md"]},
+        {"id":"J","status":"READY","dependencies":[],"owned_paths":["src/j"],"read_paths":["run/facts.md"]},
+    ]}
+    p3=plan(data3)
+    assert [u["id"] for u in p3["dispatch_units"]]==["J"] and p3["waiting"][0]["waiting_on_read_owner"]==["R2"]
     print("PASS: frontier-scheduler self-test")
 
 def main():

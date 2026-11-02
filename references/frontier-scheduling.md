@@ -15,7 +15,7 @@ Persist a compact task-status snapshot and run `scripts/frontier_scheduler.py`. 
 
 Use its `dispatch_units` result rather than asking the model to rank the entire ready frontier conversationally. The scheduler may group compatible low/medium-risk tasks with the same `batch_key`; it never batches high/critical work merely to fill a slot.
 
-The task snapshot contains statuses/dependencies/owned paths/risk/batch metadata, not task prompts.
+The task snapshot contains statuses/dependencies/owned paths/read paths/risk/batch metadata, not task prompts. A task whose `read_paths` overlap the `owned_paths` of an unfinished, non-descendant task waits (`waiting_on_read_owner`): it must not start from facts still being written.
 
 ## Same-shape micro-batching
 
