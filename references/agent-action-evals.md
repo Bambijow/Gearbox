@@ -1,0 +1,3 @@
+# Caller-shaped action trace evaluations
+
+Agent output text is not proof that a handoff happened. A trusted harness must capture tool calls at dispatch time and write an append-only `actions.json` with ordered `action` events. The agent must not author or overwrite the trace. Compare the actual trace against `required_actions`, `forbidden_actions`, and `required_order` using `scripts/handoff_eval.py`. Verify repository diff separately to catch unauthorized changes. Include negative fixtures: skipped image generation, video rendered before image handoff, push during read-only review, PR creation without authorization, and unintended file writes. Do not use agent-declared intent or fabricated events as evidence.
