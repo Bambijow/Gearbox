@@ -14,6 +14,8 @@ A retro studies the primary evidence of a session/run and asks:
 
 Do not turn this into another code review. Do not invent findings from vibes. Every recommendation needs evidence from the run. Cite the smallest useful source location as `path:line` for text or `path#json-pointer` / exact artifact field for structured data; do not write uncited forensic conclusions.
 
+For proactive retro selection (not an explicitly requested `/retro`), read `references/retro-sampling.md`. Sample successful runs sparingly and prioritize runs with repeated failures; selection alone must not start background agents.
+
 ## Input
 
 Accept any of:
