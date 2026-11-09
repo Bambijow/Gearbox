@@ -31,7 +31,7 @@ A successful check only proves the SHA it ran against. After any new push, wait 
 
 ## Stop states
 
-`PR_PASS`, `PR_BLOCKED`, `PR_BUDGET_EXHAUSTED`, or `PR_MAX_CYCLES`. Never auto-merge unless separately requested.
+`PR_PASS`, `PR_BLOCKED`, `PR_BUDGET_EXHAUSTED`, or `PR_MAX_CYCLES`. Never auto-merge unless separately requested. `/gearbox:autopilot` is that separate request, and merges only through its gate in `scripts/autopilot.py` (all checks green on the exact head, no guarded path).
 
 ## Base relevance preflight
 
