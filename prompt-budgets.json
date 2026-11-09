@@ -2,6 +2,10 @@
   "schema_version": 1,
   "policy": "Per-skill byte ceilings are ratchets. Lower a ceiling after durable compression; raising one requires an explicit reviewed reason. Prefer moving conditional detail to references/ or deterministic mechanics to scripts/.",
   "skills": {
+    "autopilot": {
+      "max_bytes": 3584,
+      "class": "hot-path"
+    },
     "brainstorm": {
       "max_bytes": 12800,
       "class": "interactive-deep"

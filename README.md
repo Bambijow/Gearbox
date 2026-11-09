@@ -63,6 +63,7 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | Je veux comprendre un run sans le modifier | `/gearbox:inspect <run-id>` |
 | J'ai un run interrompu | `/gearbox:resume <run-id-ou-issue>` |
 | J'ai déjà une PR avec CI/reviews à traiter | `/gearbox:continue-pr <PR>` |
+| Je veux qu'un dépôt traite tout son backlog d'issues sans moi | `/gearbox:autopilot <lien-du-dépôt>` |
 | Je veux nettoyer la mémoire technique | `/gearbox:clean-solutions` |
 | Je veux améliorer les prochains runs après une session pénible | `/gearbox:retro [run-id]` |
 | Je veux optimiser une métrique mesurable sans casser le comportement | `/gearbox:optimize <cible>` |
@@ -138,6 +139,7 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:inspect <run-id>` | Pour comprendre un blocage sans reprendre le travail | Inspecte l'approbation, la dérive du plan, les preuves et leurs empreintes, les états de workers enregistrés, les attentes d'ownership et l'usage. Ne modifie aucun état, ne casse aucun verrou et ne lance aucun worker. |
 | `/gearbox:resume <run-id/issue/PR>` | Après fermeture/crash/interruption ou pour approuver un plan en attente | Recharge l'état sans rejouer le travail. `--approve-plan` approuve uniquement le plan actuellement hashé ; s'il a changé depuis sa présentation, Gearbox refuse et redemande une approbation. |
 | `/gearbox:continue-pr <PR>` | Après création de la PR, quand CI ou un reviewer humain a parlé | Charge uniquement les nouveaux checks/commentaires, valide les findings au lieu de les accepter aveuglément, construit un repair DAG borné, corrige via workers, repousse sur la même branche et met à jour le même commentaire technique sans rejouer toute l'issue. |
+| `/gearbox:autopilot <lien/owner-name/chemin>` | Quand un dépôt a une spec acceptée, des issues étiquetées `autopilot` (dépendances en `Dépend de #N`) et une CI qui vérifie vraiment | Traite les issues prêtes une par une jusqu'au backlog vide, chacune dans un `claude -p` neuf (`/gearbox:issue N --auto --ship --follow-pr`). Ne fusionne que via sa porte : tous les checks verts sur le commit exact, aucun chemin gardé (`.github/`, `.claude/`, config Gearbox) touché. Une PR rouge a droit à un `/gearbox:continue-pr --auto`, puis `needs-human`. S'arrête sur backlog vide, blocage, issue `autopilot-pause`, ou budget (fusions, heures). Déploiement optionnel après chaque fusion via `autopilot_deploy`. |
 
 ## Reverse engineering et installation de REA
 
