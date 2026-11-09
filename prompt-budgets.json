@@ -158,6 +158,10 @@
       "max_bytes": 4096,
       "class": "quality-specialist"
     },
+    "seo-audit": {
+      "max_bytes": 2560,
+      "class": "quality-specialist"
+    },
     "art-direction": {
       "max_bytes": 4096,
       "class": "creative-specialist"

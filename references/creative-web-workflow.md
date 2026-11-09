@@ -175,6 +175,7 @@ Before final creative-web PASS:
 - run `a11y-audit` for the representative journey;
 - run `experience-perf` for expensive canvas/WebGL/media/motion paths;
 - run semantic visual regression when an approved baseline exists;
-- run content-design when the experience introduces substantial narrative/UX copy.
+- run content-design when the experience introduces substantial narrative/UX copy;
+- optionally run `seo-audit` (`SEO_GATE`) when a public `Persuade` surface must be found through search.
 
 The creative reviewer consumes these results instead of replacing them with vibes.
