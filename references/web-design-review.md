@@ -78,7 +78,8 @@ For material user-facing web work, final orchestration may additionally require:
 - `CONTENT_GATE: PASS` when substantial UX copy/state copy changed;
 - `DESIGN_SYSTEM_GATE` when shared primitives/tokens were added or drift was reconciled;
 - `VISUAL_REGRESSION_GATE: PASS` when an approved visual baseline exists;
-- `PERF_GATE: PASS` for performance-sensitive or creative/heavy experiences.
+- `PERF_GATE: PASS` for performance-sensitive or creative/heavy experiences;
+- `SEO_GATE: PASS|NOT_APPLICABLE` from `seo-audit`, optional, for public `Persuade` surfaces meant to be found through search.
 
 Do not duplicate these specialist audits inside this reviewer when their dedicated evidence exists.
 

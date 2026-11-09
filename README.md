@@ -73,6 +73,7 @@ Tu n’as **rien à renommer à la main**. Lors du premier appel à une commande
 | Je veux distinguer changement visuel voulu et régression | `/gearbox:visual-regression <surface> [--record]` |
 | Je veux améliorer labels, erreurs, empty states et UX copy | `/gearbox:content-design <scope> [--apply]` |
 | Je veux mesurer la perf réellement ressentie | `/gearbox:experience-perf <journey> [--fix]` |
+| Je veux vérifier le SEO technique d'un site déployé | `/gearbox:seo-audit <url> [--prod] [--banned banned.txt] [--apply]` |
 | Je veux garder tous les assets dans la même direction artistique | `/gearbox:art-direction <scope> [--apply]` |
 | Je veux concevoir le système audio d'un jeu/produit | `/gearbox:audio-design <brief> [--apply]` |
 | Je veux concevoir/blockouter un niveau ou encounter | `/gearbox:level-design <brief> [--apply]` |
