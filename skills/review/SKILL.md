@@ -54,7 +54,7 @@ In addition to ordinary correctness, flag these when the diff provides concrete 
 
 These are review findings only when tied to real scope/maintenance cost, not aesthetic minimalism.
 
-For shared-state changes, apply `references/state-writer-review.md`.
+Apply `references/state-writer-review.md` to shared state.
 
 ## Verification audit
 
