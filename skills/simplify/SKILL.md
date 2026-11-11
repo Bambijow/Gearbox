@@ -59,6 +59,8 @@ Typical valid changes:
 
 Avoid broad unrelated refactors.
 
+For substantial structural simplifications only, optionally inspect co-change history via `references/cochange-simplification.md`. Correlation is not proof of coupling.
+
 ## Verification
 
 After the subagent edits:
