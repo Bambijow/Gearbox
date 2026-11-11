@@ -47,6 +47,10 @@ Split workload fixtures into tuning and held-out sets before implementation. Kee
 
 Require raw baseline/candidate samples for both splits, a bounded attempts/time/cost budget, and independently verified `correctness_pass`, `workload_equivalent`, `required_work_skipped=false`, and `holdout_mutated=false`. Record these in a run-local JSON report. Run `python3 scripts/optimization_holdout.py report.json` as a deterministic keep/reject gate; it cannot establish truth of those booleans alone, so provenance and independent checks are mandatory. Never accept a training-only improvement.
 
+## Evaluation isolation
+
+Behavioral evals must use private user and provider configuration directories; see `scripts/behavior_eval.py`. Do not inherit local skills or personal instructions into benchmark environments. Record isolation mode in eval metadata. Credentials can be supplied via environment or a narrowly scoped authentication file, never by copying complete agent configuration.
+
 ## Decision
 
 Report baseline, variant measurements, relative/absolute delta, guardrails, caveats and the exact kept change. Do not overstate statistical confidence from tiny samples.
