@@ -54,7 +54,7 @@ In addition to ordinary correctness, flag these when the diff provides concrete 
 
 These are review findings only when tied to real scope/maintenance cost, not aesthetic minimalism.
 
-For changes to shared persisted state, apply the writer/interleaving audit in `references/state-writer-review.md` before verdict.
+For shared-state changes, apply `references/state-writer-review.md`.
 
 ## Verification audit
 
