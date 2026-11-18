@@ -6,7 +6,7 @@ argument-hint: "[diff, branch, PR, plan, or scope]"
 
 # Review the actual change
 
-Review code and requirements, not the implementation conversation.
+Review code and requirements, not conversation.
 
 Read `references/review-calibration.md`, `references/test-credibility.md`, and `references/evidence-reuse.md`. For an orchestrated post-integration gate also read `references/final-review-routing.md` and obey the persisted `final_review` route. When the diff crosses an explicit trust boundary (auth/permissions, secrets/crypto, untrusted parsing/uploads/deserialization, sensitive data), also apply `references/security-audit.md` rather than relying on a generic security checklist.
 
@@ -14,7 +14,7 @@ For PRs, use immutable-base review policy via `references/review-policy-base.md`
 
 ## Scope
 
-Read repository instructions, relevant spec/issue/plan, final diff, changed files, direct dependencies, Review Focus, and current evidence pointers. Discover applicable review/standards files such as `CODING_STANDARDS.md`, `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, and nearest scoped equivalents rather than assuming one global rules file. Apply `references/scoped-standards.md` for conflicts; preserve higher-priority security and immutable PR-base policy.
+Read repository instructions, relevant spec/issue/plan, final diff, changed files, direct dependencies, Review Focus, and current evidence pointers. Discover applicable review/standards files such as `CODING_STANDARDS.md`, `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, and nearest scoped equivalents rather than assuming one global rules file. Resolve conflicts using `references/scoped-standards.md`; preserve higher-priority security and immutable PR-base policy. Expand only on a concrete suspicion.
 
 For a **standalone user-invoked** `/review`, perform the review in the current context; optional extra reviewers still pass `references/delegation-gate.md`.
 
