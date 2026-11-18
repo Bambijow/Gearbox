@@ -62,8 +62,8 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("--risk", default="medium", choices=sorted(RISKS))
     p.add_argument("--escalated", action="store_true")
     p.add_argument("--luna-model", default="gpt-6-luna")
-    p.add_argument("--sol-model", default="gpt-6.1-sol")
-    p.add_argument("--astra-model", default="gpt-6-astra")
+    p.add_argument("--sol-model", default="gpt-6.2-sol")
+    p.add_argument("--astra-model", default="gpt-6.2-astra")
     p.add_argument("--haiku-model", default="haiku")
     p.add_argument("--sonnet-model", default="sonnet")
     p.add_argument("--opus-model", default="opus")
@@ -76,9 +76,9 @@ def self_test() -> None:
     p = parser()
     cases = [
         (["--implementation-engine", "claude", "--task-tier", "bounded", "--risk", "low"], "codex", "gpt-6-luna", "low", None),
-        (["--implementation-engine", "claude", "--task-tier", "normal", "--risk", "medium"], "codex", "gpt-6.1-sol", "medium", None),
-        (["--implementation-engine", "claude", "--task-tier", "deep", "--risk", "high"], "codex", "gpt-6.1-sol", "high", None),
-        (["--implementation-engine", "claude", "--task-tier", "exceptional", "--risk", "critical"], "codex", "gpt-6-astra", "high", None),
+        (["--implementation-engine", "claude", "--task-tier", "normal", "--risk", "medium"], "codex", "gpt-6.2-sol", "medium", None),
+        (["--implementation-engine", "claude", "--task-tier", "deep", "--risk", "high"], "codex", "gpt-6.2-sol", "high", None),
+        (["--implementation-engine", "claude", "--task-tier", "exceptional", "--risk", "critical"], "codex", "gpt-6.2-astra", "high", None),
         (["--implementation-engine", "codex", "--task-tier", "bounded", "--risk", "low"], "claude", "haiku", "low", "task-reviewer-low"),
         (["--implementation-engine", "codex", "--task-tier", "normal", "--risk", "medium"], "claude", "sonnet", "medium", "task-reviewer"),
         (["--implementation-engine", "codex", "--task-tier", "deep", "--risk", "high"], "claude", "opus", "high", "task-reviewer-high"),

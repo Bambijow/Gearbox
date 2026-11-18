@@ -66,7 +66,7 @@ def route(task_kind:str,claude_capabilities:list[str],codex_capabilities:list[st
         preferred=list(THREE_D_CAPABILITIES)
         claude_tool=_pick(claude,THREE_D_CAPABILITIES); codex_tool=_pick(codex,THREE_D_CAPABILITIES)
         delegation_available=codex_tool is not None
-        delegation_policy="Opus 5.5 owns art direction, topology/rig decisions and acceptance; Codex GPT-6.1 Sol may execute bounded Blender/Godot operations or the concrete tool pass."
+        delegation_policy="Opus 5.5 owns art direction, topology/rig decisions and acceptance; Codex GPT-6.2 Sol may execute bounded Blender/Godot operations or the concrete tool pass."
         if claude_tool:
             required=[claude_tool]; mode="opus-direct-with-codex-delegation" if codex_tool else "opus-direct"
             if codex_tool: delegate_required=[codex_tool]
@@ -78,7 +78,7 @@ def route(task_kind:str,claude_capabilities:list[str],codex_capabilities:list[st
         preferred=list(MOTION_CAPABILITIES)
         claude_tool=_pick(claude,MOTION_CAPABILITIES); codex_tool=_pick(codex,MOTION_CAPABILITIES)
         delegation_available=codex_tool is not None
-        delegation_policy="Opus 5.5 owns motion language, timing, hierarchy and acceptance; Codex GPT-6.1 Sol may execute bounded animation/tool operations."
+        delegation_policy="Opus 5.5 owns motion language, timing, hierarchy and acceptance; Codex GPT-6.2 Sol may execute bounded animation/tool operations."
         if claude_tool:
             required=[claude_tool]; mode="opus-motion-direct-with-codex-delegation" if codex_tool else "opus-motion-direct"
             if codex_tool: delegate_required=[codex_tool]
@@ -105,11 +105,11 @@ def route(task_kind:str,claude_capabilities:list[str],codex_capabilities:list[st
 
     rationale={
         "video-create":"Opus video producer chooses the cheapest capable fal image-to-video model after image dependency and spend approval",
-        "asset-image":"game image generation is pinned to Codex GPT-6.1 Sol",
-        "pixel-art":"pixel art is pinned to Codex GPT-6.1 Sol; Aseprite MCP is preferred when available",
+        "asset-image":"game image generation is pinned to Codex GPT-6.2 Sol",
+        "pixel-art":"pixel art is pinned to Codex GPT-6.2 Sol; Aseprite MCP is preferred when available",
         "model-3d":"Opus 5.5 directs 3D creation; Codex Sol may execute tool-bounded modeling; Astra remains mandatory review",
         "motion-design":"Opus 5.5 directs motion language and timing; Codex Sol may execute tool-bounded animation",
-        "review-3d":"3D asset review is pinned to Codex GPT-6 Astra with a live 3D inspection capability",
+        "review-3d":"3D asset review is pinned to Codex GPT-6.2 Astra with a live 3D inspection capability",
     }[task_kind]
 
     return Route(
@@ -123,18 +123,18 @@ def route(task_kind:str,claude_capabilities:list[str],codex_capabilities:list[st
 
 def self_test()->None:
     image=route("asset-image",[],[])
-    assert image.engine=="codex" and image.model=="gpt-6.1-sol" and not image.blocked
+    assert image.engine=="codex" and image.model=="gpt-6.2-sol" and not image.blocked
     pixel=route("pixel-art",[],["aseprite","godot"])
     assert pixel.required_capabilities==["aseprite"] and pixel.mode=="aseprite-mcp"
     direct=route("model-3d",["blender"],["blender"])
-    assert direct.model=="claude-opus-5-5" and direct.delegate_model=="gpt-6.1-sol" and direct.review_model=="gpt-6-astra"
+    assert direct.model=="claude-opus-5-5" and direct.delegate_model=="gpt-6.2-sol" and direct.review_model=="gpt-6.2-astra"
     delegated=route("model-3d",[],["blender"])
     assert delegated.mode=="opus-directed-codex-execution" and delegated.delegation_required
     assert route("model-3d",[],[]).blocked
     motion=route("motion-design",["godot"],["blender"])
-    assert motion.delegate_model=="gpt-6.1-sol" and motion.delegation_available
+    assert motion.delegate_model=="gpt-6.2-sol" and motion.delegation_available
     review=route("review-3d",["blender"],["godot"])
-    assert review.model=="gpt-6-astra" and review.required_capabilities==["godot"]
+    assert review.model=="gpt-6.2-astra" and review.required_capabilities==["godot"]
     print("PASS: game-asset-router self-test")
 
 def main()->int:

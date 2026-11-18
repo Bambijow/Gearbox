@@ -38,11 +38,11 @@ Game-asset task kinds bypass the ordinary economy/risk router. Resolve them with
 
 | task kind | forced route | capability rule |
 |---|---|---|
-| `asset-image` | Codex `gpt-6.1-sol` / medium | direct model generation |
-| `pixel-art` | Codex `gpt-6.1-sol` / medium | prefer live Aseprite MCP; direct Sol fallback |
-| `model-3d` | Claude `claude-opus-5-5` / high directs; Codex `gpt-6.1-sol` / high may execute | Blender/Godot on either provider; Codex delegation when useful/required |
-| `motion-design` | Claude `claude-opus-5-5` / high directs; Codex `gpt-6.1-sol` / high may execute | Blender/Godot/Aseprite on either provider |
-| `review-3d` | Codex `gpt-6-astra` / high, read-only | Blender or Godot must be available to Codex |
+| `asset-image` | Codex `gpt-6.2-sol` / medium | direct model generation |
+| `pixel-art` | Codex `gpt-6.2-sol` / medium | prefer live Aseprite MCP; direct Sol fallback |
+| `model-3d` | Claude `claude-opus-5-5` / high directs; Codex `gpt-6.2-sol` / high may execute | Blender/Godot on either provider; Codex delegation when useful/required |
+| `motion-design` | Claude `claude-opus-5-5` / high directs; Codex `gpt-6.2-sol` / high may execute | Blender/Godot/Aseprite on either provider |
+| `review-3d` | Codex `gpt-6.2-astra` / high, read-only | Blender or Godot must be available to Codex |
 
 These specialist identities bypass ordinary economy routing. For `model-3d` and `motion-design`, Opus remains the director/acceptance owner while the specialist router may explicitly delegate bounded tool execution to Codex Sol, including the full concrete Blender/Godot pass when that capability exists only on Codex. This is declared delegation, not a silent fallback. If neither provider can supply the needed tool surface, return `GAME_ASSET_ROUTE_BLOCKED`.
 
@@ -53,8 +53,8 @@ A completed `model-3d` task always receives the dedicated `review-3d` Astra gate
 Material web-design tasks use `scripts/web_design_router.py` before ordinary implementation routing.
 
 - direction: Claude Opus 5.5 / high;
-- optional comp generation: Codex GPT-6.1 Sol orchestrating a configured GPT Image renderer; auto for surface/redesign when available;
-- implementation: Codex GPT-6.1 Sol, medium by default and high for full redesign;
+- optional comp generation: Codex GPT-6.2 Sol orchestrating a configured GPT Image renderer; auto for surface/redesign when available;
+- implementation: Codex GPT-6.2 Sol, medium by default and high for full redesign;
 - rendered review: fresh Claude, Sonnet/high for refine/surface and Opus 5.5/high for full redesign.
 
 Inspo is a preferred Claude-side evidence capability, not a requirement and never visual authority. Browser/Playwright-style tooling is preferred for implementation/review evidence. A material web-design task cannot reach visual PASS from source inspection alone; missing credible rendered evidence yields `BLOCKED` at the design-review gate.
@@ -66,8 +66,8 @@ The lane preserves provider separation: the director decides, Codex may first ge
 `creative-web` composes the web-design lane with a harder interaction/creative-tech contract:
 
 - direction: `creative-web-director`, Claude Opus 5.5 / high;
-- optional comp generation: Codex GPT-6.1 Sol / high + configured GPT Image renderer;
-- implementation: Codex GPT-6.1 Sol / high;
+- optional comp generation: Codex GPT-6.2 Sol / high + configured GPT Image renderer;
+- implementation: Codex GPT-6.2 Sol / high;
 - review: fresh `creative-web-reviewer`, Claude Opus 5.5 / high.
 
 The reviewer requires `SLOP_GATE`, `INTERACTION_GATE`, and `CREATIVE_GATE`. Creative mode does not grant permission to add WebGL, smooth-scroll libraries, custom cursors, shaders or animation dependencies without a product-grounded interaction thesis and fallback/performance plan.
@@ -93,13 +93,13 @@ These routes are role contracts, not excuses to bypass capability preflight or n
 
 ## Preferred Codex registry
 
-Use only three configured Codex model slots by default:
+Use only three configured Codex model slots by default (verified Codex CLI identifiers: `gpt-6-luna`, `gpt-6.2-sol`, `gpt-6.2-astra`):
 
 ```yaml
 codex_models:
   economy: gpt-6-luna
-  standard: gpt-6.1-sol
-  frontier: gpt-6-astra
+  standard: gpt-6.2-sol
+  frontier: gpt-6.2-astra
 allow_codex_default_model: false
 codex_frontier_policy: escalation-or-exceptional
 ```
@@ -109,8 +109,8 @@ Treat the exact strings as repository configuration. If the local Codex installa
 The intentional mapping is:
 
 - **GPT-6 Luna**: documentation, changelog, formatting, metadata, fixtures, generated mappings, renames, obvious wiring, isolated deterministic test work.
-- **GPT-6.1 Sol**: the normal Codex engineering model. Use `medium` effort for ordinary features/bugs and `high` for deep debugging, migrations, persistence invariants, concurrency, auth/security or broad changes.
-- **GPT-6 Astra**: frontier escalation only. It is not a normal `high risk` model and must not be selected merely because a task touches a database or security-sensitive area.
+- **GPT-6.2 Sol**: the normal Codex engineering model. Use `medium` effort for ordinary features/bugs and `high` for deep debugging, migrations, persistence invariants, concurrency, auth/security or broad changes.
+- **GPT-6.2 Astra**: frontier escalation only. It is not a normal `high risk` model and must not be selected merely because a task touches a database or security-sensitive area.
 
 
 ## Per-task route
@@ -190,7 +190,7 @@ Resolve the reviewer route with `scripts/review_router.py`, using the implementa
 ```yaml
 execution:
   engine: codex
-  model: gpt-6.1-sol
+  model: gpt-6.2-sol
   effort: medium
 review:
   engine: claude

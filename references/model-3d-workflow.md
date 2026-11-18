@@ -1,6 +1,6 @@
 # Game-ready 3D modeling workflow
 
-Claude Opus 5.5 directs 3D creation. Codex GPT-6.1 Sol may execute bounded Blender/Godot modeling operations under an explicit packet. Actual modeling requires a live Blender or Godot capability on at least one provider.
+Claude Opus 5.5 directs 3D creation. Codex GPT-6.2 Sol may execute bounded Blender/Godot modeling operations under an explicit packet. Actual modeling requires a live Blender or Godot capability on at least one provider.
 
 ## Asset contract
 
@@ -53,4 +53,4 @@ Preserve editable source when practical. Export to the repository's runtime form
 
 ## Mandatory review
 
-Every completed 3D asset passes the GPT-6 Astra `review-3d` gate before it is asset-ready.
+Every completed 3D asset passes the GPT-6.2 Astra `review-3d` gate before it is asset-ready.

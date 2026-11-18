@@ -52,7 +52,7 @@ def route(task_kind:str)->Route:
 
 def self_test()->None:
     ds=route("design-system")
-    assert ds.owner_model=="claude-opus-5-5" and ds.executor_model=="gpt-6.1-sol"
+    assert ds.owner_model=="claude-opus-5-5" and ds.executor_model=="gpt-6.2-sol"
     a11y=route("a11y-audit")
     assert a11y.owner_model=="sonnet" and a11y.owner_effort=="high"
     perf=route("experience-perf")

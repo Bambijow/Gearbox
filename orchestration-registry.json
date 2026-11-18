@@ -57,12 +57,12 @@
     "game_asset": {
       "asset-image": {
         "engine": "codex",
-        "model": "gpt-6.1-sol",
+        "model": "gpt-6.2-sol",
         "effort": "medium"
       },
       "pixel-art": {
         "engine": "codex",
-        "model": "gpt-6.1-sol",
+        "model": "gpt-6.2-sol",
         "effort": "medium"
       },
       "model-3d": {
@@ -70,9 +70,9 @@
         "model": "claude-opus-5-5",
         "effort": "high",
         "review_engine": "codex",
-        "review_model": "gpt-6-astra",
+        "review_model": "gpt-6.2-astra",
         "delegate_engine": "codex",
-        "delegate_model": "gpt-6.1-sol",
+        "delegate_model": "gpt-6.2-sol",
         "delegate_effort": "high"
       },
       "motion-design": {
@@ -80,12 +80,12 @@
         "model": "claude-opus-5-5",
         "effort": "high",
         "delegate_engine": "codex",
-        "delegate_model": "gpt-6.1-sol",
+        "delegate_model": "gpt-6.2-sol",
         "delegate_effort": "high"
       },
       "review-3d": {
         "engine": "codex",
-        "model": "gpt-6-astra",
+        "model": "gpt-6.2-astra",
         "effort": "high"
       },
       "video-create": {
@@ -93,7 +93,7 @@
         "model": "claude-opus-5-5",
         "effort": "high",
         "delegate_engine": "codex",
-        "delegate_model": "gpt-6.1-sol",
+        "delegate_model": "gpt-6.2-sol",
         "delegate_effort": "medium"
       }
     },
@@ -105,7 +105,7 @@
       },
       "comp_generator": {
         "engine": "codex",
-        "model": "gpt-6.1-sol",
+        "model": "gpt-6.2-sol",
         "effort_by_scope": {
           "refine": "medium",
           "surface": "medium",
@@ -115,7 +115,7 @@
       },
       "builder": {
         "engine": "codex",
-        "model": "gpt-6.1-sol",
+        "model": "gpt-6.2-sol",
         "effort_by_scope": {
           "refine": "medium",
           "surface": "medium",
@@ -156,7 +156,7 @@
         "owner_model": "claude-opus-5-5",
         "owner_effort": "high",
         "executor_engine": "codex",
-        "executor_model": "gpt-6.1-sol",
+        "executor_model": "gpt-6.2-sol",
         "executor_effort": "medium",
         "reviewer_engine": "claude",
         "reviewer_model": "sonnet",
@@ -167,7 +167,7 @@
         "owner_model": "sonnet",
         "owner_effort": "high",
         "executor_engine": "codex",
-        "executor_model": "gpt-6.1-sol",
+        "executor_model": "gpt-6.2-sol",
         "executor_effort": "medium"
       },
       "visual-regression": {
@@ -180,15 +180,15 @@
         "owner_model": "sonnet",
         "owner_effort": "high",
         "executor_engine": "codex",
-        "executor_model": "gpt-6.1-sol",
+        "executor_model": "gpt-6.2-sol",
         "executor_effort": "medium"
       },
       "experience-perf": {
         "owner_engine": "codex",
-        "owner_model": "gpt-6.1-sol",
+        "owner_model": "gpt-6.2-sol",
         "owner_effort": "high",
         "executor_engine": "codex",
-        "executor_model": "gpt-6.1-sol",
+        "executor_model": "gpt-6.2-sol",
         "executor_effort": "high",
         "reviewer_engine": "claude",
         "reviewer_model": "sonnet",
@@ -207,7 +207,7 @@
         "owner_model": "claude-opus-5-5",
         "owner_effort": "high",
         "executor_engine": "codex",
-        "executor_model": "gpt-6.1-sol",
+        "executor_model": "gpt-6.2-sol",
         "executor_effort": "high",
         "reviewer_engine": "claude",
         "reviewer_model": "sonnet",
@@ -218,7 +218,7 @@
         "owner_model": "claude-opus-5-5",
         "owner_effort": "high",
         "executor_engine": "codex",
-        "executor_model": "gpt-6.1-sol",
+        "executor_model": "gpt-6.2-sol",
         "executor_effort": "high",
         "reviewer_engine": "claude",
         "reviewer_model": "claude-opus-5-5",

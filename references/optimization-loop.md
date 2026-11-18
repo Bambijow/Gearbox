@@ -51,6 +51,8 @@ Require raw baseline/candidate samples for both splits, a bounded attempts/time/
 
 Behavioral evals must use private user and provider configuration directories; see `scripts/behavior_eval.py`. Do not inherit local skills or personal instructions into benchmark environments. Record isolation mode in eval metadata. Credentials can be supplied via environment or a narrowly scoped authentication file, never by copying complete agent configuration.
 
+For prompt/skill behavior experiments, use `references/skill-ab-evaluation.md` and `scripts/skill_ab_compare.py` for repeated model-by-model baseline/candidate comparisons. This supplements rather than replaces correctness, artifact inspection and holdout validation.
+
 ## Decision
 
 Report baseline, variant measurements, relative/absolute delta, guardrails, caveats and the exact kept change. Do not overstate statistical confidence from tiny samples.

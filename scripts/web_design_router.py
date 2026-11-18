@@ -108,10 +108,10 @@ def route(
 
 def self_test()->None:
     refine=route("refine",["inspo"],["browser"],image_generation_available=True)
-    assert refine.director_model=="claude-opus-5-5" and refine.builder_model=="gpt-6.1-sol"
+    assert refine.director_model=="claude-opus-5-5" and refine.builder_model=="gpt-6.2-sol"
     assert refine.reviewer_model=="sonnet" and not refine.comp_enabled
     surface=route("surface",[],["browser"],image_generation_available=True)
-    assert surface.comp_enabled and surface.comp_generator_model=="gpt-6.1-sol"
+    assert surface.comp_enabled and surface.comp_generator_model=="gpt-6.2-sol"
     creative=route("surface",["inspo"],["browser"],creative=True,image_generation_available=True)
     assert creative.task_kind=="creative-web" and creative.builder_effort=="high"
     assert creative.reviewer_model=="claude-opus-5-5" and creative.creative_gate_required

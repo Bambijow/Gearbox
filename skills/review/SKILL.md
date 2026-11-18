@@ -14,7 +14,7 @@ For PRs, use immutable-base review policy via `references/review-policy-base.md`
 
 ## Scope
 
-Read repository instructions, relevant spec/issue/plan, final diff, changed files, direct dependencies, Review Focus, and current evidence pointers. Discover applicable review/standards files such as `CODING_STANDARDS.md`, `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, and nearest scoped equivalents rather than assuming one global rules file. Expand only on a concrete suspicion.
+Read repository instructions, relevant spec/issue/plan, final diff, changed files, direct dependencies, Review Focus, and current evidence pointers. Discover applicable review/standards files such as `CODING_STANDARDS.md`, `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, and nearest scoped equivalents rather than assuming one global rules file. For multiple applicable standards, use `references/scoped-standards.md`: rules accumulate, and the closest directory's rule wins only when same-authority coding standards conflict. Never let a nested file override higher-priority security, system, or immutable PR-base `REVIEW.md` policy. Expand only on a concrete suspicion.
 
 For a **standalone user-invoked** `/review`, perform the review in the current context; optional extra reviewers still pass `references/delegation-gate.md`.
 
