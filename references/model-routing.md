@@ -40,11 +40,11 @@ Game-asset task kinds bypass the ordinary economy/risk router. Resolve them with
 |---|---|---|
 | `asset-image` | Codex `gpt-6.2-sol` / medium | direct model generation |
 | `pixel-art` | Codex `gpt-6.2-sol` / medium | prefer live Aseprite MCP; direct Sol fallback |
-| `model-3d` | Claude `claude-opus-5-5` / high directs; Codex `gpt-6.2-sol` / high may execute | Blender/Godot on either provider; Codex delegation when useful/required |
-| `motion-design` | Claude `claude-opus-5-5` / high directs; Codex `gpt-6.2-sol` / high may execute | Blender/Godot/Aseprite on either provider |
+| `model-3d` | Claude `claude-opus-5-5` / high directs; Codex `gpt-6.2-astra` / high executes | Blender/Godot required on Codex; independent Astra review |
+| `motion-design` | Claude `claude-opus-5-5` / high directs; Codex `gpt-6.2-astra` / high for `--three-d`, otherwise Sol | 3D requires Blender/Godot on Codex; non-3D may use other capabilities |
 | `review-3d` | Codex `gpt-6.2-astra` / high, read-only | Blender or Godot must be available to Codex |
 
-These specialist identities bypass ordinary economy routing. For `model-3d` and `motion-design`, Opus remains the director/acceptance owner while the specialist router may explicitly delegate bounded tool execution to Codex Sol, including the full concrete Blender/Godot pass when that capability exists only on Codex. This is declared delegation, not a silent fallback. If neither provider can supply the needed tool surface, return `GAME_ASSET_ROUTE_BLOCKED`.
+These specialist identities bypass ordinary economy routing. For `model-3d` and `motion-design --three-d`, Opus remains the director/acceptance owner but Codex Astra/high is the mandatory substantive execution worker, with a live Codex Blender/Godot capability. For non-3D motion, Sol remains eligible. This is a forced specialist route, not ordinary frontier escalation. Missing 3D capability on Codex returns `GAME_ASSET_ROUTE_BLOCKED`, even when Claude has a tool. Run independent Astra review for 3D assets.
 
 A completed `model-3d` task always receives the dedicated `review-3d` Astra gate before asset readiness. When the same task also changes product code, the normal code/task review policy still applies to that code; the 3D gate is additional.
 

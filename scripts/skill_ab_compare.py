@@ -68,7 +68,7 @@ def self_test():
     for n in range(1, 4):
         for arm in ("baseline", "candidate"):
             rows.append(dict(arm=arm, provider="codex", model="gpt-6.2-sol",
-                             effort="medium", scenario="safe", repeat=n, pass=True,
+                             effort="medium", scenario="safe", repeat=n, **{"pass": True},
                              negative_control=True, artifacts_verified=True,
                              isolation="private-home-and-provider-config", evidence=f"receipt-{arm}-{n}.json"))
     data = dict(schema_version=1, baseline_sha=sha0, candidate_sha=sha1, observations=rows)

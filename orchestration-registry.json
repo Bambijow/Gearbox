@@ -72,7 +72,7 @@
         "review_engine": "codex",
         "review_model": "gpt-6.2-astra",
         "delegate_engine": "codex",
-        "delegate_model": "gpt-6.2-sol",
+        "delegate_model": "gpt-6.2-astra",
         "delegate_effort": "high"
       },
       "motion-design": {
