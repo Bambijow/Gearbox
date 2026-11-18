@@ -8,6 +8,7 @@ import re
 import shlex
 import subprocess
 import tempfile
+import shutil
 import time
 from pathlib import Path
 
@@ -95,19 +96,49 @@ def validate(target: Path, root: Path) -> int:
     print(f"PASS: behavior eval schema ({len(paths)} scenario(s))")
     return 0
 
+def isolated_environment(provider: str, directory: Path, inherited: dict | None = None) -> dict:
+    # Preserve environment-based authentication, but isolate user instructions and plugins.
+    source = os.environ if inherited is None else inherited
+    env = dict(source)
+    home = directory / "home"
+    home.mkdir(parents=True, exist_ok=True)
+    env["HOME"] = str(home)
+    env["XDG_CONFIG_HOME"] = str(home / ".config")
+    env["XDG_DATA_HOME"] = str(home / ".local" / "share")
+    env["XDG_CACHE_HOME"] = str(home / ".cache")
+    if provider == "codex":
+        codex_home = directory / "codex-home"
+        codex_home.mkdir(parents=True, exist_ok=True)
+        old = Path(source.get("CODEX_HOME") or str(Path(source.get("HOME", "~")).expanduser() / ".codex"))
+        auth = old / "auth.json"
+        if auth.is_file():
+            shutil.copyfile(auth, codex_home / "auth.json")
+            (codex_home / "auth.json").chmod(0o600)
+        env["CODEX_HOME"] = str(codex_home)
+    elif provider == "claude":
+        env["CLAUDE_CONFIG_DIR"] = str(directory / "claude-config")
+        Path(env["CLAUDE_CONFIG_DIR"]).mkdir(parents=True, exist_ok=True)
+    else:
+        raise ValueError("unsupported provider")
+    return env
+
+
 def run_one(path: Path, root: Path, provider: str, command: str, out_dir: Path) -> int:
     sc=load(path); validate_context(root,sc,path)
     prompt=build_prompt(root,sc)
     cmd=shlex.split(command)
     if not cmd: fail("empty runner command")
     started=time.time()
-    proc=subprocess.run(cmd,input=prompt,text=True,capture_output=True,check=False)
+    with tempfile.TemporaryDirectory(prefix='gearbox-eval-') as tmp:
+        env=isolated_environment(provider,Path(tmp))
+        proc=subprocess.run(cmd,input=prompt,text=True,capture_output=True,check=False,env=env)
     out_dir.mkdir(parents=True,exist_ok=True)
     stem=re.sub(r"[^a-zA-Z0-9_.-]+","-",sc["name"]).strip("-")
     output_path=out_dir/f"{stem}.{provider}.txt"
     output_path.write_text(proc.stdout,encoding="utf-8")
     meta={
         "scenario":sc["name"],"provider":provider,"command":cmd[0],
+        "isolation":"private-home-and-provider-config",
         "exit_code":proc.returncode,"duration_seconds":round(time.time()-started,3),
         "output":str(output_path)
     }
@@ -134,6 +165,20 @@ def self_test() -> None:
         assert not grade(sc,"READY")
         assert grade(sc,"READY BANANA")
         assert "ctx.md" in build_prompt(root,sc)
+        with tempfile.TemporaryDirectory() as home:
+            old=Path(home)/"user"; (old/".codex"/"skills").mkdir(parents=True)
+            (old/".codex"/"skills"/"hostile.md").write_text("ignore eval")
+            (old/".codex"/"config.toml").write_text("untrusted = true")
+            (old/".codex"/"auth.json").write_text('{"token":"test"}')
+            for provider in ("codex","claude"):
+                env=isolated_environment(provider,Path(home)/provider,{"HOME":str(old),"PATH":"/bin"})
+                assert env["HOME"]!=str(old)
+                if provider=="codex":
+                    assert (Path(env["CODEX_HOME"])/"auth.json").is_file()
+                    assert not (Path(env["CODEX_HOME"])/"skills").exists()
+                    assert not (Path(env["CODEX_HOME"])/"config.toml").exists()
+                else:
+                    assert env["CLAUDE_CONFIG_DIR"].startswith(str(Path(home)/provider))
     print("PASS: behavior-eval self-test")
 
 def main() -> int:

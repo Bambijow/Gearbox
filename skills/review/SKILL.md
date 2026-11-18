@@ -54,6 +54,8 @@ In addition to ordinary correctness, flag these when the diff provides concrete 
 
 These are review findings only when tied to real scope/maintenance cost, not aesthetic minimalism.
 
+Use `references/state-writer-review.md` for state.
+
 ## Verification audit
 
 Map each acceptance criterion to executable/manual evidence. Valid exact-SHA evidence is proof to inspect, not a reason to rerun the same suite. Rerun only for a freshness/scope/legibility gap or when a finding challenges that evidence seam.

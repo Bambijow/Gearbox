@@ -46,3 +46,7 @@ Mark the child completed/failed/cancelled when the host result is known. Child l
 On `/resume`, reconcile `children.json` and query the stored dispatch fingerprint before redispatching pending work. A non-empty expected artifact may prove a child finished even if the previous controller died before recording its return.
 
 This registry does not replace provider-native process supervision. It gives Gearbox a durable reconciliation surface across harnesses.
+
+## Worktree repository identity
+
+Before worktree create/remove, apply `references/worktree-repo-identity.md`: pass the persisted approved project repository to `--expected-repo`, and block mismatches. Never let the helper default to the plugin repository.
