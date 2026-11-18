@@ -6,13 +6,15 @@ argument-hint: "[run-id|issue|PR|session] [--bundle]"
 
 # Retrospect on the engineering environment
 
-The user wants to improve the **next** engineering run, not reopen the feature that just shipped. Apply `references/agent-writing.md` before recommending edits to `CLAUDE.md`, `AGENTS.md`, skills or other agent-facing docs.
+Improve the next run, not the shipped feature. Read `references/agent-writing.md` before proposing agent-document changes.
 
 A retro studies the primary evidence of a session/run and asks:
 
 > What made the agent slower, less reliable, more expensive, or more confused than it needed to be, and what durable change to the environment would prevent that next time?
 
 Do not turn this into another code review. Do not invent findings from vibes. Every recommendation needs evidence from the run. Cite the smallest useful source location as `path:line` for text or `path#json-pointer` / exact artifact field for structured data; do not write uncited forensic conclusions.
+
+Consult `references/retro-decision-ledger.md` for past decisions and verification evidence. Update only on request.
 
 For proactive retro selection (not an explicitly requested `/retro`), read `references/retro-sampling.md`. Sample successful runs sparingly and prioritize runs with repeated failures; selection alone must not start background agents.
 

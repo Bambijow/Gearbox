@@ -124,14 +124,14 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:dogfood <parcours>` | Avant livraison d'une UX, ou pour éprouver un produit comme un vrai utilisateur | Suit un persona et un parcours réels plutôt qu'une simple checklist de tests. Observe comportement, erreurs console/réseau, états vides/erreurs, accessibilité et frictions ; conserve captures et preuves ; distingue défaut fonctionnel, dette UX et polish. `--fix` délègue seulement les corrections acceptées. |
 | `/gearbox:test-harden <scope>` | Quand des tests verts protègent un invariant à fort coût d'échec | Complète le Test Credibility Gate par mutations ciblées, propriétés/invariants et fuzzing borné quand les outils du repo le permettent. Cherche surtout les tests qui survivent à une faute plausible ; ne transforme pas le coverage ou le mutation score en objectif vanity. |
 | `/gearbox:clean-tests [scope] [--apply]` | Quand une suite historique contient doublons, anciens tests ou cas devenus peu utiles | Audit indépendant via `test-curator`. Classe `KEEP/MERGE/DELETE/REWRITE/BLOCKED`, exige une preuve de comportement/invariant avant toute suppression, et reste report-only sans `--apply`. Avec `--apply`, ne modifie que tests/fixtures/helpers de test puis rerun les checks ciblés. |
-| `/gearbox:asset-image <brief>` | Créer une image 2D game-ready hors pixel art | Route forcée vers Codex GPT-6.1 Sol. Le brief fixe dimensions, alpha, art direction, cible moteur et chemins source/export ; aucun fallback Claude n'est autorisé. |
-| `/gearbox:pixel-art <brief>` | Sprites, tiles, icons ou animation pixel art | Route forcée Codex GPT-6.1 Sol. Utilise Aseprite MCP quand disponible ; sinon fallback génération directe Sol, avec dimensions/palette/frames vérifiées. |
-| `/gearbox:model-3d <brief>` | Créer un modèle/prop/scène 3D game-ready | Opus 5.5/high garde la direction, les choix de silhouette/topologie/rig et l'acceptation. Il peut déléguer à Codex GPT-6.1 Sol des opérations Blender/Godot bornées, ou le tool pass concret si le MCP n'existe que côté Codex. Chaque asset passe ensuite obligatoirement le gate `/gearbox:review-3d`. |
-| `/gearbox:motion-design <brief>` | UI motion, caméra, boucles, animated props, transitions ou animation 2D/3D | Opus 5.5 dirige timing, hiérarchie et mouvement. Codex GPT-6.1 Sol peut exécuter les keyframes/curves/export/wiring via Blender, Godot ou Aseprite. Les motions qui modifient un asset/rig 3D passent aussi par la review Astra. |
+| `/gearbox:asset-image <brief>` | Créer une image 2D game-ready hors pixel art | Route forcée vers Codex GPT-6.2 Sol. Le brief fixe dimensions, alpha, art direction, cible moteur et chemins source/export ; aucun fallback Claude n'est autorisé. |
+| `/gearbox:pixel-art <brief>` | Sprites, tiles, icons ou animation pixel art | Route forcée Codex GPT-6.2 Sol. Utilise Aseprite MCP quand disponible ; sinon fallback génération directe Sol, avec dimensions/palette/frames vérifiées. |
+| `/gearbox:model-3d <brief>` | Créer un modèle/prop/scène 3D game-ready | Opus 5.5/high garde la direction, les choix de silhouette/topologie/rig et l'acceptation. La production 3D substantielle est confiée à Codex GPT-6.2 Astra/high avec Blender/Godot disponible côté Codex. Chaque asset passe ensuite obligatoirement le gate `/gearbox:review-3d`. |
+| `/gearbox:motion-design <brief>` | UI motion, caméra, boucles, animated props, transitions ou animation 2D/3D | Opus 5.5 dirige timing, hiérarchie et mouvement. Codex GPT-6.2 Astra/high exécute les animations 3D via Blender/Godot ; Sol reste possible pour les animations non-3D. Les motions qui modifient un asset/rig 3D passent aussi par la review Astra. |
 | `/gearbox:simplify [diff]` | Après intégration, pour réduire le code | Lance un agent frais de simplification. Utilise Ponytail s'il est installé ; sinon applique la discipline interne Gearbox : supprimer duplication, wrappers et abstractions inutiles, préférer stdlib/framework/existant, conserver validation, sécurité et accessibilité. Rejoue ensuite les checks nécessaires. |
 | `/gearbox:review [diff-ou-PR]` | Pour une review indépendante | Vérifie spec/correctness/sécurité/tests/opérations et calibre les findings par failure path + failure cost. Dans la boucle orchestrée, la review finale est routée `lite / focused / full` selon la conséquence : pas de nouveau reviewer si les task reviews suffisent, un adversarial reviewer pour le risque silencieux, spine complète uniquement sur les frontières à fort impact. |
 | `/gearbox:security-audit <scope>` | Pour auth, permissions, secrets, crypto, parsers, uploads, désérialisation, données sensibles ou autre frontière de confiance | Construit un mini threat model, cartographie entrées/trust boundaries/actifs, inspecte le diff et les appels adjacents, puis utilise les analyseurs disponibles (Semgrep/CodeQL/etc.) de façon ciblée. Les findings doivent décrire un chemin d'exploitation concret, l'impact et une preuve ; pas de pluie de best practices génériques. |
-| `/gearbox:review-3d <asset>` | Gate de production d'un asset 3D | Review read-only forcée GPT-6 Astra, avec Blender/Godot pour inspecter géométrie, transforms, UVs, matériaux, budgets, rig/collision/LOD et import moteur. Aucun downgrade Sol/Claude. |
+| `/gearbox:review-3d <asset>` | Gate de production d'un asset 3D | Review read-only forcée GPT-6.2 Astra, avec Blender/Godot pour inspecter géométrie, transforms, UVs, matériaux, budgets, rig/collision/LOD et import moteur. Aucun downgrade Sol/Claude. |
 | `/gearbox:learn <leçon>` | Après une découverte non évidente qui mérite d'être conservée | Écrit/réconcilie `docs/solutions/` et peut ajouter `retire_when` quand la guidance dépend d’un bug/version/service externe. Régénère l’index puis passe l’audit déterministe de frontmatter/index. |
 | `/gearbox:clean-solutions [scope]` | Maintenance périodique de `docs/solutions/` | Audite métadonnées/index, vérifie en priorité les `retire_when` satisfaits, puis confronte la mémoire au code/tests/specs/ADRs. Classe en `KEEP`, `REFRESH`, `MERGE`, `DELETE` ou `BLOCKED`. `--dry-run` reste disponible. |
 | `/gearbox:skill-doctor [scope]` | Quand le plugin/CLAUDE.md/AGENTS.md commence à accumuler règles, skills ou prompts | Audite triggers et descriptions, collisions/recouvrements, taille des prompts, progressive disclosure, références mortes, règles qui devraient devenir déterministes et trous d'evals. Préfère fusionner/réduire avant d'ajouter une nouvelle skill. `--fix` applique uniquement les remèdes bornés et vérifiables. |
@@ -506,7 +506,7 @@ Codex Sol comp pass (surface/redesign when available)
           ↓
 Opus approval
           ↓
-Codex GPT-6.1 Sol implementation
+Codex GPT-6.2 Sol implementation
           ↓
 desktop + mobile renders
           ↓
@@ -523,16 +523,16 @@ Quand la génération image est disponible, `surface`/`redesign` passe par une p
 
 Gearbox possède désormais des lanes d'assets et de conception de jeu :
 
-- image 2D : Codex GPT-6.1 Sol ;
-- pixel art : Codex GPT-6.1 Sol + Aseprite MCP quand disponible, sinon génération directe Sol ;
-- modélisation 3D : Opus 5.5 dirige, Codex Sol peut exécuter des opérations Blender/Godot bornées ;
-- motion design : Opus 5.5 dirige timing/mouvement, Codex Sol peut exécuter via Blender/Godot/Aseprite ;
-- review 3D : Codex GPT-6 Astra/high en read-only ;
+- image 2D : Codex GPT-6.2 Sol ;
+- pixel art : Codex GPT-6.2 Sol + Aseprite MCP quand disponible, sinon génération directe Sol ;
+- modélisation 3D : Opus 5.5 dirige, Codex GPT-6.2 Astra/high exécute avec Blender/Godot côté Codex ;
+- motion design : Opus 5.5 dirige, Codex GPT-6.2 Astra/high pour la 3D, Sol pour le non-3D ;
+- review 3D : Codex GPT-6.2 Astra/high en read-only ;
 - art direction : Opus 5.5 maintient la cohérence cross-media ;
 - audio design : Opus dirige, Codex câble les outils réellement disponibles ;
 - level design : Opus dirige, Codex blockoute, PLAYTEST_GATE tranche.
 
-Les identités spécialistes ne sont pas remplacées par le routing économique. Quand seul Codex possède le MCP 3D/animation, Gearbox utilise une délégation explicite Opus→Codex plutôt qu'un fallback silencieux. Un asset 3D reste soumis à la review Astra.
+Les identités spécialistes ne sont pas remplacées par le routing économique. Pour la 3D, Gearbox exige Blender/Godot sur Codex et route l'exécution substantielle vers Astra, même si Claude possède aussi un MCP. Un asset 3D reste soumis à la review Astra.
 
 ## Capability-aware execution
 
@@ -553,11 +553,11 @@ Le registre par défaut reste volontairement petit :
 | Niveau | Modèle | Usage typique |
 | --- | --- | --- |
 | `bounded` | GPT-6 Luna | docs, changelog, mapping, fixtures, renommages, wiring simple |
-| `normal` | GPT-6.1 Sol | feature/bug normal, implémentation bornée multi-fichiers |
-| `deep` | GPT-6.1 Sol avec effort plus élevé | migrations, auth, concurrence, invariants de persistance, debug difficile |
-| `exceptional` | GPT-6 Astra | uniquement après vraie escalade ou cas exceptionnellement critique/ambigu |
+| `normal` | GPT-6.2 Sol | feature/bug normal, implémentation bornée multi-fichiers |
+| `deep` | GPT-6.2 Sol avec effort plus élevé | migrations, auth, concurrence, invariants de persistance, debug difficile |
+| `exceptional` | GPT-6.2 Astra | uniquement après vraie escalade ou cas exceptionnellement critique/ambigu |
 
-Astra n'est pas choisi simplement parce qu'une tâche est « importante ». Gearbox augmente d'abord l'effort de Sol. Les tâches triviales ont un plafond dur qui les empêche d'atteindre Astra.
+Hors routes spécialistes forcées (notamment production et review 3D), Astra n'est pas choisi simplement parce qu'une tâche est « importante ». Gearbox augmente d'abord l'effort de Sol. Les tâches triviales ont un plafond dur qui les empêche d'atteindre Astra.
 
 ### Review croisée en mode hybrid
 

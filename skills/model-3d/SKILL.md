@@ -1,6 +1,6 @@
 ---
 name: model-3d
-description: "Create game-ready 3D assets under Claude Opus 5.5 direction. Opus owns art direction/topology decisions; bounded modeling/tool execution may be delegated to Codex GPT-6.1 Sol when useful or when Blender/Godot is available only to Codex."
+description: "Create game-ready 3D assets under Claude Opus 5.5 direction. Opus owns art direction/topology decisions; substantive modeling/tool execution is always delegated to Codex GPT-6.2 Astra/high with Blender/Godot capability on Codex."
 argument-hint: "[brief/spec/scope] [--apply]"
 ---
 
@@ -18,12 +18,12 @@ model: claude-opus-5-5
 effort: high
 ```
 
-Codex GPT-6.1 Sol/high may execute bounded modeling/tool work when useful, and may perform the concrete Blender/Godot tool pass when the required MCP is available only to Codex. That delegation does not transfer art direction, topology/rig architecture, ambiguous silhouette choices or final acceptance away from Opus.
+Codex GPT-6.2 Astra/high MUST execute substantive 3D modeling, including Blender/Godot operations, topology, UVs, rigging and export. A live Codex Blender/Godot capability is mandatory even if Claude also has one. This execution ownership does not transfer art direction or final acceptance away from Opus. Sol can handle separately scoped trivial metadata/rename work only.
 
-Actual modeling requires Blender or Godot on at least one provider. If neither can access a credible 3D tool surface, return `GAME_ASSET_ROUTE_BLOCKED`.
+Actual modeling requires Blender or Godot on Codex. If Codex cannot access a credible 3D tool surface, return `GAME_ASSET_ROUTE_BLOCKED`, even if Claude can.
 
 The task packet must pin engine target, scale/unit convention, source/export format, poly/triangle budget, texture/material budget, pivot/origin, UV expectations, collision/LOD/rigging needs, naming and destination paths.
 
-Use `model-3d-opus` as director/owner. Good Codex delegation includes repetitive geometry, exact-dimension blockout, UV/material operations, collision/LOD generation, export/bake and other mechanically specified tool work. Opus inspects delegated artifacts before acceptance.
+Use `model-3d-opus` as director/owner. Astra execution includes all substantive geometry, exact-dimension blockout, topology/rig work, UV/material operations, collision/LOD generation, export/bake and tool work. Opus inspects delegated artifacts before acceptance.
 
-Every completed `model-3d` artifact MUST pass the specialized `review-3d` GPT-6 Astra gate before being asset-ready. That review supplements normal code review when the task also changes runtime code.
+Every completed `model-3d` artifact MUST pass a fresh independent specialized `review-3d` GPT-6.2 Astra gate before being asset-ready. That review supplements normal code review when the task also changes runtime code.

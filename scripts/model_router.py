@@ -102,8 +102,8 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("--verification", default="strong", choices=VERIFICATION)
     p.add_argument("--failed-attempts", type=int, default=0)
     p.add_argument("--luna-model", default="gpt-6-luna")
-    p.add_argument("--sol-model", default="gpt-6.1-sol")
-    p.add_argument("--astra-model", default="gpt-6-astra")
+    p.add_argument("--sol-model", default="gpt-6.2-sol")
+    p.add_argument("--astra-model", default="gpt-6.2-astra")
     p.add_argument("--force-frontier", action="store_true")
     p.add_argument("--frontier-high", action="store_true", help="Allow Astra/high on an already frontier-worthy task.")
     p.add_argument("--json", action="store_true")
@@ -115,9 +115,9 @@ def self_test() -> None:
     p = parser()
     cases = [
         (["--task-kind", "docs", "--risk", "critical", "--ambiguity", "high", "--breadth", "broad", "--verification", "weak"], "gpt-6-luna", "low_or_medium"),
-        (["--task-kind", "feature", "--risk", "medium", "--ambiguity", "low", "--breadth", "moderate", "--verification", "strong"], "gpt-6.1-sol", "medium"),
-        (["--task-kind", "migration", "--risk", "high", "--ambiguity", "medium", "--breadth", "broad", "--verification", "weak"], "gpt-6.1-sol", "high"),
-        (["--task-kind", "debug", "--risk", "high", "--ambiguity", "high", "--breadth", "broad", "--verification", "weak", "--failed-attempts", "2"], "gpt-6-astra", "medium"),
+        (["--task-kind", "feature", "--risk", "medium", "--ambiguity", "low", "--breadth", "moderate", "--verification", "strong"], "gpt-6.2-sol", "medium"),
+        (["--task-kind", "migration", "--risk", "high", "--ambiguity", "medium", "--breadth", "broad", "--verification", "weak"], "gpt-6.2-sol", "high"),
+        (["--task-kind", "debug", "--risk", "high", "--ambiguity", "high", "--breadth", "broad", "--verification", "weak", "--failed-attempts", "2"], "gpt-6.2-astra", "medium"),
     ]
     for argv, model, effort in cases:
         a = p.parse_args(argv)

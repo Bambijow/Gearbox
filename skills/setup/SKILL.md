@@ -19,7 +19,7 @@ Read `references/capability-routing.md`; for REA setup use `references/rea-integ
 
 ## Model preflight
 
-If the user has not already stated a preference, ask once which worker policy to persist: `auto`, `hybrid` (recommended), `claude-heavy`, `codex-heavy`, or `custom`. For custom policy, record allowed Claude model aliases/full IDs, allowed Codex model IDs, and any role constraints. The preferred Codex registry is intentionally small: GPT-6 Luna for cheap bounded work, GPT-6.1 Sol for normal/deep engineering with effort scaling, and GPT-6 Astra only for exceptional escalation. Verify or adjust the exact CLI model IDs if the local Codex installation exposes different identifiers. Do not silently fall back to Codex's default model. The main Claude session remains the control-plane orchestrator; task routes are chosen later from risk/complexity. During orchestrated runs it does not author product code. Read `references/control-plane.md`.
+If the user has not already stated a preference, ask once which worker policy to persist: `auto`, `hybrid` (recommended), `claude-heavy`, `codex-heavy`, or `custom`. For custom policy, record allowed Claude model aliases/full IDs, allowed Codex model IDs, and any role constraints. The preferred Codex registry is intentionally small: GPT-6 Luna for cheap bounded work, GPT-6.2 Sol (`gpt-6.2-sol`) for normal/deep engineering with effort scaling, and GPT-6.2 Astra (`gpt-6.2-astra`) only for exceptional escalation. Verify or adjust the exact CLI model IDs if the local Codex installation exposes different identifiers. Do not silently fall back to Codex's default model. The main Claude session remains the control-plane orchestrator; task routes are chosen later from risk/complexity. During orchestrated runs it does not author product code. Read `references/control-plane.md`.
 
 ## Config
 
@@ -51,8 +51,8 @@ claude_models:
   deep: opus
 codex_models:
   economy: gpt-6-luna
-  standard: gpt-6.1-sol
-  frontier: gpt-6-astra
+  standard: gpt-6.2-sol
+  frontier: gpt-6.2-astra
 allow_codex_default_model: false
 codex_frontier_policy: escalation-or-exceptional
 capability_routing: enabled
