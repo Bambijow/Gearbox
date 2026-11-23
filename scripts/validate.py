@@ -60,8 +60,8 @@ def parse_frontmatter(path: Path) -> dict[str, str]:
         fail(f"invalid YAML frontmatter in {path}: {exc}")
     if not isinstance(fields, dict):
         fail(f"frontmatter must be a mapping in {path}")
-    for key, value in fields.items():
-        if not isinstance(value, str):
+    for key in ("name", "description"):
+        if key in fields and not isinstance(fields[key], str):
             fail(f"{path}: {key} must be a string")
     return fields
 
