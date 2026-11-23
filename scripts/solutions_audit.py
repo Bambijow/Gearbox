@@ -63,6 +63,14 @@ def audit(root: Path, strict: bool, check_index: bool, allow_missing: bool) -> t
                     errors.append(f"{rel}: invalid last_verified date")
         if fm.get("verified_against") and not SHA_RE.match(fm["verified_against"]):
             warnings.append(f"{rel}: verified_against is not a git SHA")
+        if fm.get("status") and fm["status"] not in {"active", "stale"}:
+            errors.append(f"{rel}: invalid status")
+        if fm.get("status") == "stale":
+            if not fm.get("stale_reason") or not fm.get("stale_checked"):
+                errors.append(f"{rel}: stale needs stale_reason and stale_checked")
+            else:
+                try: date.fromisoformat(fm["stale_checked"])
+                except ValueError: errors.append(f"{rel}: invalid stale_checked date")
         if "retire_when" in fm and not fm["retire_when"].strip():
             errors.append(f"{rel}: retire_when must be a non-empty scalar when present")
         title=fm.get("title")

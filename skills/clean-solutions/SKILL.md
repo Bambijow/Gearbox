@@ -37,7 +37,7 @@ Use the repository source-of-truth order from `references/artifact-contract.md`,
 
 Do not deep-read the whole corpus by default.
 
-1. Run `scripts/solutions_audit.py` when available, then inventory `docs/solutions/` cheaply: filenames, titles, tags, index entries, `retire_when` triggers, pointers, and git last-change metadata when useful.
+1. Run `scripts/solutions_audit.py` and `scripts/solution_refs.py --dir docs/solutions --repo-root <target-worktree>` to check stable code pointers against the intended merge target, then inventory `docs/solutions/` cheaply: filenames, titles, tags, index entries, `retire_when` triggers, pointers, and git last-change metadata when useful.
 2. Search for obvious invalidation signals: satisfied `retire_when` conditions, missing referenced paths/symbols, duplicate domain terms, newer related notes, removed subsystems, changed config keys, and broken links. Retirement triggers are priority candidates because they name exactly what changed; verify the condition before acting.
 3. Group candidates by domain.
 4. Deep-read only the suspect notes plus the minimum current code/tests/specs/ADRs needed to establish truth.

@@ -31,6 +31,8 @@ Before interpreting a forced mutant, prove the mutation was actually applied by 
 
 A surviving meaningful mutant means the existing tests failed to distinguish a plausible wrong program. Equivalent mutants and impossible states should be documented and excluded, not "killed" with brittle assertions.
 
+For auth, money, state and data-integrity flows with multiple independent guards, use `references/independent-guard-proof.md` and validate per-guard evidence. Combined mutants do not prove each guard is protected.
+
 Run the smallest supported mutation scope. Repository-wide mutation by default is wasteful.
 
 ## Property-based testing

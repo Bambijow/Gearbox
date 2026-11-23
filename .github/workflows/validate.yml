@@ -17,6 +17,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install strict YAML validation dependency
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Strict frontmatter parser self-test
+        run: python3 scripts/validate.py --self-test
       - name: Validate plugin structure
         run: python3 scripts/validate.py
       - name: Compile runtime scripts
@@ -111,12 +115,18 @@ jobs:
         run: python3 scripts/child_jobs.py --self-test
       - name: Usage ledger self-test
         run: python3 scripts/usage_ledger.py --self-test
+      - name: Guard mutation evidence self-test
+        run: python3 scripts/guard_mutation_proof.py --self-test
+      - name: Solution reference audit self-test
+        run: python3 scripts/solution_refs.py --self-test
       - name: Solution memory audit self-test
         run: python3 scripts/solutions_audit.py --self-test
       - name: Retro bundle self-test
         run: python3 scripts/retro_bundle.py --self-test
       - name: Gearbox repository solution audit
         run: python3 scripts/solutions_audit.py --dir docs/solutions --strict --check-index --allow-missing
+      - name: Validate solution code pointers
+        run: python3 scripts/solution_refs.py --dir docs/solutions --repo-root . --allow-missing --strict
       - name: Runtime integration and regression tests
         run: python3 -m unittest discover -s tests -v
       - name: Package plugin ZIP
