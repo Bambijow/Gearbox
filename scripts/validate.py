@@ -4,6 +4,11 @@ from __future__ import annotations
 import json
 import re
 import sys
+
+try:
+    import yaml
+except ImportError as exc:
+    raise SystemExit('Install validation dependencies: pip install -r requirements-dev.txt') from exc
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,22 +30,57 @@ def load_json(path: Path):
         fail(f"invalid JSON in {path.relative_to(ROOT)}: {exc}")
 
 
+class StrictLoader(yaml.SafeLoader):
+    pass
+
+def unique_mapping(loader, node):
+    result = {}
+    for key_node, value_node in node.value:
+        key = loader.construct_object(key_node, deep=True)
+        if not isinstance(key, str) or key in result:
+            raise yaml.constructor.ConstructorError(
+                None, None, f"non-string or duplicate key: {key}", key_node.start_mark)
+        result[key] = loader.construct_object(value_node, deep=True)
+    return result
+
+StrictLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, unique_mapping)
+
 def parse_frontmatter(path: Path) -> dict[str, str]:
-    text = path.read_text()
-    if not text.startswith("---\n"):
-        fail(f"missing YAML frontmatter in {path.relative_to(ROOT)}")
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    if not lines or lines[0] != "---":
+        fail(f"missing YAML frontmatter in {path}")
     try:
-        block = text.split("---\n", 2)[1]
-    except IndexError:
-        fail(f"unterminated frontmatter in {path.relative_to(ROOT)}")
-    fields: dict[str, str] = {}
-    for line in block.splitlines():
-        if not line.strip() or line.startswith(" ") or ":" not in line:
-            continue
-        key, value = line.split(":", 1)
-        fields[key.strip()] = value.strip().strip('"').strip("'")
+        closing = lines.index("---", 1)
+    except ValueError:
+        fail(f"unterminated YAML frontmatter in {path}")
+    try:
+        fields = yaml.load("\n".join(lines[1:closing]), Loader=StrictLoader)
+    except yaml.YAMLError as exc:
+        fail(f"invalid YAML frontmatter in {path}: {exc}")
+    if not isinstance(fields, dict):
+        fail(f"frontmatter must be a mapping in {path}")
+    for key in ("name", "description"):
+        if key in fields and not isinstance(fields[key], str):
+            fail(f"{path}: {key} must be a string")
     return fields
 
+def self_test_frontmatter() -> None:
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        path = Path(td) / "SKILL.md"
+        path.write_text('---\nname: demo\ndescription: "Use: colon safely"\n---\n')
+        assert parse_frontmatter(path)["description"] == "Use: colon safely"
+        for bad in ("---\nname: a\nname: b\n---\n", "---\nname: [a, b]\n---\n",
+                    "---\ndescription: [bad\n---\n", "---\nname: no-close\n"):
+            path.write_text(bad)
+            try:
+                parse_frontmatter(path)
+            except SystemExit as exc:
+                assert exc.code == 1
+            else:
+                raise AssertionError("malformed YAML accepted")
+    print("PASS: strict-frontmatter self-test")
 
 def validate_agents() -> int:
     count = 0
@@ -115,6 +155,9 @@ def validate_hooks() -> int:
     return sum(len(v) for v in hooks.values() if isinstance(v, list))
 
 def main() -> int:
+    if '--self-test' in sys.argv[1:]:
+        self_test_frontmatter()
+        return 0
     plugin_path = ROOT / ".claude-plugin" / "plugin.json"
     market_path = ROOT / ".claude-plugin" / "marketplace.json"
     plugin = load_json(plugin_path)

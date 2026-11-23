@@ -1,0 +1,5 @@
+# Verified solution code pointers
+
+For code-specific notes in `docs/solutions/`, optionally record `code_refs: [path/to/file.py::Class.method]` in frontmatter. Prefer stable paths and symbols over line numbers. `scripts/solution_refs.py --dir docs/solutions --repo-root <target-worktree> --strict` verifies that the symbols exist in the **intended merge target**. It reads files without mutating the notes. Only Python AST symbols are supported initially.
+
+A missing reference makes the note a *verification candidate*, not automatically false. Check the current code, tests, accepted spec/ADR and newer solutions. When contradicted, revise/merge/delete the note or explicitly mark `status: stale`, `stale_reason: <concrete evidence>`, and `stale_checked: YYYY-MM-DD` until resolved. Do not classify notes stale merely because their verification SHA or date is old. `scripts/solutions_audit.py` validates stale metadata, and `/clean-solutions` owns evidence-based reconciliation. CI checks only declared code pointers; it does not claim the factual content of notes has been independently verified.

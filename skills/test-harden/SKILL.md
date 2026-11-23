@@ -15,7 +15,8 @@ Read `references/test-hardening.md` and `references/test-credibility.md`. Detect
 1. Name the invariant and the tests that claim to protect it.
 2. Pick a small set of plausible mutations from the actual implementation seam.
 3. Run mutations only against the bounded target when tooling permits.
-4. Treat surviving meaningful mutants as evidence of a test gap, not automatically a product bug.
+4. For independent critical guards, prove each guard's removal separately causes the intended test to fail. See `references/independent-guard-proof.md` and `scripts/guard_mutation_proof.py`. A combined mutant is insufficient.
+5. Treat surviving meaningful mutants as a test gap, not automatically a product bug.
 5. Add property/invariant tests when examples under-specify a rule.
 6. Use fuzzing only where generated inputs exercise a meaningful parser/state/input space and a bounded oracle exists.
 7. Re-run the ordinary targeted suite after hardening.

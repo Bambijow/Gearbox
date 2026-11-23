@@ -52,10 +52,14 @@ tags: [domain, subsystem]
 areas: [relevant/path/**]
 verified_against: <current git sha>
 last_verified: <YYYY-MM-DD>
+# Optional stable source pointers:
+code_refs: [src/example.py::Class.method]
 # Optional only when an external/version condition can make this guidance obsolete:
 retire_when: <outside change that retires this note + how to verify it>
 ---
 ```
+
+For code-specific guidance include `code_refs` and run `python3 scripts/solution_refs.py --dir docs/solutions --repo-root <target-worktree> --strict`. Verify against the intended merge target, not a stale local branch. Missing symbols and changed files are review signals; do not infer that an old note is false just from age. Use `status: stale`, `stale_reason`, and `stale_checked` only with concrete contradictory evidence.
 
 ## Retirement conditions
 
