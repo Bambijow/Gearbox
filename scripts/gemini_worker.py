@@ -12,8 +12,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = {
-    "implementation": ROOT / "references/codex-implementation-result.schema.json",
-    "review": ROOT / "references/codex-review-result.schema.json",
+    "implementation": ROOT / "references/worker-implementation-result.schema.json",
+    "review": ROOT / "references/worker-review-result.schema.json",
 }
 REQUIRED = {
     "implementation": {"status", "summary", "integration_base_sha", "head_sha",

@@ -11,7 +11,7 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA = ROOT / "references/codex-review-result.schema.json"
+SCHEMA = ROOT / "references/worker-review-result.schema.json"
 REQUIRED = {"status", "summary", "findings", "verification_gaps", "residual_risks"}
 
 
