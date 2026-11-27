@@ -91,7 +91,7 @@ def self_test():
       {"id":"A","kind":"analysis","provider":"claude","model":"sonnet","effort":"medium","context_fingerprint":"ctx","independent_judgment":False,"output_contract":"a"},
       {"id":"B","kind":"analysis","provider":"claude","model":"sonnet","effort":"medium","context_fingerprint":"ctx","independent_judgment":False,"output_contract":"b"},
       {"id":"C","kind":"review","provider":"claude","model":"sonnet","effort":"medium","context_fingerprint":"ctx","independent_judgment":True,"output_contract":"c"},
-      {"id":"D","kind":"implementation","provider":"codex","model":"gpt-6.1-sol","effort":"medium","context_fingerprint":"ctx","independent_judgment":False,"output_contract":"d"},
+      {"id":"D","kind":"implementation","provider":"gemini","model":"gpt-6.1-sol","effort":"medium","context_fingerprint":"ctx","independent_judgment":False,"output_contract":"d"},
     ]
     p=pack(tasks)
     fused=[x for x in p["dispatches"] if x["kind"]=="packed-read-only"]
