@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Explicit Gemini/Claude routing; no Codex fallback."""
+"""Explicit Gemini/Claude routing; no legacy provider fallback."""
 import argparse
 import json
 
@@ -48,7 +48,7 @@ def route(kind, risk="medium", complexity="medium", gemini=True, claude=True, ca
         "independent_review": bool(reviewer), "status": "BLOCKED" if blocked else "READY",
         "blocker": "provider/reviewer missing" if unavailable or unavailable_review else
             "Gemini Blender/Godot capability required" if blocked3d else None,
-        "policy": "No Codex and no silent provider fallback",
+        "policy": "No legacy provider and no silent provider fallback",
     }
 
 

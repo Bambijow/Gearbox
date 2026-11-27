@@ -31,6 +31,12 @@ def build(destination: Path):
     for folder in DIRS:
         if (ROOT / folder).is_dir():
             copytree(ROOT / folder, destination / folder)
+    # Skill examples use Claude's plugin-root variable in the shared source.
+    # Rewrite only the installed Gemini bundle, not the Claude Code source.
+    for skill in (destination / "skills").glob("*/SKILL.md"):
+        text = skill.read_text(encoding="utf-8")
+        skill.write_text(text.replace("${CLAUDE_PLUGIN_ROOT}", "${PLUGIN_ROOT}"), encoding="utf-8")
+
     for name in FILES:
         src = ROOT / name
         if src.is_file():
@@ -62,6 +68,7 @@ def self_test():
         assert (out / "plugin.json").is_file()
         assert (out / "skills" / "issue" / "SKILL.md").is_file()
         assert (out / "scripts" / "gemini_worker.py").is_file()
+        assert (out / "scripts" / "codex_worker.py").exists() is False
         assert len(list((out / "agents").glob("*.md"))) == 2
         assert "claude-opus" not in "\n".join(p.read_text() for p in (out / "agents").glob("*.md"))
         assert json.loads((out / "hooks.json").read_text())["gearbox-control-plane"]["enabled"]

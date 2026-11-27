@@ -4,7 +4,7 @@ The verified distribution path is built with `python3 scripts/build_antigravity.
 
 The native manifest in `.antigravity-plugin/plugin.json` is shared with the generated bundle. Claude Code's `.claude-plugin` stays separate. For active Gearbox workflows, verify `/hooks` includes `gearbox-control-plane` before dispatching work.
 
-Status: native manifest, safe packaging, Gemini/Claude router, Gemini headless worker and Antigravity hook adapter, all with offline self-tests. Full `/issue` / `/loop` / `/flow` control-plane integration, Claude cross-provider dispatch, and live MCP/capability preflight are not yet migrated. Those tasks return `MIGRATION_BLOCKED` on Antigravity rather than silently invoking Codex.
+Status: native manifest, safe packaging, Gemini/Claude router, Gemini headless worker and Antigravity hook adapter, all with offline self-tests. Full `/issue` / `/loop` / `/flow` control-plane integration, Claude cross-provider dispatch, and live MCP/capability preflight are not yet migrated. Those tasks return `MIGRATION_BLOCKED` on Antigravity rather than silently invoking previous provider.
 
 Run `agy models` to verify installed model slugs; no automatic fallback. Review 3D needs Blender/Godot live access on Gemini. Local authenticated Antigravity testing and denied-write hook tests are required before production use.
 
