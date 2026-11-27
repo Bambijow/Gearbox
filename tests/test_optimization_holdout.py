@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 import optimization_holdout as holdout
-from gemini_worker import build_command
+from gemini_worker import command
 
 class HoldoutTests(unittest.TestCase):
     def setUp(self):
@@ -27,11 +27,16 @@ class HoldoutTests(unittest.TestCase):
     def test_budget_breach_rejected(self):
         self.report["usage"]["attempts"]=3
         self.assertEqual(holdout.adjudicate(self.report)["decision"],"REJECT")
-    def test_gemini_isolated_command(self):
-        cmd=build_command(gemini_bin="gemini",worktree=Path("/tmp/worktree"),
-            schema=Path("/tmp/schema.json"),result=Path("/tmp/result.json"),
-            sandbox="read-only",ignore_user_config=True)
-        self.assertIn("--ignore-user-config",cmd)
+    def test_gemini_review_command_is_read_only(self):
+        cmd = command("agy", "Review only", "configured-model", Path("/tmp/schema.json"), "plan")
+        self.assertIn("plan", cmd)
+        self.assertNotIn("--dangerously-skip-permissions", cmd)
+        self.assertNotIn("--sandbox", cmd)
+
+    def test_gemini_implementation_uses_terminal_sandbox(self):
+        cmd = command("agy", "Implement", "configured-model", Path("/tmp/schema.json"), "auto", "high")
+        self.assertIn("--sandbox", cmd)
+        self.assertIn("--effort", cmd)
 
 if __name__=="__main__":
     unittest.main()
