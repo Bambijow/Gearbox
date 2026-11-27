@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Sanitized Gemini MCP configuration inventory and provider eligibility.
 
-Antigravity does not expose Codex-style live JSON inventory. A configured
+Antigravity does not expose a live machine-readable MCP inventory. A configured
 server is NOT proof that its tools are connected or authenticated.
 """
 from __future__ import annotations
