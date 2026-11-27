@@ -10,7 +10,7 @@ Read `references/control-plane.md` before dispatch. During this shared loop the 
 
 Every product mutation is delegated:
 
-- implementation and repair → routed Claude/Codex worker;
+- implementation and repair → routed Claude/Gemini worker;
 - accepted integration → `integrator`;
 - structural simplification → `ponytail-simplifier`;
 - durable solution memory → `knowledge-curator`;
@@ -21,9 +21,9 @@ The plugin `PreToolUse` guard enforces the main-thread boundary while orchestrat
 
 ## Capability-aware dispatch
 
-Read `references/capability-routing.md` and `references/orchestration-compilation.md`. Each DAG task carries `required_capabilities`. Specialist task kinds route through the unified `scripts/route_task.py` facade; it delegates dynamic behavior to the game/web/product-quality backends while `orchestration-registry.json` owns static model identities. `model-3d` and `motion-design` may record an explicit Opus→Codex execution delegate when Codex owns the required tool capability. Capability eligibility is resolved before model price/effort: do not dispatch a worker that cannot access a required external tool. For Codex, use a sanitized MCP inventory for planning and a live preflight immediately before launch; under the default policy expose only required MCPs to that worker. Before dispatch, fingerprint the exact base SHA + task packet + route + capability set and register it in `children.json`; a matching live/reusable child is reconciled rather than launched twice.
+Read `references/capability-routing.md` and `references/orchestration-compilation.md`. Each DAG task carries `required_capabilities`. Specialist task kinds route through the unified `scripts/route_task.py` facade; it delegates dynamic behavior to the game/web/product-quality backends while `orchestration-registry.json` owns static model identities. `model-3d` and `motion-design` may record an explicit Opus→Gemini execution delegate when Gemini owns the required tool capability. Capability eligibility is resolved before model price/effort: do not dispatch a worker that cannot access a required external tool. For Gemini, use a sanitized MCP inventory for planning and a live preflight immediately before launch; under the default policy expose only required MCPs to that worker. Before dispatch, fingerprint the exact base SHA + task packet + route + capability set and register it in `children.json`; a matching live/reusable child is reconciled rather than launched twice.
 
-Pure 3D creation is not asset-ready until the forced GPT-6 Astra `review-3d` gate passes. Motion that mutates a 3D model/rig/export contract uses the same Astra gate after Opus acceptance. If a 3D task also changes runtime code, keep the normal code/task review in addition to this asset gate.
+Pure 3D creation is not asset-ready until the forced GPT-6 Carbon `review-3d` gate passes. Motion that mutates a 3D model/rig/export contract uses the same Carbon gate after Opus acceptance. If a 3D task also changes runtime code, keep the normal code/task review in addition to this asset gate.
 
 ### Interaction design
 
@@ -39,8 +39,8 @@ The sequence is:
 
 1. fresh Opus 5.5 design director resolves visual authority, mode/scope and the design contract;
 2. optional Inspo evidence calibrates references without cloning them;
-3. for surface/redesign, Codex Sol generates design-system-grounded desktop/mobile comps when the comp policy and image-generation path allow it; Opus approves at most one targeted revision;
-4. Codex GPT-6.1 Sol implements the approved contract and approved comp when present;
+3. for surface/redesign, Gemini Neon generates design-system-grounded desktop/mobile comps when the comp policy and image-generation path allow it; Opus approves at most one targeted revision;
+4. Gemini GPT-6.1 Neon implements the approved contract and approved comp when present;
 5. capture desktop + mobile/narrow rendered evidence;
 6. fresh Claude design review runs the explicit `SLOP_GATE`, one bounded batched review, one repair batch, and at most one confirmation;
 7. meaningful user flows enter `dogfood` when browser/E2E tooling is available.
@@ -49,7 +49,7 @@ Material motion delegates to the existing motion-design lane. Missing rendered e
 
 ### Creative-web lane
 
-Use `/gearbox:creative-web` when interaction, motion, spatial behavior, kinetic type, canvas/WebGL or narrative browser behavior is part of the experience itself. Opus 5.5 owns the interaction thesis and creative-tech decision; Codex GPT-6.1 Sol/high implements; a fresh Opus reviewer applies SLOP, INTERACTION and CREATIVE gates.
+Use `/gearbox:creative-web` when interaction, motion, spatial behavior, kinetic type, canvas/WebGL or narrative browser behavior is part of the experience itself. Opus 5.5 owns the interaction thesis and creative-tech decision; Gemini GPT-6.1 Neon/high implements; a fresh Opus reviewer applies SLOP, INTERACTION and CREATIVE gates.
 
 Choose the least complex rendering stack that can express the thesis. WebGL, smooth-scroll libraries, shader effects and custom cursors are never quality badges. Real runtime, mobile/touch, reduced-motion, failure fallback and measured performance evidence are required.
 
@@ -192,7 +192,7 @@ Before presenting or while waiting at this gate, Gearbox may run `precompute.py`
 
 The summary should include task ids/outcomes, initial ready frontier, engine/model/effort routing, Review Focus, material risk/human gates, and expected worker/review topology. Do not paste the full DAG unless asked.
 
-A pending gate is `status=AWAITING_APPROVAL`, `phase=PLAN`, `blocker.code=PLAN_APPROVAL_REQUIRED`. No worker/Codex/reviewer/model-escalation budget can be consumed while it is pending.
+A pending gate is `status=AWAITING_APPROVAL`, `phase=PLAN`, `blocker.code=PLAN_APPROVAL_REQUIRED`. No worker/Gemini/reviewer/model-escalation budget can be consumed while it is pending.
 
 On explicit approval, reacquire the run lock and call `run_state.py plan-approve`. If the plan digest changed, show the changed plan and request approval again. A same-thread “go” is acceptable only when it unambiguously refers to the currently presented plan and the persisted `plan-approve` transition succeeds.
 
@@ -206,7 +206,7 @@ On explicit approval, reacquire the run lock and call `run_state.py plan-approve
 4. Build and pre-flight the lean DAG once using `references/planning-contract.md`; run `plan_guard.py`, classify expected change surfaces, run deterministic `precompute.py` (quality/probe/checks/routes/context hashes/repo facts), then pass the human plan approval gate. Live capability preflight still happens after approval.
 5. Execute `references/frontier-scheduling.md`: run the deterministic frontier scheduler, then dispatch its selected task/batch units. For background/long-lived delegated work apply `references/worker-lifecycle.md`: register the child/artifact before dispatch and avoid tight polling. Every product edit, including tiny edits and test/doc changes, belongs to a worker.
 6. Workers use RED -> GREEN -> REFACTOR where the failing check provides real signal. Before returning they synchronize the latest integration tip into their task branch/worktree, rerun focused verification, and report `integration_base_sha`, `head_sha`, actual diff/evidence and preferably one local unpushed task commit.
-7. Inspect every worker diff centrally without editing it. In `hybrid`, resolve and run exactly one opposite-provider task review before integration: Claude implementation → Codex review; Codex implementation → Claude review. The review is task-scoped and returns SPEC then QUALITY verdicts.
+7. Inspect every worker diff centrally without editing it. In `hybrid`, resolve and run exactly one opposite-provider task review before integration: Claude implementation → Gemini review; Gemini implementation → Claude review. The review is task-scoped and returns SPEC then QUALITY verdicts.
 8. Validate review findings centrally. When repair is required, dispatch the same or a fresh implementation worker; the parent never patches the finding itself.
 9. After the task review gate passes, delegate mechanical integration to `integrator`. Integration conflicts become repair tasks.
 10. After each accepted integration, delegate affected focused checks to `verifier`, but query reusable exact-SHA evidence first so identical valid checks are not rerun. Update task status, recompute the ready frontier, and immediately dispatch any newly-ready non-conflicting tasks.

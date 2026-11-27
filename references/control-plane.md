@@ -24,7 +24,7 @@ There is no "small enough for the orchestrator" exception. A one-line product fi
 
 Product mutation is delegated by role:
 
-- implementation / repair → `worker-*` Claude agent or stateless Codex worker;
+- implementation / repair → `worker-*` Claude agent or stateless Gemini worker;
 - integration mechanics → `integrator` agent;
 - post-integration simplification → `ponytail-simplifier` agent;
 - durable solution memory → `knowledge-curator` agent;
