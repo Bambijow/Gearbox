@@ -4,11 +4,11 @@ Use this only when reverse engineering needs REA or the user asks to configure i
 
 ## Four separate facts
 
-Do not collapse package presence, client registration, live connection and per-operation availability into one `installed` boolean. A CLI on PATH, a skill directory, a README claim or a sanitized MCP inventory is not a live server handshake. `scripts/capabilities.py` checks Codex registration eligibility; `scripts/reconstruction.py` only validates reconstruction artifacts.
+Do not collapse package presence, client registration, live connection and per-operation availability into one `installed` boolean. A CLI on PATH, a skill directory, a README claim or a sanitized MCP inventory is not a live server handshake. `scripts/capabilities.py` checks Gemini registration eligibility; `scripts/reconstruction.py` only validates reconstruction artifacts.
 
 ## Bounded discovery protocol
 
-1. Identify the actual executing client, profile, host and worktree. Claude and Codex have separate MCP configurations; a host installation does not establish WSL/container availability.
+1. Identify the actual executing client, profile, host and worktree. Claude and Gemini have separate MCP configurations; a host installation does not establish WSL/container availability.
 2. Discover REA through the client's actual tool inventory/search, including deferred tools. Use the configured server name; do not hard-code an MCP prefix. Treat `tools/list` as the protocol inventory, not an invented shell command or an assumed agent tool.
 3. Read the discovered `binary_session` schema, then call it with `{}` when supported. This target-free query supplies current session identity and availability; do not open or run a target to test installation. If the tool/schema is absent or the call fails, record the exact gap. Do not fabricate a successful preflight from upstream docs.
 4. Inspect the returned server/package identity and `result.tool_availability` according to the installed schema. Current REA groups operations in `groups`; retain names, availability, reasons, remediation, modes and client requirements. Its canonical inventory includes unavailable tools. A listed operation is not automatically usable.
@@ -27,7 +27,7 @@ The main-thread shell guard may deny REA/host diagnostics. Report the denial and
 
 ## Worker and evidence handoff
 
-A REA-dependent worker declares the actual discovered MCP server name in `required_capabilities`. The existing Codex inventory preflight/pruning still applies but does not replace REA's live per-operation check. A Claude connection does not certify the Codex worker connection. A worker consuming exported characterization evidence may not need REA at all.
+A REA-dependent worker declares the actual discovered MCP server name in `required_capabilities`. The existing Gemini inventory preflight/pruning still applies but does not replace REA's live per-operation check. A Claude connection does not certify the Gemini worker connection. A worker consuming exported characterization evidence may not need REA at all.
 
 REA evidence IDs belong to their connection ledger. Export the necessary evidence before close and transfer/import the portable form under the actual tool schema; do not give another worker an unusable parent-session ID. Keep reference and candidate identities separate. Redacted derivatives get their own file digest; do not relabel a modified record as an authenticated original canonical Evidence document.
 
