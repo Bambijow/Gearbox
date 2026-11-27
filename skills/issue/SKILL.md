@@ -1,7 +1,7 @@
 ---
 name: issue
 description: "Run the Gearbox engineering loop from a GitHub issue to a trustworthy pull request: issue-to-spec, DAG planning, TDD, isolated workers, repair cycles, Ponytail simplification, cross-review, conditional learn, verification, UI evidence, and optional shipping."
-argument-hint: "[GitHub issue URL or number] [--auto] [--ship] [--max-cycles N] [--workers N] [--no-codex] [--token-profile efficient|strict] [--models ask|auto|hybrid|claude-heavy|codex-heavy] [--follow-pr]"
+argument-hint: "[GitHub issue URL or number] [--auto] [--ship] [--max-cycles N] [--workers N] [--no-gemini] [--token-profile efficient|strict] [--models ask|auto|hybrid|claude-heavy|gemini-heavy] [--follow-pr]"
 ---
 
 # GitHub issue to converged engineering change
@@ -21,7 +21,7 @@ Claude Code remains the architecture owner, scheduler and final judge, but the m
 
 `--ship` authorizes commit, push, PR creation/update and PR comments only after the loop reaches PASS. `--ship` does not imply `--auto`; a non-auto ship run still pauses for plan approval.
 
-Initialize persistent run state before shaping so a clarification blocker survives interruption. After the spec clarification gate resolves and the DAG is pre-flighted, initialize/refresh evidence, resolve model policy, and assign every task an engine, model, effort and risk class. In `hybrid`, also precompute its opposite-provider review route with `scripts/review_router.py` so a Claude task is reviewed by Codex and a Codex task is reviewed by Claude before integration. If no model policy is stored, ask which allowed strategy to use and offer to persist it. `--models ask` forces this prompt; other `--models` values override for the run.
+Initialize persistent run state before shaping so a clarification blocker survives interruption. After the spec clarification gate resolves and the DAG is pre-flighted, initialize/refresh evidence, resolve model policy, and assign every task an engine, model, effort and risk class. In `hybrid`, also precompute its opposite-provider review route with `scripts/review_router.py` so a Claude task is reviewed by Gemini and a Gemini task is reviewed by Claude before integration. If no model policy is stored, ask which allowed strategy to use and offer to persist it. `--models ask` forces this prompt; other `--models` values override for the run.
 
 ## 1. GitHub intake
 
@@ -75,7 +75,7 @@ Follow `references/engineering-loop.md` from repository knowledge lookup through
 2. isolate any required current external research through `researcher`, then distill repository facts/pointers once;
 3. build and pre-flight the dependency DAG plus ready-frontier metadata;
 4. create compact task packets and resolve task/reviewer routing; without `--auto`, persist `PLAN_APPROVAL_REQUIRED`, show the compact plan/routing/ready-frontier summary, release the lock, and stop until explicit approval; with `--auto`, persist the auto-approved plan digest and continue;
-5. allocate Claude/Codex workers with isolated write worktrees and continuously dispatch the ready frontier;
+5. allocate Claude/Gemini workers with isolated write worktrees and continuously dispatch the ready frontier;
 6. use RED -> GREEN -> REFACTOR where useful;
 7. inspect worker diffs centrally and adjudicate the required opposite-provider task review;
 8. delegate accepted integration mechanics to `integrator`; conflicts become repair tasks, never parent-authored fixes;

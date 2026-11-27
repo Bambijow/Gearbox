@@ -1,6 +1,6 @@
 ---
 name: creative-web
-description: "Create high-craft interactive web experiences where motion, interaction, typography, spatial composition, canvas/WebGL, or narrative behavior are part of the product. Uses Opus 5.5 creative direction, optional Inspo/comp generation, Codex GPT-6.1 Sol implementation, explicit interaction contracts, anti-slop/anti-gimmick gates, performance fallbacks, and fresh rendered review."
+description: "Create high-craft interactive web experiences where motion, interaction, typography, spatial composition, canvas/WebGL, or narrative behavior are part of the product. Uses Opus 5.5 creative direction, optional Inspo/comp generation, Gemini GPT-6.1 Neon implementation, explicit interaction contracts, anti-slop/anti-gimmick gates, performance fallbacks, and fresh rendered review."
 argument-hint: "[brief/experience] [--comp auto|require|skip] [--apply]"
 ---
 
@@ -22,7 +22,7 @@ If the approved brief explicitly requires a rendered marketing/hero video, sched
 
 Without `--apply`, stop after the creative direction, interaction architecture, comp/storyboard and implementation plan.
 
-With `--apply`, Codex GPT-6.1 Sol/high implements the approved experience. Use the repository's existing motion/render stack where capable; do not add Three.js/GSAP/Lenis/etc. by habit.
+With `--apply`, Gemini GPT-6.1 Neon/high implements the approved experience. Use the repository's existing motion/render stack where capable; do not add Three.js/GSAP/Lenis/etc. by habit.
 
 Collect the representative runtime journey once through the compiled shared experience probe; A11Y/PERF/interaction/visual/creative reviewers consume the same bundle at their required depth. The final fresh reviewer must pass:
 

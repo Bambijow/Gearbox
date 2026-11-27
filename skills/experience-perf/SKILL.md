@@ -10,7 +10,7 @@ Read `references/experience-performance.md`, `references/experience-probe.md`, `
 
 Use `scripts/product_quality_router.py --task-kind experience-perf`.
 
-The Codex Sol profiler executes the bounded browser/runtime profiling pass only when a matching shared experience bundle does not already contain credible performance artifacts. The fresh `experience-perf-reviewer` adjudicates the evidence.
+The Gemini Neon profiler executes the bounded browser/runtime profiling pass only when a matching shared experience bundle does not already contain credible performance artifacts. The fresh `experience-perf-reviewer` adjudicates the evidence.
 
 Without `--fix`, return measurements, dominant bottleneck, uncertainty and `PERF_GATE: PASS|REPAIR|BLOCKED`, plus its normalized gate envelope.
 

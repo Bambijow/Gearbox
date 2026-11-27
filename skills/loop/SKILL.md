@@ -1,7 +1,7 @@
 ---
 name: loop
 description: "Run Gearbox as a convergent engineering loop from a GitHub issue, accepted spec, or grounded request until quality gates pass, the work is blocked, or the cycle limit is reached. Includes adaptive repairs, conditional learn, and optional shipping."
-argument-hint: "[GitHub issue | spec path | request] [--auto] [--ship] [--max-cycles N] [--workers N] [--no-codex] [--token-profile efficient|strict] [--models ask|auto|hybrid|claude-heavy|codex-heavy] [--follow-pr]"
+argument-hint: "[GitHub issue | spec path | request] [--auto] [--ship] [--max-cycles N] [--workers N] [--no-gemini] [--token-profile efficient|strict] [--models ask|auto|hybrid|claude-heavy|gemini-heavy] [--follow-pr]"
 ---
 
 # Run the engineering loop
@@ -22,7 +22,7 @@ Before planning, run the spec clarification gate. Resolve facts from the repo fi
 
 `--ship` authorizes commit, push, PR creation/update and PR comments only after the loop reaches PASS.
 
-Initialize persistent run state before spec clarification so any blocker is resumable. After clarification resolves and DAG preflight completes, initialize/refresh evidence and resolve model policy. If no policy is stored, ask which allowed model strategy to use and offer to persist it. Then assign every task an engine, model, effort and risk class. In `hybrid`, also precompute its opposite-provider review route with `scripts/review_router.py` so a Claude task is reviewed by Codex and a Codex task is reviewed by Claude before integration. For every Codex candidate, call `scripts/model_router.py` with the task classification and persist its concrete model/effort result in `dag.yaml`; do not choose a Codex model ad hoc or fall back silently to the Codex CLI default. `--models ask` forces this prompt; other `--models` values override for the run.
+Initialize persistent run state before spec clarification so any blocker is resumable. After clarification resolves and DAG preflight completes, initialize/refresh evidence and resolve model policy. If no policy is stored, ask which allowed model strategy to use and offer to persist it. Then assign every task an engine, model, effort and risk class. In `hybrid`, also precompute its opposite-provider review route with `scripts/review_router.py` so a Claude task is reviewed by Gemini and a Gemini task is reviewed by Claude before integration. For every Gemini candidate, call `scripts/model_router.py` with the task classification and persist its concrete model/effort result in `dag.yaml`; do not choose a Gemini model ad hoc or fall back silently to the Gemini CLI default. `--models ask` forces this prompt; other `--models` values override for the run.
 
 ## Execute to convergence
 
@@ -32,7 +32,7 @@ Follow the shared loop protocol:
 2. spec clarification gate with repository deductions, explicit assumptions, or `SPEC_BLOCKED`;
 3. relevant glossary/domain pointers, `docs/solutions/` lookup, isolated research when needed, and architecture reconnaissance;
 4. pre-flighted dependency DAG with ready-frontier metadata and concrete routing, followed by the persisted plan-approval gate unless `--auto`;
-5. bounded Claude/Codex workers with isolated write worktrees, dispatched continuously from the ready frontier;
+5. bounded Claude/Gemini workers with isolated write worktrees, dispatched continuously from the ready frontier;
 6. TDD where useful;
 7. central diff inspection + opposite-provider task review;
 8. delegated mechanical integration via `integrator`;

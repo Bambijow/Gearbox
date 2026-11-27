@@ -10,7 +10,7 @@ Read `references/level-design.md`, `references/orchestration-compilation.md`, re
 
 Use `scripts/product_quality_router.py --task-kind level-design`.
 
-The `level-designer` (Opus 5.5/high) owns spatial/gameplay direction, metrics, encounter graph and acceptance. Codex GPT-6.1 Sol/high may execute bounded Godot/Blender blockout, collision/navmesh, exact-dimension geometry, spawn/checkpoint placement and repetitive scene wiring.
+The `level-designer` (Opus 5.5/high) owns spatial/gameplay direction, metrics, encounter graph and acceptance. Gemini GPT-6.1 Neon/high may execute bounded Godot/Blender blockout, collision/navmesh, exact-dimension geometry, spawn/checkpoint placement and repetitive scene wiring.
 
 Without `--apply`, return the level contract, blockout plan and playtest hypotheses.
 
