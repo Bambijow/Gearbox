@@ -10,7 +10,7 @@ To run one scenario against a model CLI, provide a command that reads the assemb
 GEARBOX_EVAL_CLAUDE_CMD='<your Claude runner reading stdin>' \
   python3 scripts/behavior_eval.py run evals/behavior/plan-lean.json --provider claude
 
-GEARBOX_EVAL_CODEX_CMD='<your Gemini runner reading stdin>' \
+GEARBOX_EVAL_GEMINI_CMD='<your Gemini runner reading stdin>' \
   python3 scripts/behavior_eval.py run evals/behavior/plan-lean.json --provider gemini
 ```
 
