@@ -13,7 +13,7 @@ from pathlib import Path
 FRONT = {"issue", "loop", "flow", "resume", "continue-pr", "autopilot", "reverse"}
 MUTATIONS = {"write_to_file", "replace_file_content", "multi_replace_file_content"}
 READ = {"pwd", "ls", "rg", "grep", "head", "tail", "cat", "wc", "stat", "realpath"}
-SCRIPTS = {"run_state.py", "route_task.py", "gemini_worker.py", "gemini_claude_router.py", "worktree_manager.py", "issue_preflight.py", "evidence.py", "child_jobs.py", "usage_ledger.py"}
+SCRIPTS = {"run_state.py", "route_task.py", "gemini_worker.py", "claude_review_worker.py", "gemini_claude_router.py", "worktree_manager.py", "issue_preflight.py", "evidence.py", "child_jobs.py", "usage_ledger.py"}
 
 
 def marker(event):
