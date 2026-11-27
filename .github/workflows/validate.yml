@@ -23,6 +23,14 @@ jobs:
         run: python3 scripts/validate.py --self-test
       - name: Validate plugin structure
         run: python3 scripts/validate.py
+      - name: Antigravity guard self-test
+        run: python3 scripts/antigravity_guard.py self-test
+      - name: Gemini-Claude route self-test
+        run: python3 scripts/gemini_claude_router.py --self-test
+      - name: Gemini worker self-test
+        run: python3 scripts/gemini_worker.py --self-test
+      - name: Validate Antigravity manifest and hook format
+        run: python3 scripts/antigravity_validate.py --self-test
       - name: Compile runtime scripts
         run: python3 -m compileall -q scripts
       - name: Orchestrator guard self-test
