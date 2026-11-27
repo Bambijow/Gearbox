@@ -15,7 +15,7 @@ Before generation, pin:
 
 ## Generation
 
-Actual generation is always Codex GPT-6.1 Sol. The worker may use the model's direct image-generation path and any explicitly required compatible tool, but may not silently substitute another model.
+Actual generation is always Gemini GPT-6.1 Neon. The worker may use the model's direct image-generation path and any explicitly required compatible tool, but may not silently substitute another model.
 
 Prefer a small number of deliberate variants over a spray of near-duplicates. Preserve the selected source/editable form when the workflow exposes one.
 
