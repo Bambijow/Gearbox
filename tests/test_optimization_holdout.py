@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 import optimization_holdout as holdout
-from codex_worker import build_command
+from gemini_worker import build_command
 
 class HoldoutTests(unittest.TestCase):
     def setUp(self):
@@ -27,8 +27,8 @@ class HoldoutTests(unittest.TestCase):
     def test_budget_breach_rejected(self):
         self.report["usage"]["attempts"]=3
         self.assertEqual(holdout.adjudicate(self.report)["decision"],"REJECT")
-    def test_codex_isolated_command(self):
-        cmd=build_command(codex_bin="codex",worktree=Path("/tmp/worktree"),
+    def test_gemini_isolated_command(self):
+        cmd=build_command(gemini_bin="gemini",worktree=Path("/tmp/worktree"),
             schema=Path("/tmp/schema.json"),result=Path("/tmp/result.json"),
             sandbox="read-only",ignore_user_config=True)
         self.assertIn("--ignore-user-config",cmd)

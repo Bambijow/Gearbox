@@ -8,13 +8,13 @@
     {
       "name": "gearbox",
       "source": "./",
-      "description": "Gearbox: Claude/Codex orchestration with run-bound verified evidence, conflict-safe scheduling, conservative dependency reuse, read-only run inspection, and web/creative and game-dev lanes.",
+      "description": "Gearbox: Claude/Gemini orchestration with run-bound verified evidence, conflict-safe scheduling, conservative dependency reuse, read-only run inspection, and web/creative and game-dev lanes.",
       "category": "engineering",
       "keywords": [
         "engineering",
         "github",
         "tdd",
-        "codex",
+        "gemini",
         "multi-agent",
         "ponytail",
         "code-review",
