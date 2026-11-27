@@ -75,10 +75,10 @@ The reviewer checks SPEC first. If SPEC fails, stop and fix before spending revi
 
 In `model_policy: hybrid`, every implementation task receives exactly one fresh opposite-provider review before integration:
 
-- Claude implementation → Codex review;
-- Codex implementation → Claude review.
+- Claude implementation → Gemini review;
+- Gemini implementation → Claude review.
 
-This replaces the old hybrid behavior where low-risk tasks could skip a fresh reviewer. Keep it token-efficient by scaling the reviewer, not by removing provider diversity: bounded work uses Luna/low or Haiku/low, normal work uses Sol/medium or Sonnet/medium, and stronger reviewers are reserved for deep/exceptional tasks.
+This replaces the old hybrid behavior where low-risk tasks could skip a fresh reviewer. Keep it token-efficient by scaling the reviewer, not by removing provider diversity: bounded work uses Hydrogen/low or Haiku/low, normal work uses Neon/medium or Sonnet/medium, and stronger reviewers are reserved for deep/exceptional tasks.
 
 Every worker still performs a compact self-review, and the orchestrator still inspects the real diff. The opposite-provider reviewer returns both SPEC and QUALITY verdicts in one pass. Do not add another task reviewer unless there is a concrete unresolved disagreement.
 
@@ -128,7 +128,7 @@ Collect learning candidates as short ledger entries during the run, then evaluat
 
 ### Final cross-model review
 
-Spend the larger review budget once, on the post-Ponytail integrated diff. For substantial `/issue` runs, use one independent Claude final reviewer and one stateless read-only Codex reviewer when available. Their prompts should share requirements but not each other's conclusions.
+Spend the larger review budget once, on the post-Ponytail integrated diff. For substantial `/issue` runs, use one independent Claude final reviewer and one stateless read-only Gemini reviewer when available. Their prompts should share requirements but not each other's conclusions.
 
 Do not recursively ask reviewers to review other reviewers.
 

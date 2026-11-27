@@ -9,6 +9,6 @@
   ],
   "usage_max": {
     "review_dispatches": 14,
-    "codex_dispatches": 12
+    "gemini_dispatches": 12
   }
 }

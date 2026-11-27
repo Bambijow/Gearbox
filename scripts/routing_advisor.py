@@ -87,12 +87,12 @@ def self_test():
         for i in range(6):
             run=root/f"r{i}";run.mkdir()
             items=[
-                {"dispatch_id":f"a{i}","task_kind":"feature","provider":"codex","model":"gpt-6.2-sol","effort":"medium","outcome":"success","input_tokens":100,"output_tokens":20,"estimated":False},
+                {"dispatch_id":f"a{i}","task_kind":"feature","provider":"gemini","model":"gemini-4-neon-medium","effort":"medium","outcome":"success","input_tokens":100,"output_tokens":20,"estimated":False},
                 {"dispatch_id":f"b{i}","task_kind":"feature","provider":"claude","model":"sonnet","effort":"medium","outcome":"success","input_tokens":180,"output_tokens":30,"estimated":False},
             ]
             (run/"usage.json").write_text(json.dumps({"schema_version":2,"items":items}))
         a=advise(root,"feature",[],False)
-        assert a["mode"]=="advisory" and a["recommended_route"]["provider"]=="codex"
+        assert a["mode"]=="advisory" and a["recommended_route"]["provider"]=="gemini"
         b=advise(root,"feature",["security_boundary"],False)
         assert b["mode"]=="observe-only" and b["recommended_route"] is None
         c=advise(root,"feature",[],True)

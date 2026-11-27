@@ -8,7 +8,7 @@
   },
   "usage_max": {
     "worker_dispatches": 0,
-    "codex_dispatches": 0,
+    "gemini_dispatches": 0,
     "review_dispatches": 0,
     "model_escalations": 0
   },

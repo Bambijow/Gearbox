@@ -36,7 +36,7 @@ When `/build` is executing inside an orchestrated `/issue`, `/loop`, `/flow`, `/
 
 For parallel write tasks, use separate git worktrees and path ownership. Before a worker reports done, synchronize the latest integration tip into its branch/worktree, rerun focused verification, and report `integration_base_sha` plus `head_sha`.
 
-Codex workers should be stateless `codex exec --ephemeral` jobs with a bounded context packet. They do not own architecture, pushes, or PRs. They may create a local task commit in their isolated worktree when that makes mechanical integration safer; they never publish it. Do not paste the whole spec/plan or large source files into their prompt when paths and symbols let them inspect the worktree directly.
+Gemini workers should be stateless `gemini exec --ephemeral` jobs with a bounded context packet. They do not own architecture, pushes, or PRs. They may create a local task commit in their isolated worktree when that makes mechanical integration safer; they never publish it. Do not paste the whole spec/plan or large source files into their prompt when paths and symbols let them inspect the worktree directly.
 
 ## Design discipline
 

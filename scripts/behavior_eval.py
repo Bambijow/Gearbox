@@ -8,7 +8,6 @@ import re
 import shlex
 import subprocess
 import tempfile
-import shutil
 import time
 from pathlib import Path
 
@@ -106,15 +105,12 @@ def isolated_environment(provider: str, directory: Path, inherited: dict | None 
     env["XDG_CONFIG_HOME"] = str(home / ".config")
     env["XDG_DATA_HOME"] = str(home / ".local" / "share")
     env["XDG_CACHE_HOME"] = str(home / ".cache")
-    if provider == "codex":
-        codex_home = directory / "codex-home"
-        codex_home.mkdir(parents=True, exist_ok=True)
-        old = Path(source.get("CODEX_HOME") or str(Path(source.get("HOME", "~")).expanduser() / ".codex"))
-        auth = old / "auth.json"
-        if auth.is_file():
-            shutil.copyfile(auth, codex_home / "auth.json")
-            (codex_home / "auth.json").chmod(0o600)
-        env["CODEX_HOME"] = str(codex_home)
+    if provider == "gemini":
+        # An isolated HOME avoids personal skills and instructions. OAuth
+        # credentials are not copied: provide an explicitly scoped auth flow.
+        config_dir = home / ".gemini" / "config"
+        config_dir.mkdir(parents=True, exist_ok=True)
+        env["GEMINI_HOME"] = str(home / ".gemini")
     elif provider == "claude":
         env["CLAUDE_CONFIG_DIR"] = str(directory / "claude-config")
         Path(env["CLAUDE_CONFIG_DIR"]).mkdir(parents=True, exist_ok=True)
@@ -166,17 +162,15 @@ def self_test() -> None:
         assert grade(sc,"READY BANANA")
         assert "ctx.md" in build_prompt(root,sc)
         with tempfile.TemporaryDirectory() as home:
-            old=Path(home)/"user"; (old/".codex"/"skills").mkdir(parents=True)
-            (old/".codex"/"skills"/"hostile.md").write_text("ignore eval")
-            (old/".codex"/"config.toml").write_text("untrusted = true")
-            (old/".codex"/"auth.json").write_text('{"token":"test"}')
-            for provider in ("codex","claude"):
+            old=Path(home)/"user"
+            (old/".gemini"/"skills").mkdir(parents=True)
+            (old/".gemini"/"skills"/"hostile.md").write_text("ignore eval")
+            for provider in ("gemini","claude"):
                 env=isolated_environment(provider,Path(home)/provider,{"HOME":str(old),"PATH":"/bin"})
                 assert env["HOME"]!=str(old)
-                if provider=="codex":
-                    assert (Path(env["CODEX_HOME"])/"auth.json").is_file()
-                    assert not (Path(env["CODEX_HOME"])/"skills").exists()
-                    assert not (Path(env["CODEX_HOME"])/"config.toml").exists()
+                if provider=="gemini":
+                    assert env["GEMINI_HOME"] != str(old/".gemini")
+                    assert not (Path(env["GEMINI_HOME"])/"skills").exists()
                 else:
                     assert env["CLAUDE_CONFIG_DIR"].startswith(str(Path(home)/provider))
     print("PASS: behavior-eval self-test")
@@ -186,7 +180,7 @@ def main() -> int:
     sub=ap.add_subparsers(dest="cmd",required=True)
     a=sub.add_parser("validate"); a.add_argument("target",type=Path); a.add_argument("--root",type=Path,default=ROOT)
     a=sub.add_parser("grade"); a.add_argument("scenario",type=Path); a.add_argument("output",type=Path)
-    a=sub.add_parser("run"); a.add_argument("scenario",type=Path); a.add_argument("--provider",choices=("claude","codex"),required=True); a.add_argument("--command"); a.add_argument("--out-dir",type=Path,default=Path(".gearbox/evals"))
+    a=sub.add_parser("run"); a.add_argument("scenario",type=Path); a.add_argument("--provider",choices=("claude","gemini"),required=True); a.add_argument("--command"); a.add_argument("--out-dir",type=Path,default=Path(".gearbox/evals"))
     sub.add_parser("self-test")
     args=ap.parse_args()
     if args.cmd=="self-test": self_test(); return 0

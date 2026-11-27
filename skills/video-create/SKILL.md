@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 Read `references/video-production.md`. Use the registered `video-producer` and `scripts/route_task.py --task-kind video-create`.
 
-A real, inspected, rights-cleared reference image is mandatory. If missing, dispatch `asset-image` as a predecessor through its registered Codex Sol route, verify and persist the image output, then resume. Never call fal with a nonexistent reference or silently use text-to-video.
+A real, inspected, rights-cleared reference image is mandatory. If missing, dispatch `asset-image` as a predecessor through its registered Gemini Neon route, verify and persist the image output, then resume. Never call fal with a nonexistent reference or silently use text-to-video.
 
 Classify shot requirements, then invoke `scripts/video_model_router.py`. Select the cheapest capable model, not the cheapest overall or the highest-cost by default. Enforce the user budget, verify live prices and API schema, and require explicit spend approval before any paid request. Missing FAL_KEY blocks execution.
 

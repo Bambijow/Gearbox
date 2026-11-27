@@ -10,8 +10,8 @@ To run one scenario against a model CLI, provide a command that reads the assemb
 GEARBOX_EVAL_CLAUDE_CMD='<your Claude runner reading stdin>' \
   python3 scripts/behavior_eval.py run evals/behavior/plan-lean.json --provider claude
 
-GEARBOX_EVAL_CODEX_CMD='<your Codex runner reading stdin>' \
-  python3 scripts/behavior_eval.py run evals/behavior/plan-lean.json --provider codex
+GEARBOX_EVAL_GEMINI_CMD='<your Gemini runner reading stdin>' \
+  python3 scripts/behavior_eval.py run evals/behavior/plan-lean.json --provider gemini
 ```
 
 Outputs land under `.gearbox/evals/` by default. Provider command syntax is deliberately not hard-coded because harness CLIs evolve independently of Gearbox.

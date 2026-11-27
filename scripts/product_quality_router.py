@@ -33,14 +33,14 @@ def route(task_kind:str)->Route:
         raise SystemExit(f"unknown product-quality task kind: {task_kind}")
     cfg=routes[task_kind]
     rationale={
-        "design-system":"Opus owns system semantics; Codex applies bounded migrations; fresh Claude reviews drift resolution",
-        "a11y-audit":"fresh Claude reviews runtime accessibility; Codex may repair validated findings",
+        "design-system":"Opus owns system semantics; Gemini applies bounded migrations; fresh Claude reviews drift resolution",
+        "a11y-audit":"fresh Claude reviews runtime accessibility; Gemini may repair validated findings",
         "visual-regression":"fresh Claude adjudicates semantic before/after evidence rather than raw pixel distance",
-        "content-design":"Claude owns language/state semantics; Codex may apply bounded copy/resource edits",
-        "experience-perf":"Codex profiles and repairs the measured hot path; fresh Claude adjudicates evidence and trade-offs",
+        "content-design":"Claude owns language/state semantics; Gemini may apply bounded copy/resource edits",
+        "experience-perf":"Gemini profiles and repairs the measured hot path; fresh Claude adjudicates evidence and trade-offs",
         "art-direction":"Opus owns cross-asset visual coherence; a fresh Claude reviewer checks drift",
-        "audio-design":"Opus owns sonic direction; Codex may execute bounded engine/middleware wiring",
-        "level-design":"Opus owns spatial/gameplay direction; Codex may execute blockout; fresh Opus reviews playtest evidence",
+        "audio-design":"Opus owns sonic direction; Gemini may execute bounded engine/middleware wiring",
+        "level-design":"Opus owns spatial/gameplay direction; Gemini may execute blockout; fresh Opus reviews playtest evidence",
     }[task_kind]
     return Route(
         task_kind=task_kind,
@@ -52,11 +52,11 @@ def route(task_kind:str)->Route:
 
 def self_test()->None:
     ds=route("design-system")
-    assert ds.owner_model=="claude-opus-5-5" and ds.executor_model=="gpt-6.2-sol"
+    assert ds.owner_model=="claude-opus-5-5" and ds.executor_model=="gemini-4-neon-medium"
     a11y=route("a11y-audit")
     assert a11y.owner_model=="sonnet" and a11y.owner_effort=="high"
     perf=route("experience-perf")
-    assert perf.owner_engine=="codex" and perf.reviewer_model=="sonnet"
+    assert perf.owner_engine=="gemini" and perf.reviewer_model=="sonnet"
     level=route("level-design")
     assert level.owner_model=="claude-opus-5-5" and level.reviewer_model=="claude-opus-5-5"
     print("PASS: product-quality-router self-test")

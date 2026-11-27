@@ -1,25 +1,25 @@
 ---
 name: setup
-description: "Configure Gearbox for the current repository: paths, validation, solution memory, model/effort routing, risk gates, execution budgets, Codex/Ponytail availability, and resumable run state."
+description: "Configure Gearbox for the current repository: paths, validation, solution memory, model/effort routing, risk gates, execution budgets, Gemini/Ponytail availability, and resumable run state."
 argument-hint: "[optional setup preferences]"
 ---
 # Configure Gearbox for this repository
 
 ## Legacy migration
 
-Before reading project configuration, Gearbox automatically checks for the former `.steelthread/` project directory. If `.gearbox/` does not exist and no legacy run lock is active, the plugin renames `.steelthread/` to `.gearbox/` and rewrites only internal path references from `.steelthread/` to `.gearbox/`. Do not ask the user to rename it manually. Branch names, issue/PR identifiers, evidence, and historical run IDs are preserved. If both directories already exist, stop and ask the user which one is authoritative instead of merging them silently.
+Before setup, check for the former `.steelthread/` project directory. If `.gearbox/` does not exist and no legacy run lock is active, the plugin renames `.steelthread/` to `.gearbox/` and rewrites only internal path references from `.steelthread/` to `.gearbox/`. Do not ask the user to rename it manually. Branch names, issue/PR identifiers, evidence, and historical run IDs are preserved. If both directories already exist, stop and ask the user which one is authoritative instead of merging them silently.
 
-Read repository instructions, build/CI manifests and existing docs. Reuse conventions rather than creating a parallel bureaucracy.
+Read repository instructions and build/CI manifests; reuse existing conventions.
 
-Detect specs/ADR/runbook locations, existing `GLOSSARY.md` / `GLOSSARY-MAP.md` contexts, any established research-note convention, repository-native tests/lint/typecheck/build/e2e commands, GitHub remote/base branch, UI evidence tooling, `codex`, external capabilities/MCPs, and Ponytail availability. Do not create glossary/ADR/research docs during setup merely because Gearbox supports them. Keep `docs/solutions/` canonical.
+Detect specs/ADR/runbook locations, existing `GLOSSARY.md` / `GLOSSARY-MAP.md` contexts, any established research-note convention, repository-native tests/lint/typecheck/build/e2e commands, GitHub remote/base branch, UI evidence tooling, `gemini`, external capabilities/MCPs, and Ponytail availability. Do not create glossary/ADR/research docs during setup merely because Gearbox supports them. Keep `docs/solutions/` canonical.
 
 ## Capability preflight
 
-Read `references/capability-routing.md`; for REA setup use `references/rea-integration.md`. If Codex exists, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/capabilities.py" inventory`; persist only `available` names, never config/secrets. Record explicit Claude capabilities; live preflight wins. Keep Inspo, browser, game and image-generation availability, never credentials. No automatic REA installation.
+Read `references/capability-routing.md`; for REA setup use `references/rea-integration.md`. If Antigravity CLI exists, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/capabilities.py" inventory`; persist only `available` names, never config/secrets. Record explicit Claude capabilities; live preflight wins. Keep Inspo, browser, game and image-generation availability, never credentials. No automatic REA installation.
 
 ## Model preflight
 
-If the user has not already stated a preference, ask once which worker policy to persist: `auto`, `hybrid` (recommended), `claude-heavy`, `codex-heavy`, or `custom`. For custom policy, record allowed Claude model aliases/full IDs, allowed Codex model IDs, and any role constraints. The preferred Codex registry is intentionally small: GPT-6 Luna for cheap bounded work, GPT-6.2 Sol (`gpt-6.2-sol`) for normal/deep engineering with effort scaling, and GPT-6.2 Astra (`gpt-6.2-astra`) only for exceptional escalation. Verify or adjust the exact CLI model IDs if the local Codex installation exposes different identifiers. Do not silently fall back to Codex's default model. The main Claude session remains the control-plane orchestrator; task routes are chosen later from risk/complexity. During orchestrated runs it does not author product code. Read `references/control-plane.md`.
+If the user has not already stated a preference, ask once which worker policy to persist: `auto`, `hybrid` (recommended), `claude-heavy`, `gemini-heavy`, or `custom`. For custom policy, record allowed Claude model aliases/full IDs, allowed Gemini model IDs, and any role constraints. The preferred Gemini registry is intentionally small: Gemini 4 Hydrogen for cheap bounded work, Gemini 4 Neon (`gemini-4-neon-medium`) for normal/deep engineering with effort scaling, and Gemini 4 Carbon (`gemini-4-carbon-high`) only for exceptional escalation. Verify or adjust the exact CLI model IDs if the local Gemini installation exposes different identifiers. Do not silently fall back to Gemini's default model. On Antigravity, the main Gemini session orchestrates; select workers by risk. It must never author product code. Read `references/control-plane.md`.
 
 ## Config
 
@@ -49,24 +49,24 @@ claude_models:
   fast: haiku
   standard: sonnet
   deep: opus
-codex_models:
-  economy: gpt-6-luna
-  standard: gpt-6.2-sol
-  frontier: gpt-6.2-astra
-allow_codex_default_model: false
-codex_frontier_policy: escalation-or-exceptional
+gemini_models:
+  economy: gemini-4-hydrogen-low
+  standard: gemini-4-neon-medium
+  frontier: gemini-4-carbon-high
+allow_gemini_default_model: false
+gemini_frontier_policy: escalation-or-exceptional
 capability_routing: enabled
 capability_preflight: live
-codex_mcp_policy: required-only
+gemini_mcp_policy: required-only
 web_comp_policy: auto
 web_comp_image_model: gpt-image-2.5-flare
 web_comp_edit_model: gpt-image-2.5-sunburst
-codex_capabilities: []
+gemini_capabilities: []
 claude_capabilities: []
 hybrid_review_policy: opposite-provider
 budget:
   max_worker_dispatches: 10
-  max_codex_dispatches: 12
+  max_gemini_dispatches: 12
   max_review_dispatches: 14
   max_model_escalations: 3
   max_pr_repair_cycles: 3
@@ -83,7 +83,7 @@ human_gate:
   - privilege_change
   - breaking_external_contract
   - production_config
-codex_bin: codex
+gemini_bin: agy
 ponytail: preferred
 test_commands: []
 check_commands: []
@@ -94,7 +94,7 @@ verification_catalog: []
 
 When `model_policy: hybrid`, `task_review_policy: cross-provider-in-hybrid` means every implementation task is reviewed once by the opposite provider before integration. The reviewer model is selected from the task tier with `scripts/review_router.py`; do not use a frontier reviewer for trivial work.
 
-`ask-once` means a run prompts only when model policy is missing/unresolved, then offers to persist it. `--models ask` always prompts. If migrating an older Gearbox config, remove legacy intermediate Codex tiers and normalize to `economy=Luna`, `standard=Sol`, `frontier=Astra`.
+`ask-once` means a run prompts only when model policy is missing/unresolved, then offers to persist it. `--models ask` always prompts. If migrating an older Gearbox config, remove legacy intermediate Gemini tiers and normalize to `economy=Hydrogen`, `standard=Neon`, `frontier=Carbon`.
 
 Ensure `.gearbox/.gitignore` ignores `runs/` and `diagnostics/`. Create/regenerate `docs/solutions/index.md` when solution notes already exist. Do not modify `CLAUDE.md` merely to advertise Gearbox.
 

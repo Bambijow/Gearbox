@@ -17,21 +17,21 @@ def git(repo,*args):
     return subprocess.check_output(["git","-C",str(repo),*args],text=True).strip()
 
 class HardeningTests(unittest.TestCase):
-    def test_eval_does_not_inherit_untrusted_codex_or_claude_files(self):
+    def test_eval_does_not_inherit_untrusted_gemini_or_claude_files(self):
         tool=module("behavior_eval")
         with tempfile.TemporaryDirectory() as td:
             root=Path(td); old=root/"profile"
-            (old/".codex"/"skills").mkdir(parents=True)
-            (old/".codex"/"config.toml").write_text("untrusted = true")
-            (old/".codex"/"skills"/"secret.md").write_text("malicious instruction")
-            (old/".codex"/"auth.json").write_text('{"token":"fixture"}')
-            for provider in ("claude","codex"):
+            (old/".gemini"/"skills").mkdir(parents=True)
+            (old/".gemini"/"config.toml").write_text("untrusted = true")
+            (old/".gemini"/"skills"/"secret.md").write_text("malicious instruction")
+            (old/".gemini"/"auth.json").write_text('{"token":"fixture"}')
+            for provider in ("claude","gemini"):
                 env=tool.isolated_environment(provider,root/provider,{"HOME":str(old)})
                 self.assertNotEqual(env["HOME"],str(old))
                 self.assertNotIn(str(old),env["XDG_CONFIG_HOME"])
-                if provider=="codex":
-                    self.assertTrue((Path(env["CODEX_HOME"])/"auth.json").exists())
-                    self.assertFalse((Path(env["CODEX_HOME"])/"skills").exists())
+                if provider=="gemini":
+                    self.assertFalse((Path(env["GEMINI_HOME"])/"auth.json").exists())
+                    self.assertFalse((Path(env["GEMINI_HOME"])/"skills").exists())
                 else:
                     self.assertFalse((Path(env["CLAUDE_CONFIG_DIR"])/"CLAUDE.md").exists())
 

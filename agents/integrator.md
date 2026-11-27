@@ -1,6 +1,6 @@
 ---
 name: integrator
-description: "Use this mechanical integration agent after an implementation task has passed its required review. <example>Context: A Codex worker produced an accepted commit in an isolated worktree. user: Integrate the accepted task. assistant: Launch integrator with the worktree/branch/base/head refs. <commentary>The parent orchestrator must not author or manually repair product code; integration is delegated.</commentary></example> <example>Context: Cherry-pick conflicts with an already integrated task. user: Integrate it safely. assistant: Launch integrator and return the conflict without resolving product code manually. <commentary>A conflict becomes a repair task for an implementation worker.</commentary></example>"
+description: "Use this mechanical integration agent after an implementation task has passed its required review. <example>Context: A Gemini worker produced an accepted commit in an isolated worktree. user: Integrate the accepted task. assistant: Launch integrator with the worktree/branch/base/head refs. <commentary>The parent orchestrator must not author or manually repair product code; integration is delegated.</commentary></example> <example>Context: Cherry-pick conflicts with an already integrated task. user: Integrate it safely. assistant: Launch integrator and return the conflict without resolving product code manually. <commentary>A conflict becomes a repair task for an implementation worker.</commentary></example>"
 model: inherit
 effort: low
 color: cyan

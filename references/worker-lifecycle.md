@@ -11,7 +11,7 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/child_jobs.py" register \
   --run-dir ".gearbox/runs/<run-id>" \
   --id "task-T3-impl" \
   --kind implementation \
-  --provider codex \
+  --provider gemini \
   --artifact "tasks/T3/worker-result.json" \
   --timeout-seconds 3600
 ```

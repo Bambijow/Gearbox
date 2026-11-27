@@ -10,7 +10,7 @@ Read `references/audio-design.md`, `references/orchestration-compilation.md`, an
 
 Use `scripts/product_quality_router.py --task-kind audio-design`.
 
-The `audio-director` (Opus 5.5/high) owns sonic intent, event taxonomy, mix hierarchy, variation, spatialization and acceptance. Codex GPT-6.1 Sol may execute bounded Godot/FMOD/Wwise/Reaper/other available tool wiring and deterministic import/event/bus setup.
+The `audio-director` (Opus 5.5/high) owns sonic intent, event taxonomy, mix hierarchy, variation, spatialization and acceptance. Gemini GPT-6.1 Neon may execute bounded Godot/FMOD/Wwise/Reaper/other available tool wiring and deterministic import/event/bus setup.
 
 Do not invent an audio-generation capability. If no sound-generation tool exists, design the system and wire supplied assets only.
 

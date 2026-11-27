@@ -90,7 +90,7 @@ This persists:
 }
 ```
 
-No worker, Codex, reviewer, or model-escalation budget may be consumed in this state. `run_state.py consume` enforces that mechanically.
+No worker, Gemini, reviewer, or model-escalation budget may be consumed in this state. `run_state.py consume` enforces that mechanically.
 
 Approval is bound to the exact plan bytes:
 

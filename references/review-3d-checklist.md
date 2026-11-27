@@ -1,6 +1,6 @@
 # 3D asset review checklist
 
-The reviewer is GPT-6 Astra and is read-only. Review the real asset through Blender or Godot capability when available; screenshots alone are insufficient when geometry/tool inspection is possible.
+The reviewer is GPT-6 Carbon and is read-only. Review the real asset through Blender or Godot capability when available; screenshots alone are insufficient when geometry/tool inspection is possible.
 
 ## Geometry and transforms
 

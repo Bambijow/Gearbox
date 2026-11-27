@@ -61,7 +61,7 @@ def precompute(data:dict,output_dir:Path|None)->dict:
         route_results.append(route_task.route_task(
             item["task_kind"],
             item.get("claude_capabilities",[]),
-            item.get("codex_capabilities",[]),
+            item.get("gemini_capabilities",[]),
             scope=item.get("scope","surface"),
             comp_policy=item.get("comp_policy","auto"),
             image_generation_available=bool(item.get("image_generation_available",False)),
@@ -126,7 +126,7 @@ def self_test():
       "dag":{"max_parallel_workers":2,"tasks":[
         {"id":"A","status":"READY","dependencies":[],"owned_paths":["src/a"],"risk":"low"}
       ]},
-      "route_requests":[{"task_kind":"web-design","scope":"surface","claude_capabilities":[],"codex_capabilities":[]}],
+      "route_requests":[{"task_kind":"web-design","scope":"surface","claude_capabilities":[],"gemini_capabilities":[]}],
       "context_descriptors":[{"id":"A","max_bytes":2048,"data":{
         "role":"worker","outcome":"button","task":"implement","spec_slice":"button accepts activation",
         "required_capabilities":[],"ownership":["src/a"],"verify":["vitest"],"output_contract":"diff and evidence"

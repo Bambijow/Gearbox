@@ -38,9 +38,9 @@ Not every encounter needs every beat, but pacing should be intentional.
 
 ## Delegation
 
-Opus 5.5 owns spatial/gameplay direction and acceptance. Codex GPT-6.1 Sol may execute bounded Godot/Blender blockout, collision/navmesh, spawn placement, exact metrics and repetitive scene wiring.
+Opus 5.5 owns spatial/gameplay direction and acceptance. Gemini GPT-6.1 Neon may execute bounded Godot/Blender blockout, collision/navmesh, spawn placement, exact metrics and repetitive scene wiring.
 
-If only Codex has Godot/Blender, Opus writes the blockout packet and reviews the real scene.
+If only Gemini has Godot/Blender, Opus writes the blockout packet and reviews the real scene.
 
 ## Playtest evidence
 

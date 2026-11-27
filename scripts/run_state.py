@@ -16,7 +16,7 @@ SCHEMA_VERSION=9
 DEFAULT_BUDGETS={
     "max_cycles":3,
     "max_worker_dispatches":10,
-    "max_codex_dispatches":12,
+    "max_gemini_dispatches":12,
     "max_review_dispatches":14,
     "max_model_escalations":3,
     "max_pr_repair_cycles":3,
@@ -97,7 +97,7 @@ def normalize(d):
         if k not in d["budgets"]:
             d["budgets"][k]=v; changed=True
     d.setdefault("usage",{})
-    for k in ["worker_dispatches","codex_dispatches","review_dispatches","model_escalations","pr_repair_cycles"]:
+    for k in ["worker_dispatches","gemini_dispatches","review_dispatches","model_escalations","pr_repair_cycles"]:
         if k not in d["usage"]:
             d["usage"][k]=0; changed=True
     return d,changed
@@ -122,7 +122,7 @@ def init(run,run_id):
         "pending":[],
         "worktrees":[],
         "budgets":DEFAULT_BUDGETS.copy(),
-        "usage":{"worker_dispatches":0,"codex_dispatches":0,"review_dispatches":0,"model_escalations":0,"pr_repair_cycles":0},
+        "usage":{"worker_dispatches":0,"gemini_dispatches":0,"review_dispatches":0,"model_escalations":0,"pr_repair_cycles":0},
         "model_policy":{},
         "model_assignments":{},
         "orchestration":{"mode":"delegated-control-plane","product_writes":"workers-only"},
@@ -288,7 +288,7 @@ def main():
     a=sp.add_parser("show"); a.add_argument("--run-dir",required=True)
     a=sp.add_parser("transition"); a.add_argument("--run-dir",required=True); a.add_argument("--phase",required=True); a.add_argument("--status"); a.add_argument("--cycle",type=int)
     a=sp.add_parser("set"); a.add_argument("--run-dir",required=True); a.add_argument("--key",required=True); a.add_argument("--json",required=True)
-    a=sp.add_parser("consume"); a.add_argument("--run-dir",required=True); a.add_argument("--kind",choices=["worker","codex","review","model-escalation","pr-repair"],required=True); a.add_argument("--count",type=int,default=1)
+    a=sp.add_parser("consume"); a.add_argument("--run-dir",required=True); a.add_argument("--kind",choices=["worker","gemini","review","model-escalation","pr-repair"],required=True); a.add_argument("--count",type=int,default=1)
     a=sp.add_parser("lock"); a.add_argument("--run-dir",required=True); a.add_argument("--break-stale",action="store_true"); a.add_argument("--stale-seconds",type=int,default=21600)
     a=sp.add_parser("unlock"); a.add_argument("--run-dir",required=True)
     a=sp.add_parser("cleanup-worktrees"); a.add_argument("--run-dir",required=True); a.add_argument("--repo",default=".")
@@ -439,9 +439,9 @@ def main():
         cur[parts[-1]]=json.loads(args.json)
 
     elif args.cmd=="consume":
-        if d.get("status")=="BLOCKED" and (d.get("blocker") or {}).get("code")=="SPEC_BLOCKED" and args.kind in ("worker","codex","review","model-escalation"):
+        if d.get("status")=="BLOCKED" and (d.get("blocker") or {}).get("code")=="SPEC_BLOCKED" and args.kind in ("worker","gemini","review","model-escalation"):
             die("cannot consume implementation/model/review budget while SPEC_BLOCKED",5)
-        if args.kind in ("worker","codex","review","model-escalation"):
+        if args.kind in ("worker","gemini","review","model-escalation"):
             problem=plan_gate_problem(d)
             if problem:
                 if d.get("plan_approval",{}).get("status")=="APPROVED":
@@ -450,7 +450,7 @@ def main():
                 die(f"cannot consume {args.kind} budget: {problem}",5)
         mapping={
             "worker":("worker_dispatches","max_worker_dispatches"),
-            "codex":("codex_dispatches","max_codex_dispatches"),
+            "gemini":("gemini_dispatches","max_gemini_dispatches"),
             "review":("review_dispatches","max_review_dispatches"),
             "model-escalation":("model_escalations","max_model_escalations"),
             "pr-repair":("pr_repair_cycles","max_pr_repair_cycles"),

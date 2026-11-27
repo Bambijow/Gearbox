@@ -23,7 +23,7 @@ def compare(report: dict) -> dict:
         if not isinstance(row, dict) or not FIELDS <= row.keys():
             raise ValueError("observation missing fields")
         arm = row["arm"]
-        if arm not in ("baseline", "candidate") or row["provider"] not in ("codex", "claude"):
+        if arm not in ("baseline", "candidate") or row["provider"] not in ("gemini", "claude"):
             raise ValueError("invalid arm/provider")
         if not all(isinstance(row[k], str) and row[k] for k in ("model", "effort", "scenario", "isolation", "evidence")):
             raise ValueError("model/effort/scenario/isolation/evidence must be nonempty strings")
@@ -67,7 +67,7 @@ def self_test():
     rows = []
     for n in range(1, 4):
         for arm in ("baseline", "candidate"):
-            rows.append(dict(arm=arm, provider="codex", model="gpt-6.2-sol",
+            rows.append(dict(arm=arm, provider="gemini", model="gemini-4-neon-medium",
                              effort="medium", scenario="safe", repeat=n, **{"pass": True},
                              negative_control=True, artifacts_verified=True,
                              isolation="private-home-and-provider-config", evidence=f"receipt-{arm}-{n}.json"))

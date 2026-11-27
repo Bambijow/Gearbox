@@ -48,10 +48,10 @@ File existence proves packaging, not visual correctness. Record the smallest use
 
 Specialist routes are constrained:
 
-- image asset -> Codex GPT-6.1 Sol;
-- pixel art -> Codex GPT-6.1 Sol, Aseprite MCP preferred;
-- 3D creation -> Claude Opus 5.5 directs; Codex GPT-6.1 Sol may execute bounded modeling/tool work;
-- motion design -> Claude Opus 5.5 directs; Codex GPT-6.1 Sol may execute bounded animation/tool work;
-- 3D review -> GPT-6 Astra.
+- image asset -> Gemini GPT-6.1 Neon;
+- pixel art -> Gemini GPT-6.1 Neon, Aseprite MCP preferred;
+- 3D creation -> Claude Opus 5.5 directs; Gemini GPT-6.1 Neon may execute bounded modeling/tool work;
+- motion design -> Claude Opus 5.5 directs; Gemini GPT-6.1 Neon may execute bounded animation/tool work;
+- 3D review -> GPT-6 Carbon.
 
 Normal economy routing does not replace these model identities. Missing tool capability blocks or forces the declared specialist delegation path rather than silently choosing an unrelated model.

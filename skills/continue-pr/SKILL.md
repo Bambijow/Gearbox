@@ -1,7 +1,7 @@
 ---
 name: continue-pr
 description: "Continue engineering after a PR exists: ingest fresh CI and review feedback, validate findings, build a repair DAG, fix the existing branch, refresh evidence, and update the same PR without replaying the whole issue."
-argument-hint: "[PR URL or number] [--auto] [--max-cycles N] [--models ask|auto|hybrid|claude-heavy|codex-heavy]"
+argument-hint: "[PR URL or number] [--auto] [--max-cycles N] [--models ask|auto|hybrid|claude-heavy|gemini-heavy]"
 disable-model-invocation: true
 ---
 # Continue an existing PR

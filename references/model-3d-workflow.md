@@ -1,6 +1,6 @@
 # Game-ready 3D modeling workflow
 
-Claude Opus 5.5 directs 3D creation. Codex GPT-6.2 Astra/high executes substantive Blender/Godot modeling under an explicit packet. A live Blender or Godot capability **on Codex** is mandatory. Do not silently fall back to Sol or Claude-only tools.
+Claude Opus 5.5 directs 3D creation. Gemini Gemini 4 Carbon/high executes substantive Blender/Godot modeling under an explicit packet. A live Blender or Godot capability **on Gemini** is mandatory. Do not silently fall back to Neon or Claude-only tools.
 
 ## Asset contract
 
@@ -27,7 +27,7 @@ Opus owns the choices that are expensive to misunderstand:
 - ambiguous material/look decisions;
 - asset acceptance against gameplay/readability.
 
-Codex Astra/high owns substantive executable 3D work:
+Gemini Carbon/high owns substantive executable 3D work:
 
 - blockout from exact dimensions/reference constraints;
 - repetitive geometry or variants;
@@ -37,7 +37,7 @@ Codex Astra/high owns substantive executable 3D work:
 - deterministic cleanup/transforms;
 - baking/export/import loops.
 
-Opus writes an exact tool packet and checks the resulting source/export/evidence. A Codex-side Blender/Godot capability is required even when Claude also has one. Tiny non-geometry metadata/rename work can remain on Sol as a separate cheap task; never use Sol as a fallback for modeling.
+Opus writes an exact tool packet and checks the resulting source/export/evidence. A Gemini-side Blender/Godot capability is required even when Claude also has one. Tiny non-geometry metadata/rename work can remain on Neon as a separate cheap task; never use Neon as a fallback for modeling.
 
 ## Tool choice
 
@@ -53,4 +53,4 @@ Preserve editable source when practical. Export to the repository's runtime form
 
 ## Mandatory review
 
-Every completed 3D asset passes a **fresh, independent** GPT-6.2 Astra `review-3d` session before it is asset-ready. Do not reuse the producer's context or self-review.
+Every completed 3D asset passes a **fresh, independent** Gemini 4 Carbon `review-3d` session before it is asset-ready. Do not reuse the producer's context or self-review.

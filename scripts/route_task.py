@@ -22,13 +22,13 @@ def load_registry()->dict:
 def route_task(
     task_kind:str,
     claude_capabilities:list[str],
-    codex_capabilities:list[str],
+    gemini_capabilities:list[str],
     *,
     scope:str="surface",
     comp_policy:str="auto",
     image_generation_available:bool=False,
-    image_model:str="gpt-image-2.5-flare",
-    image_edit_model:str="gpt-image-2.5-sunburst",
+    image_model:str="configured-gemini-image-model",
+    image_edit_model:str="configured-gemini-image-edit-model",
 ):
     registry=load_registry()
     entry=registry.get("task_routes",{}).get(task_kind)
@@ -36,12 +36,12 @@ def route_task(
         raise SystemExit(f"no specialist route registered for task kind: {task_kind}")
     router=entry["router"]
     if router=="game_asset":
-        result=game_asset_router.route(task_kind,claude_capabilities,codex_capabilities)
+        result=game_asset_router.route(task_kind,claude_capabilities,gemini_capabilities)
     elif router=="web_design":
         result=web_design_router.route(
             scope,
             claude_capabilities,
-            codex_capabilities,
+            gemini_capabilities,
             comp_policy=comp_policy,
             image_generation_available=image_generation_available,
             image_generation_model=image_model,
@@ -62,7 +62,7 @@ def route_task(
 
 def self_test()->None:
     r=route_task("model-3d",["blender"],["blender"])
-    assert r["router_backend"]=="game_asset" and r["route"]["model"]=="claude-opus-5-5"
+    assert r["router_backend"]=="game_asset" and r["route"]["model"]=="gemini-4-carbon-high"
     r=route_task("creative-web",["inspo"],["browser"],image_generation_available=True)
     assert r["router_backend"]=="web_design" and r["route"]["creative"] is True
     r=route_task("video-create",["fal-video"],[])
@@ -78,18 +78,18 @@ def main()->int:
     ap.add_argument("--task-kind")
     ap.add_argument("--scope",choices=("refine","surface","redesign"),default="surface")
     ap.add_argument("--claude-capability",action="append",default=[])
-    ap.add_argument("--codex-capability",action="append",default=[])
+    ap.add_argument("--gemini-capability",action="append",default=[])
     ap.add_argument("--comp",choices=("auto","require","skip"),default="auto")
     ap.add_argument("--image-generation-available",action="store_true")
-    ap.add_argument("--image-model",default="gpt-image-2.5-flare")
-    ap.add_argument("--image-edit-model",default="gpt-image-2.5-sunburst")
+    ap.add_argument("--image-model",default="configured-gemini-image-model")
+    ap.add_argument("--image-edit-model",default="configured-gemini-image-edit-model")
     args=ap.parse_args()
     if args.self_test:
         self_test(); return 0
     if not args.task_kind:
         ap.error("--task-kind is required")
     payload=route_task(
-        args.task_kind,args.claude_capability,args.codex_capability,
+        args.task_kind,args.claude_capability,args.gemini_capability,
         scope=args.scope,
         comp_policy=args.comp,
         image_generation_available=args.image_generation_available,
