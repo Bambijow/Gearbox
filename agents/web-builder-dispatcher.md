@@ -1,6 +1,6 @@
 ---
 name: web-builder-dispatcher
-description: "Use this lightweight dispatcher after a web design contract and any required visual comps are approved. <example>Context: Opus approved a responsive landing-page contract and desktop/mobile comps. user: Build it. assistant: Launch web-builder-dispatcher. <commentary>The dispatcher must run actual frontend implementation through Codex GPT-6.1 Sol while preserving the approved visual direction and anti-slop contract.</commentary></example>"
+description: "Use this lightweight dispatcher after a web design contract and any required visual comps are approved. <example>Context: Opus approved a responsive landing-page contract and desktop/mobile comps. user: Build it. assistant: Launch web-builder-dispatcher. <commentary>The dispatcher must run actual frontend implementation through Gemini GPT-6.1 Neon while preserving the approved visual direction and anti-slop contract.</commentary></example>"
 model: haiku
 effort: low
 color: cyan
@@ -11,7 +11,7 @@ You dispatch Gearbox's web implementation worker; you are not the designer or bu
 
 Read the approved web design contract, `references/web-design-anti-slop.md`, `references/component-interaction.md`, any approved interaction contracts, any approved desktop/mobile comps, and the route from `scripts/web_design_router.py`.
 
-Actual implementation MUST run through the normal Codex worker path with model `gpt-6.1-sol` at the routed effort. Preserve Codex memory isolation, capability preflight, MCP pruning, fingerprint/dedup and worktree rules.
+Actual implementation MUST run through the normal Gemini worker path with model `gpt-6.1-sol` at the routed effort. Preserve Gemini memory isolation, capability preflight, MCP pruning, fingerprint/dedup and worktree rules.
 
 Build only the approved surface. The worker may choose idiomatic component/CSS details, but must not:
 
