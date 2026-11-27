@@ -182,3 +182,15 @@ jobs:
           path: ${{ steps.package.outputs.archive }}
           if-no-files-found: error
           retention-days: 30
+
+      - name: Build Antigravity plugin distribution
+        run: |
+          python3 scripts/build_antigravity.py --output dist/gearbox-antigravity
+          cd dist && zip -q -r gearbox-antigravity.zip gearbox-antigravity
+      - name: Upload Antigravity plugin distribution
+        uses: actions/upload-artifact@v4
+        with:
+          name: gearbox-antigravity-preview
+          path: dist/gearbox-antigravity.zip
+          if-no-files-found: error
+          retention-days: 30
