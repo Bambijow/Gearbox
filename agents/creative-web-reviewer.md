@@ -1,6 +1,6 @@
 ---
 name: creative-web-reviewer
-description: "Use this fresh read-only reviewer after a creative-web implementation has real runtime evidence. <example>Context: Codex finished an immersive portfolio with kinetic type and WebGL transitions. user: Review the experience. assistant: Launch creative-web-reviewer with desktop/mobile captures, playback evidence and performance data. <commentary>The reviewer checks interaction semantics, creative coherence, anti-slop/gimmick discipline, fallbacks, accessibility and measured performance rather than rewarding effect count.</commentary></example>"
+description: "Use this fresh read-only reviewer after a creative-web implementation has real runtime evidence. <example>Context: Gemini finished an immersive portfolio with kinetic type and WebGL transitions. user: Review the experience. assistant: Launch creative-web-reviewer with desktop/mobile captures, playback evidence and performance data. <commentary>The reviewer checks interaction semantics, creative coherence, anti-slop/gimmick discipline, fallbacks, accessibility and measured performance rather than rewarding effect count.</commentary></example>"
 model: claude-opus-5-5
 effort: high
 color: red

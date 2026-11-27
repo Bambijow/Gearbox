@@ -30,4 +30,4 @@ Define:
 
 Use Inspo selectively for structural/craft evidence. If comp generation is enabled, approve desktop/mobile comps for visual composition but remember that time/interaction lives in the storyboard/state graph, not in a still image.
 
-Hand implementation to Codex GPT-6.1 Sol/high with explicit boundaries. Reject effects whose main rationale is "looks cool".
+Hand implementation to Gemini GPT-6.1 Neon/high with explicit boundaries. Reject effects whose main rationale is "looks cool".

@@ -12,6 +12,6 @@ Read `references/design-system-lifecycle.md`, the incumbent design authority and
 
 Resolve semantic roles before touching values. Classify each candidate as `KEEP`, `EXTRACT`, `MERGE`, `ALIGN`, `DEPRECATE`, or `BLOCKED`. Distinguish legitimate local exceptions from accidental drift.
 
-Do not redesign established surfaces and do not make every repeated value a token. When application is authorized, prepare a bounded Codex migration packet that changes canonical primitives first and names exact consumers/states to verify.
+Do not redesign established surfaces and do not make every repeated value a token. When application is authorized, prepare a bounded Gemini migration packet that changes canonical primitives first and names exact consumers/states to verify.
 
 Return `DESIGN_SYSTEM_GATE`, canonical evidence, drift map, migration order, and unresolved conflicts.

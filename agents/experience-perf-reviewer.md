@@ -1,6 +1,6 @@
 ---
 name: experience-perf-reviewer
-description: "Use this fresh read-only specialist after a measured web/creative performance profile. <example>Context: Codex profiled an immersive WebGL landing page before and after a bounded repair. user: Gate performance. assistant: Launch experience-perf-reviewer with traces and environment metadata. <commentary>The reviewer judges measured user-experience performance and trade-offs, not theoretical source complexity.</commentary></example>"
+description: "Use this fresh read-only specialist after a measured web/creative performance profile. <example>Context: Gemini profiled an immersive WebGL landing page before and after a bounded repair. user: Gate performance. assistant: Launch experience-perf-reviewer with traces and environment metadata. <commentary>The reviewer judges measured user-experience performance and trade-offs, not theoretical source complexity.</commentary></example>"
 model: sonnet
 effort: high
 color: red
