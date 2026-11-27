@@ -1,6 +1,6 @@
 # Gearbox
 
-Gearbox est un plugin Claude Code d'orchestration d'ingénierie, design produit et production game-dev. Il transforme une idée, une spec ou une issue GitHub en boucle contrôlée : clarification, plan/DAG, classification déterministe des surfaces, quality-plan compilé, routage Claude/Codex, contexts bornés, evidence partagée, tests crédibles, gates design/interaction/a11y/perf, production d'assets, vérification et mémoire durable.
+Gearbox est un plugin Claude Code d'orchestration d'ingénierie, design produit et production game-dev. Il transforme une idée, une spec ou une issue GitHub en boucle contrôlée : clarification, plan/DAG, classification déterministe des surfaces, quality-plan compilé, routage Claude/Gemini, contexts bornés, evidence partagée, tests crédibles, gates design/interaction/a11y/perf, production d'assets, vérification et mémoire durable.
 
 Le thread Claude principal agit comme **control plane** : il analyse, planifie, route, inspecte et arbitre, mais il ne modifie pas le code produit pendant un run orchestré. Les changements sont délégués à des workers et agents spécialisés, puis revus par le fournisseur opposé en mode `hybrid`. Un worker n'est candidat que s'il possède les MCP/outils externes requis par sa tâche.
 
@@ -107,7 +107,7 @@ Pour continuer également après l'ouverture de la PR :
 
 | Commande | Quand l'utiliser | Ce qu'elle fait exactement |
 | --- | --- | --- |
-| `/gearbox:setup` | Première utilisation sur un repository, ou migration de configuration | Analyse les conventions du repo, détecte tests/lint/typecheck/build/e2e, GitHub, Codex et Ponytail, initialise `.gearbox/config.md`, la politique de risque, les budgets, les modèles Claude/Codex et l'index `docs/solutions/`. Le setup ne modifie pas le produit. |
+| `/gearbox:setup` | Première utilisation sur un repository, ou migration de configuration | Analyse les conventions du repo, détecte tests/lint/typecheck/build/e2e, GitHub, Gemini et Ponytail, initialise `.gearbox/config.md`, la politique de risque, les budgets, les modèles Claude/Gemini et l'index `docs/solutions/`. Le setup ne modifie pas le produit. |
 | `/gearbox:wayfinder <idée-ou-map>` | Pour une initiative trop grande ou trop incertaine pour converger honnêtement en une seule spec | Cartographie la destination et les **decision tickets** sans implémenter. Sépare recherche, prototype, décision humaine et prérequis ; garde le brouillard non encore spécifiable dans la map ; exécute les recherches indépendantes via `researcher` ; maintient une ready frontier de décisions ; puis handoff vers shaping/plan/loop quand il ne reste plus de décision matérielle à inventer. `--create` matérialise la map/issues GitHub et `--auto-research` peut lancer les recherches indépendantes. |
 | `/gearbox:brainstorm "<idée>"` | Quand le besoin est encore flou | Classe d’abord le travail en **spike**, **bounded**, **architectural** ou **wayfinder**. Un spike produit une réponse/probe sans spec ni code produit ; un bounded reste léger ; l’architectural suit le flux spec complet ; un gros brouillard est redirigé vers Wayfinder. Avec `--issue`/`--ship`, Gearbox matérialise le contrat durable nécessaire avant implémentation. |
 | `/gearbox:shape <demande>` | Quand la demande est connue mais pas encore assez précise pour coder | Transforme une feature, une issue ou une demande en spec décisionnellement complète. Distingue ce qui peut être déduit du repo, ce qui peut être assumé de façon réversible, et ce qui exige une question utilisateur. Ne lance aucun worker tant que la spec est `SPEC_BLOCKED`. |
@@ -124,14 +124,14 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:dogfood <parcours>` | Avant livraison d'une UX, ou pour éprouver un produit comme un vrai utilisateur | Suit un persona et un parcours réels plutôt qu'une simple checklist de tests. Observe comportement, erreurs console/réseau, états vides/erreurs, accessibilité et frictions ; conserve captures et preuves ; distingue défaut fonctionnel, dette UX et polish. `--fix` délègue seulement les corrections acceptées. |
 | `/gearbox:test-harden <scope>` | Quand des tests verts protègent un invariant à fort coût d'échec | Complète le Test Credibility Gate par mutations ciblées, propriétés/invariants et fuzzing borné quand les outils du repo le permettent. Cherche surtout les tests qui survivent à une faute plausible ; ne transforme pas le coverage ou le mutation score en objectif vanity. |
 | `/gearbox:clean-tests [scope] [--apply]` | Quand une suite historique contient doublons, anciens tests ou cas devenus peu utiles | Audit indépendant via `test-curator`. Classe `KEEP/MERGE/DELETE/REWRITE/BLOCKED`, exige une preuve de comportement/invariant avant toute suppression, et reste report-only sans `--apply`. Avec `--apply`, ne modifie que tests/fixtures/helpers de test puis rerun les checks ciblés. |
-| `/gearbox:asset-image <brief>` | Créer une image 2D game-ready hors pixel art | Route forcée vers Codex GPT-6.2 Sol. Le brief fixe dimensions, alpha, art direction, cible moteur et chemins source/export ; aucun fallback Claude n'est autorisé. |
-| `/gearbox:pixel-art <brief>` | Sprites, tiles, icons ou animation pixel art | Route forcée Codex GPT-6.2 Sol. Utilise Aseprite MCP quand disponible ; sinon fallback génération directe Sol, avec dimensions/palette/frames vérifiées. |
-| `/gearbox:model-3d <brief>` | Créer un modèle/prop/scène 3D game-ready | Opus 5.5/high garde la direction, les choix de silhouette/topologie/rig et l'acceptation. La production 3D substantielle est confiée à Codex GPT-6.2 Astra/high avec Blender/Godot disponible côté Codex. Chaque asset passe ensuite obligatoirement le gate `/gearbox:review-3d`. |
-| `/gearbox:motion-design <brief>` | UI motion, caméra, boucles, animated props, transitions ou animation 2D/3D | Opus 5.5 dirige timing, hiérarchie et mouvement. Codex GPT-6.2 Astra/high exécute les animations 3D via Blender/Godot ; Sol reste possible pour les animations non-3D. Les motions qui modifient un asset/rig 3D passent aussi par la review Astra. |
+| `/gearbox:asset-image <brief>` | Créer une image 2D game-ready hors pixel art | Route forcée vers Gemini Gemini 4 Neon. Le brief fixe dimensions, alpha, art direction, cible moteur et chemins source/export ; aucun fallback Claude n'est autorisé. |
+| `/gearbox:pixel-art <brief>` | Sprites, tiles, icons ou animation pixel art | Route forcée Gemini Gemini 4 Neon. Utilise Aseprite MCP quand disponible ; sinon fallback génération directe Neon, avec dimensions/palette/frames vérifiées. |
+| `/gearbox:model-3d <brief>` | Créer un modèle/prop/scène 3D game-ready | Opus 5.5/high garde la direction, les choix de silhouette/topologie/rig et l'acceptation. La production 3D substantielle est confiée à Gemini Gemini 4 Carbon/high avec Blender/Godot disponible côté Gemini. Chaque asset passe ensuite obligatoirement le gate `/gearbox:review-3d`. |
+| `/gearbox:motion-design <brief>` | UI motion, caméra, boucles, animated props, transitions ou animation 2D/3D | Opus 5.5 dirige timing, hiérarchie et mouvement. Gemini Gemini 4 Carbon/high exécute les animations 3D via Blender/Godot ; Neon reste possible pour les animations non-3D. Les motions qui modifient un asset/rig 3D passent aussi par la review Carbon. |
 | `/gearbox:simplify [diff]` | Après intégration, pour réduire le code | Lance un agent frais de simplification. Utilise Ponytail s'il est installé ; sinon applique la discipline interne Gearbox : supprimer duplication, wrappers et abstractions inutiles, préférer stdlib/framework/existant, conserver validation, sécurité et accessibilité. Rejoue ensuite les checks nécessaires. |
 | `/gearbox:review [diff-ou-PR]` | Pour une review indépendante | Vérifie spec/correctness/sécurité/tests/opérations et calibre les findings par failure path + failure cost. Dans la boucle orchestrée, la review finale est routée `lite / focused / full` selon la conséquence : pas de nouveau reviewer si les task reviews suffisent, un adversarial reviewer pour le risque silencieux, spine complète uniquement sur les frontières à fort impact. |
 | `/gearbox:security-audit <scope>` | Pour auth, permissions, secrets, crypto, parsers, uploads, désérialisation, données sensibles ou autre frontière de confiance | Construit un mini threat model, cartographie entrées/trust boundaries/actifs, inspecte le diff et les appels adjacents, puis utilise les analyseurs disponibles (Semgrep/CodeQL/etc.) de façon ciblée. Les findings doivent décrire un chemin d'exploitation concret, l'impact et une preuve ; pas de pluie de best practices génériques. |
-| `/gearbox:review-3d <asset>` | Gate de production d'un asset 3D | Review read-only forcée GPT-6.2 Astra, avec Blender/Godot pour inspecter géométrie, transforms, UVs, matériaux, budgets, rig/collision/LOD et import moteur. Aucun downgrade Sol/Claude. |
+| `/gearbox:review-3d <asset>` | Gate de production d'un asset 3D | Review read-only forcée Gemini 4 Carbon, avec Blender/Godot pour inspecter géométrie, transforms, UVs, matériaux, budgets, rig/collision/LOD et import moteur. Aucun downgrade Neon/Claude. |
 | `/gearbox:learn <leçon>` | Après une découverte non évidente qui mérite d'être conservée | Écrit/réconcilie `docs/solutions/` et peut ajouter `retire_when` quand la guidance dépend d’un bug/version/service externe. Régénère l’index puis passe l’audit déterministe de frontmatter/index. |
 | `/gearbox:clean-solutions [scope]` | Maintenance périodique de `docs/solutions/` | Audite métadonnées/index, vérifie en priorité les `retire_when` satisfaits, puis confronte la mémoire au code/tests/specs/ADRs. Classe en `KEEP`, `REFRESH`, `MERGE`, `DELETE` ou `BLOCKED`. `--dry-run` reste disponible. |
 | `/gearbox:skill-doctor [scope]` | Quand le plugin/CLAUDE.md/AGENTS.md commence à accumuler règles, skills ou prompts | Audite triggers et descriptions, collisions/recouvrements, taille des prompts, progressive disclosure, références mortes, règles qui devraient devenir déterministes et trous d'evals. Préfère fusionner/réduire avant d'ajouter une nouvelle skill. `--fix` applique uniquement les remèdes bornés et vérifiables. |
@@ -158,9 +158,9 @@ npx rea-agents@latest setup --client claude_code --skill=false --dry-run
 npx rea-agents@latest setup --client claude_code --skill=false
 ```
 
-Redémarrer Claude Code, vérifier `claude mcp list` puis `/mcp`. Le setup standard est au niveau utilisateur ; le guide explique aussi l’installation locale à un projet, les profils, PowerShell et l’épinglage de version entre plan et application. Ajouter `--client codex` au plan uniquement si les workers Codex doivent accéder à REA.
+Redémarrer Claude Code, vérifier `claude mcp list` puis `/mcp`. Le setup standard est au niveau utilisateur ; le guide explique aussi l’installation locale à un projet, les profils, PowerShell et l’épinglage de version entre plan et application. Ajouter `--client gemini` au plan uniquement si les workers Gemini doivent accéder à REA.
 
-**La détection distingue quatre niveaux : paquet présent, MCP configuré, connexion active, opération disponible.** L’agent découvre les outils réels et utilise le `binary_session` REA disponible pour consulter l’identité et les capacités de cette session. `doctor` et l’inventaire Codex sont des diagnostics de configuration, pas cette preuve live. Ghidra/Hopper/IDA ne sont nécessaires que pour les analyses qui les demandent.
+**La détection distingue quatre niveaux : paquet présent, MCP configuré, connexion active, opération disponible.** L’agent découvre les outils réels et utilise le `binary_session` REA disponible pour consulter l’identité et les capacités de cette session. `doctor` et l’inventaire Gemini sont des diagnostics de configuration, pas cette preuve live. Ghidra/Hopper/IDA ne sont nécessaires que pour les analyses qui les demandent.
 
 Guide complet : **[Reverse engineering avec Gearbox et REA](docs/reverse-engineering-rea.md)**. Il couvre prérequis, détection, installation, vérification sans cible, moteurs, transfert de comportement, preuves, sécurité, mises à jour, désinstallation et dépannage. La capture REA n’est pas un sandbox ; aucune installation ni exécution de cible n’est autorisée par sa seule disponibilité.
 
@@ -171,11 +171,11 @@ Guide complet : **[Reverse engineering avec Gearbox et REA](docs/reverse-enginee
 | `--auto` | Automatise les décisions d'ingénierie raisonnables, **saute le checkpoint humain d'approbation du plan** et autorise les repair cycles bornés. N'autorise jamais Gearbox à inventer une décision produit/métier ou à franchir les gates destructifs. |
 | `--ship` | Continue jusqu'au commit, push et création/mise à jour de la PR. |
 | `--follow-pr` | Après le ship, continue sur les échecs CI et retours de review dans les budgets définis. |
-| `--models hybrid` | Autorise Gearbox à choisir Claude ou Codex tâche par tâche. En hybrid, l'implémentation est revue par le fournisseur opposé. |
-| `--models claude-heavy` | Favorise Claude pour l'implémentation, tout en pouvant garder Codex comme reviewer/outillage si disponible. |
-| `--models codex-heavy` | Favorise Codex pour l'implémentation. |
+| `--models hybrid` | Autorise Gearbox à choisir Claude ou Gemini tâche par tâche. En hybrid, l'implémentation est revue par le fournisseur opposé. |
+| `--models claude-heavy` | Favorise Claude pour l'implémentation, tout en pouvant garder Gemini comme reviewer/outillage si disponible. |
+| `--models gemini-heavy` | Favorise Gemini pour l'implémentation. |
 | `--models ask` | Force un nouveau choix interactif de politique modèles pour le run courant. |
-| `--no-codex` | Désactive Codex pour ce run. |
+| `--no-gemini` | Désactive Gemini pour ce run. |
 | `--workers N` | Limite le nombre de workers parallèles. |
 | `--max-cycles N` | Limite le nombre de repair cycles. |
 | `--token-profile efficient` | Profil par défaut : contexte borné, handoffs par fichiers, reviews proportionnées au risque. |
@@ -190,7 +190,7 @@ Par défaut, un run substantiel sépare **planifier** et **autoriser l'implémen
 → spec / clarification
 → reconnaissance
 → plan lean + DAG
-→ routing Claude/Codex + reviewers
+→ routing Claude/Gemini + reviewers
 → hash du plan
 → PLAN_APPROVAL_REQUIRED
 → STOP
@@ -304,7 +304,7 @@ Chaque `skills/*/SKILL.md` a un plafond de bytes dans `prompt-budgets.json`. `sc
 
 `evals/behavior/` couvre les comportements que les validateurs de fichiers ne peuvent pas voir : plan qui recommence à transcrire du code, brainstorm qui transforme un spike en spec, délégation auxiliaire inutile, review trop défensive, etc.
 
-Le CI normal valide les scénarios et le harness seulement. Il **ne lance jamais Claude/Codex et ne dépense aucun token modèle**. Les campagnes comportementales se lancent explicitement/localement avec `scripts/behavior_eval.py`.
+Le CI normal valide les scénarios et le harness seulement. Il **ne lance jamais Claude/Gemini et ne dépense aucun token modèle**. Les campagnes comportementales se lancent explicitement/localement avec `scripts/behavior_eval.py`.
 
 ### Findings canoniques
 
@@ -501,12 +501,12 @@ design contract
    + optional Inspo evidence
    + anti-slop gate
           ↓
-Codex Sol comp pass (surface/redesign when available)
+Gemini Neon comp pass (surface/redesign when available)
    → GPT Image desktop + mobile comps
           ↓
 Opus approval
           ↓
-Codex GPT-6.2 Sol implementation
+Gemini Gemini 4 Neon implementation
           ↓
 desktop + mobile renders
           ↓
@@ -517,55 +517,55 @@ dogfood when the surface owns a user journey
 
 Le directeur classe la surface en `Persuade`, `Operate`, `Read` ou `Experience`, puis en `refine`, `surface` ou `redesign`. Une demande locale ne peut pas devenir une refonte implicite. Pour `surface`/`redesign`, il doit nommer la category rut, choisir des écarts ancrés dans le produit et un signature device réel. Inspo sert à comparer de vraies références, jamais à moyenner des sites à la mode.
 
-Quand la génération image est disponible, `surface`/`redesign` passe par une paire de comps desktop/mobile générée sous orchestration Codex Sol depuis le design system ; le renderer par défaut est `gpt-image-2.5-flare`, avec `gpt-image-2.5-sunburst` pour l'unique correction ciblée. Le raster gouverne composition/hiérarchie, jamais la vérité produit ou le copy exact. La finition reste bornée et exige `SLOP_GATE`, `INTERACTION_GATE` et `A11Y_GATE`; elle ajoute CONTENT/DESIGN_SYSTEM/VISUAL_REGRESSION seulement quand ces surfaces ont réellement changé.
+Quand la génération image est disponible, `surface`/`redesign` passe par une paire de comps desktop/mobile générée sous orchestration Gemini Neon depuis le design system ; le renderer par défaut est `gpt-image-2.5-flare`, avec `gpt-image-2.5-sunburst` pour l'unique correction ciblée. Le raster gouverne composition/hiérarchie, jamais la vérité produit ou le copy exact. La finition reste bornée et exige `SLOP_GATE`, `INTERACTION_GATE` et `A11Y_GATE`; elle ajoute CONTENT/DESIGN_SYSTEM/VISUAL_REGRESSION seulement quand ces surfaces ont réellement changé.
 
 ## Game-dev asset lanes
 
 Gearbox possède désormais des lanes d'assets et de conception de jeu :
 
-- image 2D : Codex GPT-6.2 Sol ;
-- pixel art : Codex GPT-6.2 Sol + Aseprite MCP quand disponible, sinon génération directe Sol ;
-- modélisation 3D : Opus 5.5 dirige, Codex GPT-6.2 Astra/high exécute avec Blender/Godot côté Codex ;
-- motion design : Opus 5.5 dirige, Codex GPT-6.2 Astra/high pour la 3D, Sol pour le non-3D ;
-- review 3D : Codex GPT-6.2 Astra/high en read-only ;
+- image 2D : Gemini Gemini 4 Neon ;
+- pixel art : Gemini Gemini 4 Neon + Aseprite MCP quand disponible, sinon génération directe Neon ;
+- modélisation 3D : Opus 5.5 dirige, Gemini Gemini 4 Carbon/high exécute avec Blender/Godot côté Gemini ;
+- motion design : Opus 5.5 dirige, Gemini Gemini 4 Carbon/high pour la 3D, Neon pour le non-3D ;
+- review 3D : Gemini Gemini 4 Carbon/high en read-only ;
 - art direction : Opus 5.5 maintient la cohérence cross-media ;
-- audio design : Opus dirige, Codex câble les outils réellement disponibles ;
-- level design : Opus dirige, Codex blockoute, PLAYTEST_GATE tranche.
+- audio design : Opus dirige, Gemini câble les outils réellement disponibles ;
+- level design : Opus dirige, Gemini blockoute, PLAYTEST_GATE tranche.
 
-Les identités spécialistes ne sont pas remplacées par le routing économique. Pour la 3D, Gearbox exige Blender/Godot sur Codex et route l'exécution substantielle vers Astra, même si Claude possède aussi un MCP. Un asset 3D reste soumis à la review Astra.
+Les identités spécialistes ne sont pas remplacées par le routing économique. Pour la 3D, Gearbox exige Blender/Godot sur Gemini et route l'exécution substantielle vers Carbon, même si Claude possède aussi un MCP. Un asset 3D reste soumis à la review Carbon.
 
 ## Capability-aware execution
 
 Chaque tâche du DAG déclare `required_capabilities`, y compris `[]`. Gearbox élimine d'abord les providers qui n'ont pas les outils externes requis, puis choisit modèle/effort selon risque, ambiguïté, coût et vérifiabilité.
 
-Pour Codex, `/setup` inventorie `codex mcp list --json` sans persister commandes, URLs, variables d'environnement ou secrets. Juste avant chaque dispatch, Gearbox refait un preflight live. Avec `required-only`, `codex_worker.py --prune-mcp` conserve la config globale mais désactive pour ce worker tous les MCP non demandés.
+Pour Gemini, `/setup` inventorie `gemini mcp list --json` sans persister commandes, URLs, variables d'environnement ou secrets. Juste avant chaque dispatch, Gearbox refait un preflight live. Avec `required-only`, `gemini_worker.py --prune-mcp` conserve la config globale mais désactive pour ce worker tous les MCP non demandés.
 
-Chaque dispatch reçoit aussi un fingerprint stable (base SHA + packet + provider + modèle + effort + capacités). `children.json` bloque un doublon encore vivant/réutilisable et force une reconciliation. Les métadonnées Codex enregistrent aussi CLI/version, hashes du contexte, ensemble MCP actif et fingerprint d'environnement.
+Chaque dispatch reçoit aussi un fingerprint stable (base SHA + packet + provider + modèle + effort + capacités). `children.json` bloque un doublon encore vivant/réutilisable et force une reconciliation. Les métadonnées Gemini enregistrent aussi CLI/version, hashes du contexte, ensemble MCP actif et fingerprint d'environnement.
 
 ## Routing des modèles
 
 Gearbox route séparément le **fournisseur**, le **modèle** et l'**effort** pour chaque tâche.
 
-### Codex
+### Gemini
 
 Le registre par défaut reste volontairement petit :
 
 | Niveau | Modèle | Usage typique |
 | --- | --- | --- |
-| `bounded` | GPT-6 Luna | docs, changelog, mapping, fixtures, renommages, wiring simple |
-| `normal` | GPT-6.2 Sol | feature/bug normal, implémentation bornée multi-fichiers |
-| `deep` | GPT-6.2 Sol avec effort plus élevé | migrations, auth, concurrence, invariants de persistance, debug difficile |
-| `exceptional` | GPT-6.2 Astra | uniquement après vraie escalade ou cas exceptionnellement critique/ambigu |
+| `bounded` | Gemini 4 Hydrogen | docs, changelog, mapping, fixtures, renommages, wiring simple |
+| `normal` | Gemini 4 Neon | feature/bug normal, implémentation bornée multi-fichiers |
+| `deep` | Gemini 4 Neon avec effort plus élevé | migrations, auth, concurrence, invariants de persistance, debug difficile |
+| `exceptional` | Gemini 4 Carbon | uniquement après vraie escalade ou cas exceptionnellement critique/ambigu |
 
-Hors routes spécialistes forcées (notamment production et review 3D), Astra n'est pas choisi simplement parce qu'une tâche est « importante ». Gearbox augmente d'abord l'effort de Sol. Les tâches triviales ont un plafond dur qui les empêche d'atteindre Astra.
+Hors routes spécialistes forcées (notamment production et review 3D), Carbon n'est pas choisi simplement parce qu'une tâche est « importante ». Gearbox augmente d'abord l'effort de Neon. Les tâches triviales ont un plafond dur qui les empêche d'atteindre Carbon.
 
 ### Review croisée en mode hybrid
 
 En `hybrid`, chaque tâche est revue par **l'autre fournisseur** avant intégration :
 
 ```text
-Claude implémente → Codex review
-Codex implémente  → Claude review
+Claude implémente → Gemini review
+Gemini implémente  → Claude review
 ```
 
 Le reviewer reçoit seulement le packet de tâche, le diff et les preuves ciblées. Il n'hérite pas du raisonnement conversationnel de l'implémenteur.
@@ -646,7 +646,7 @@ Un gate valide ce rapport avant publication. Une simple liste de fichiers ne sat
 skills/             commandes `/gearbox:*`
 agents/             workers, reviewers, integrator, verifier, shipper, etc.
 hooks/              garde-fou control-plane
-scripts/            runtime Python : state, routing, Codex, evidence, worktrees, validations
+scripts/            runtime Python : state, routing, Gemini, evidence, worktrees, validations
 references/         protocoles partagés par les skills
 schemas/            contrats JSON si présents
 evals/              scénarios de régression du plugin

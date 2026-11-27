@@ -5,11 +5,11 @@ A web comp is a visual prototype of an already-decided design system. It is not 
 ## Ownership
 
 - Claude Opus 5.5 owns the design contract and approves the comp.
-- Codex GPT-6.1 Sol owns the comp-generation pass.
-- A GPT Image model renders the pixels under Codex orchestration.
+- Gemini GPT-6.1 Neon owns the comp-generation pass.
+- A GPT Image model renders the pixels under Gemini orchestration.
 - The final web builder receives both the approved contract and approved comps.
 
-Codex is the reasoning/execution owner of the pass; the GPT Image model is the rendering engine.
+Gemini is the reasoning/execution owner of the pass; the GPT Image model is the rendering engine.
 
 ## When to run
 
@@ -40,7 +40,7 @@ Never put credentials, private URLs, secrets, or unpublished customer data into 
 
 ## Design-system distillation
 
-Before generation, Codex distills the design system into a visual prompt packet:
+Before generation, Gemini distills the design system into a visual prompt packet:
 
 ```yaml
 identity:
@@ -168,7 +168,7 @@ The manifest records:
 
 - design-contract hash;
 - design-system/source pointers;
-- Codex model;
+- Gemini model;
 - image-generation/edit model;
 - prompt path;
 - output paths;
@@ -179,7 +179,7 @@ Do not persist raw secrets or API credentials.
 
 ## Build handoff
 
-The final Codex builder gets:
+The final Gemini builder gets:
 
 1. approved design contract;
 2. approved desktop/mobile comps;

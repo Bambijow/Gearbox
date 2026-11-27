@@ -1,6 +1,6 @@
 # Stateless worker contract
 
-Gearbox workers receive a bounded context packet. Every dispatch is preceded by a recorded engine/model/effort/risk assignment from `references/model-routing.md`; and return structured evidence. They do not inherit the orchestrator's conversation and must not guess missing architecture. Codex workers additionally run with an ephemeral session and memory use/generation disabled, while normal Codex configuration remains loaded so repository instructions and configured MCP capabilities can still be used. Read `references/control-plane.md`: workers, not the parent, own all product mutations in orchestrated runs.
+Gearbox workers receive a bounded context packet. Every dispatch is preceded by a recorded engine/model/effort/risk assignment from `references/model-routing.md`; and return structured evidence. They do not inherit the orchestrator's conversation and must not guess missing architecture. Gemini workers additionally run with an ephemeral session and memory use/generation disabled, while normal Gemini configuration remains loaded so repository instructions and configured MCP capabilities can still be used. Read `references/control-plane.md`: workers, not the parent, own all product mutations in orchestrated runs.
 
 ## Context packet
 
@@ -60,7 +60,7 @@ Include relevant symbol names and paths discovered by reconnaissance. Before dis
 
 For substantial dispatches, build the structured task descriptor and compile it with `scripts/context_compiler.py` according to `references/context-compilation.md`. Persist the packet hash/byte count under the task run directory and use that exact compiled packet for dispatch/fingerprinting.
 
-Do not independently rewrite the packet for Claude and Codex. Provider-specific wrappers may add mechanical invocation instructions, but requirements/ownership/pointers/verification stay identical.
+Do not independently rewrite the packet for Claude and Gemini. Provider-specific wrappers may add mechanical invocation instructions, but requirements/ownership/pointers/verification stay identical.
 
 Repairs receive the original packet pointer/hash plus the canonical finding, repair strategy and delta evidence. Resend broad context only when the finding proves the original packet omitted a required fact.
 
@@ -70,17 +70,17 @@ Each concurrent write worker gets its own git worktree and branch. The parent co
 
 Prefer one local task commit after focused verification, scoped strictly to owned paths, so accepted integration can be mechanical. If a local commit is unavailable, leave the worktree intact and report changed/untracked paths exactly. Workers never push, open PRs, merge, or change remote state. The parent never recreates the worker change by hand; the `integrator` agent applies accepted output.
 
-## Stateless Codex invocation
+## Stateless Gemini invocation
 
-Preferred execution uses `codex exec --ephemeral` with the worktree as cwd, a JSON output schema, and a last-message output file. `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/codex_worker.py"` wraps that shape when Gearbox is installed as a plugin. Pass the task's `owns`/`touches` paths as `--owned-path`; the wrapper records changes outside them as `ownership_violations` in the meta. The Codex sandbox cannot write a linked worktree's git metadata, so the wrapper tells the worker not to commit and commits the worktree itself after a non-failed run (`--commit-message`), updating `head_sha` in the result. It also consumes the run's codex/review budget, and appends provider-reported usage to `usage.json`.
+Preferred execution uses `gemini exec --ephemeral` with the worktree as cwd, a JSON output schema, and a last-message output file. `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/gemini_worker.py"` wraps that shape when Gearbox is installed as a plugin. Pass the task's `owns`/`touches` paths as `--owned-path`; the wrapper records changes outside them as `ownership_violations` in the meta. The Gemini sandbox cannot write a linked worktree's git metadata, so the wrapper tells the worker not to commit and commits the worktree itself after a non-failed run (`--commit-message`), updating `head_sha` in the result. It also consumes the run's gemini/review budget, and appends provider-reported usage to `usage.json`.
 
-Do not use Codex's own nested multi-agent orchestration for these workers. Gearbox owns the DAG and wants one disposable context per worker.
+Do not use Gemini's own nested multi-agent orchestration for these workers. Gearbox owns the DAG and wants one disposable context per worker.
 
 ## Acceptance
 
 A worker result is accepted only after the orchestrator verifies:
 
-- changed paths fit ownership (`ownership_violations` in the Codex meta is empty);
+- changed paths fit ownership (`ownership_violations` in the Gemini meta is empty);
 - diff implements the assigned spec slice;
 - test changes are legitimate and not weakened;
 - focused verification passes;
