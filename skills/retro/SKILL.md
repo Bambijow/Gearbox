@@ -128,9 +128,9 @@ Use Gearbox telemetry when available.
 
 Look for:
 
-- Luna tasks that repeatedly needed Sol;
-- Sol/high tasks that should have been split rather than escalated;
-- Astra use that did not buy anything;
+- Hydrogen tasks that repeatedly needed Neon;
+- Neon/high tasks that should have been split rather than escalated;
+- Carbon use that did not buy anything;
 - wrong provider choice for the task shape;
 - repair tasks caused by insufficient ownership boundaries;
 - workers modifying overlapping seams;
