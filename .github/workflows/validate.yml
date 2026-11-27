@@ -31,6 +31,8 @@ jobs:
         run: python3 scripts/gemini_worker.py --self-test
       - name: Validate Antigravity manifest and hook format
         run: python3 scripts/antigravity_validate.py --self-test
+      - name: Antigravity bundle self-test
+        run: python3 scripts/build_antigravity.py --self-test
       - name: Compile runtime scripts
         run: python3 -m compileall -q scripts
       - name: Orchestrator guard self-test
