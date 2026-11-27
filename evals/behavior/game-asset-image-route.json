@@ -1,5 +1,5 @@
 {
-  "name": "image assets force Codex Sol",
+  "name": "image assets force Gemini Sol",
   "context_files": [
     "skills/asset-image/SKILL.md",
     "references/game-asset-contract.md"
@@ -8,7 +8,7 @@
   "assertions": [
     {
       "type": "regex",
-      "value": "(?i)codex"
+      "value": "(?i)gemini"
     },
     {
       "type": "regex",
