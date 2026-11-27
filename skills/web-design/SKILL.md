@@ -1,6 +1,6 @@
 ---
 name: web-design
-description: "Design, redesign, or materially refine production web surfaces with an Opus 5.5 design director, optional Codex-driven high-fidelity comp generation from the design system, Codex GPT-6.1 Sol implementation, anti-AI-slop gates, responsive/accessibility constraints, and bounded rendered review."
+description: "Design, redesign, or materially refine production web surfaces with an Opus 5.5 design director, optional Gemini-driven high-fidelity comp generation from the design system, Gemini GPT-6.1 Neon implementation, anti-AI-slop gates, responsive/accessibility constraints, and bounded rendered review."
 argument-hint: "[brief/surface] [--scope refine|surface|redesign] [--comp auto|require|skip] [--apply]"
 ---
 
@@ -8,7 +8,7 @@ argument-hint: "[brief/surface] [--scope refine|surface|redesign] [--comp auto|r
 
 Read `references/web-design-contract.md`, `references/web-design-inspiration.md`, `references/web-design-anti-slop.md`, `references/component-interaction.md`, `references/design-system-lifecycle.md`, `references/content-design.md`, `references/accessibility-audit.md`, `references/semantic-visual-regression.md`, `references/experience-probe.md`, `references/orchestration-compilation.md`, `references/web-design-comp-generation.md`, and `references/web-design-review.md`.
 
-Resolve the lane with `scripts/web_design_router.py`. Opus 5.5/high owns visual direction and ambiguous design decisions. Codex GPT-6.1 Sol owns optional comp generation and final implementation. A fresh Claude reviewer judges rendered output.
+Resolve the lane with `scripts/web_design_router.py`. Opus 5.5/high owns visual direction and ambiguous design decisions. Gemini GPT-6.1 Neon owns optional comp generation and final implementation. A fresh Claude reviewer judges rendered output.
 
 First classify the surface mode: `Persuade`, `Operate`, `Read`, or `Experience`. Then classify scope:
 
@@ -28,7 +28,7 @@ Comp policy:
 - `require`: comp generation is mandatory or return `WEB_COMP_BLOCKED`;
 - `skip`: use the code-led path.
 
-The comp pass is owned by Codex Sol. It distills the approved design system/contract, then orchestrates a configured GPT Image renderer. Opus approves the pair before implementation. Exact product truth, copy, accessibility and behavior always outrank raster contents.
+The comp pass is owned by Gemini Neon. It distills the approved design system/contract, then orchestrates a configured GPT Image renderer. Opus approves the pair before implementation. Exact product truth, copy, accessibility and behavior always outrank raster contents.
 
 If the approved brief explicitly requires a rendered marketing/hero video, schedule `video-create` with its mandatory `asset-image` prerequisite when no approved reference still exists. Treat video output as an asset dependency; do not substitute native UI animation or incur fal.ai charges without model/budget approval. See `references/video-production.md`.
 
