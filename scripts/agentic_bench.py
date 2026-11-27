@@ -97,7 +97,7 @@ def gearbox_metrics(ws:Path) -> dict:
         "gearbox_phase":state.get("phase"),
         "gearbox_cycle":state.get("cycle"),
         "worker_dispatches":usage.get("worker_dispatches"),
-        "codex_dispatches":usage.get("codex_dispatches"),
+        "gemini_dispatches":usage.get("gemini_dispatches"),
         "review_dispatches":usage.get("review_dispatches"),
         "model_escalations":usage.get("model_escalations"),
         "pr_repair_cycles":usage.get("pr_repair_cycles"),

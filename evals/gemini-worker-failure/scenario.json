@@ -1,5 +1,5 @@
 {
-  "name": "codex-worker-failure",
+  "name": "gemini-worker-failure",
   "allowed_final_statuses": [
     "PASS",
     "BLOCKED",
@@ -8,6 +8,6 @@
   ],
   "required_evidence_kinds": [],
   "usage_max": {
-    "codex_dispatches": 6
+    "gemini_dispatches": 6
   }
 }
