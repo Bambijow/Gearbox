@@ -12,43 +12,13 @@ required_capabilities: []
 
 Use stable external capability names. For Gemini MCP-backed tools, the capability name is the MCP server name reported by `gemini mcp list --json` (for example `godot` or `blender`). Ordinary repository read/write/shell ability is part of the worker role and does not belong in this list. An empty list is meaningful: it authorizes minimal tool exposure for that task.
 
-## Setup inventory
+## Gemini / Claude capability discovery
 
-When Gemini is available, run:
+For Antigravity, call `python3 scripts/capabilities.py inventory --cwd <worktree>`. It reads `~/.gemini/config/mcp_config.json` and workspace `.agents/mcp_config.json` without persisting command arguments, URLs, environment variables or secrets. The output is a **configured-only** hint, not proof of an authenticated, usable live MCP.
 
-```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/capabilities.py" inventory --gemini-bin "<configured gemini>"
-```
+Use `scripts/capabilities.py route` to select eligible Gemini/Claude providers by declared capabilities. Immediately before any tool-dependent dispatch, require an independently observed live tool call or other provider-native proof. `gemini_worker.py` currently refuses required-capability dispatches unless that live preflight is implemented: report `CAPABILITY_BLOCKED`, never turn a configuration entry into a false PASS.
 
-The helper emits only sanitized fields: server name, enabled/disabled state, auth-status label and transport type. It never emits MCP commands, URLs, environment contents, tokens or credentials. Persist only the `available` names as a planning hint; live preflight remains authoritative. Record Claude capabilities only when explicitly visible/configured.
-
-## Compiled capability routing
-
-Specialist planning should resolve through `scripts/route_task.py`. It reads the canonical registry, calls the appropriate dynamic backend and returns one normalized route payload. This prevents the DAG, docs and specialist scripts from carrying separate static model tables.
-
-## Provider gate
-
-Capability eligibility happens before risk/cost/model routing:
-
-- one eligible provider -> route there;
-- multiple -> normal Gearbox economics decide;
-- none -> `CAPABILITY_BLOCKED`.
-
-Use `scripts/capabilities.py route` with the required and known provider capability sets. Never spend a worker merely to discover that its required tool is absent.
-
-## Live Gemini preflight
-
-Immediately before Gemini dispatch, read the effective MCP inventory from the worker worktree with `gemini mcp list --json`. A required capability blocks dispatch when missing, disabled, or clearly auth-blocked. `unsupported` auth is allowed because stdio servers commonly have no auth flow.
-
-## Per-worker MCP pruning
-
-Default policy: `required-only`. Call Gemini workers with `--prune-mcp` plus one `--required-capability <name>` per required MCP. Gearbox keeps normal Gemini config/credentials loaded but adds one-run overrides for every unrelated enabled server:
-
-```text
---config 'mcp_servers.<name>.enabled=false'   # quote <name> only if it is not a bare TOML key: gemini -c does not unquote
-```
-
-Do not use `mcp_servers={}` as a clearing mechanism. Disable discovered servers individually. If a task declares no external capability, pruning disables all discovered MCP servers for that worker only.
+Do not use old CLI-specific TOML MCP overrides; Antigravity uses JSON MCP configuration. Prune or scope tools using provider-native permissions once tested. Independently inspect the effective worker tool surface; a configured allowlist cannot substitute for a real security check.
 
 ## Fingerprints and duplicate dispatches
 
@@ -56,7 +26,7 @@ Before dispatch, fingerprint the exact base SHA, task packet bytes, provider, mo
 
 If registration reports `DUPLICATE_INVOCATION`, do not launch another worker. Reconcile the existing child/worktree/artifact. This is not blind result caching: implementation reuse is valid only when recorded git/worktree evidence still carries the mutation.
 
-Gemini metadata additionally records CLI version, prompt/schema hashes, active MCP set, memory policy, environment fingerprint and a stricter invocation fingerprint. No secrets are persisted.
+Gemini workers retain prompt/result hashes and provider-reported usage; live MCP inventory, environment fingerprints and pruning remain blocked until independently verified.
 
 ## Failure behavior
 
@@ -80,7 +50,7 @@ For `web-design`, capability routing distinguishes useful evidence from hard exe
 
 Do not route away from the specialist director/builder models merely because an optional design capability is missing.
 
-For web comps, image generation is a soft capability under `auto` and a hard capability only under `--comp require`. The comp pass remains owned by Gemini Neon even though a GPT Image model renders the pixels. Never persist API credentials while probing availability.
+For web comps, generation is optional under `auto` and mandatory under `--comp require`. Gemini must use a configured and verified image-generation backend. Never persist API credentials while probing availability.
 
 ## Product-quality capability rules
 

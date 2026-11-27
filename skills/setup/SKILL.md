@@ -15,11 +15,11 @@ Detect specs/ADR/runbook locations, existing `GLOSSARY.md` / `GLOSSARY-MAP.md` c
 
 ## Capability preflight
 
-Read `references/capability-routing.md`; for REA setup use `references/rea-integration.md`. If Gemini exists, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/capabilities.py" inventory`; persist only `available` names, never config/secrets. Record explicit Claude capabilities; live preflight wins. Keep Inspo, browser, game and image-generation availability, never credentials. No automatic REA installation.
+Read `references/capability-routing.md`; for REA setup use `references/rea-integration.md`. If Antigravity CLI exists, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/capabilities.py" inventory`; persist only `available` names, never config/secrets. Record explicit Claude capabilities; live preflight wins. Keep Inspo, browser, game and image-generation availability, never credentials. No automatic REA installation.
 
 ## Model preflight
 
-If the user has not already stated a preference, ask once which worker policy to persist: `auto`, `hybrid` (recommended), `claude-heavy`, `gemini-heavy`, or `custom`. For custom policy, record allowed Claude model aliases/full IDs, allowed Gemini model IDs, and any role constraints. The preferred Gemini registry is intentionally small: Gemini 4 Hydrogen for cheap bounded work, Gemini 4 Neon (`gemini-4-neon-medium`) for normal/deep engineering with effort scaling, and Gemini 4 Carbon (`gemini-4-carbon-high`) only for exceptional escalation. Verify or adjust the exact CLI model IDs if the local Gemini installation exposes different identifiers. Do not silently fall back to Gemini's default model. The main Gemini session orchestrates; select workers by risk. It must never author product code. Read `references/control-plane.md`.
+If the user has not already stated a preference, ask once which worker policy to persist: `auto`, `hybrid` (recommended), `claude-heavy`, `gemini-heavy`, or `custom`. For custom policy, record allowed Claude model aliases/full IDs, allowed Gemini model IDs, and any role constraints. The preferred Gemini registry is intentionally small: Gemini 4 Hydrogen for cheap bounded work, Gemini 4 Neon (`gemini-4-neon-medium`) for normal/deep engineering with effort scaling, and Gemini 4 Carbon (`gemini-4-carbon-high`) only for exceptional escalation. Verify or adjust the exact CLI model IDs if the local Gemini installation exposes different identifiers. Do not silently fall back to Gemini's default model. On Antigravity, the main Gemini session orchestrates; select workers by risk. It must never author product code. Read `references/control-plane.md`.
 
 ## Config
 
@@ -83,7 +83,7 @@ human_gate:
   - privilege_change
   - breaking_external_contract
   - production_config
-gemini_bin: gemini
+gemini_bin: agy
 ponytail: preferred
 test_commands: []
 check_commands: []

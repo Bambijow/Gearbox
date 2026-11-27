@@ -1,6 +1,6 @@
 # Control-plane invariant
 
-During orchestrated Gearbox runs (`/issue`, `/loop`, `/flow`, `/brainstorm` when it continues into implementation, `/resume`, and `/continue-pr`), the main Claude conversation is a **control plane**, not an implementation worker.
+During orchestrated Gearbox runs (`/issue`, `/loop`, `/flow`, `/brainstorm` when it continues into implementation, `/resume`, and `/continue-pr`), the host's primary conversation (Gemini in Antigravity; Claude in Claude Code) is a **control plane**, not an implementation worker.
 
 ## Main orchestrator responsibilities
 

@@ -1,6 +1,6 @@
 # Gearbox
 
-Gearbox est un plugin Claude Code d'orchestration d'ingénierie, design produit et production game-dev. Il transforme une idée, une spec ou une issue GitHub en boucle contrôlée : clarification, plan/DAG, classification déterministe des surfaces, quality-plan compilé, routage Claude/Gemini, contexts bornés, evidence partagée, tests crédibles, gates design/interaction/a11y/perf, production d'assets, vérification et mémoire durable.
+Gearbox est un plugin Claude Code et Antigravity d'orchestration d'ingénierie, design produit et production game-dev. Il transforme une idée, une spec ou une issue GitHub en boucle contrôlée : clarification, plan/DAG, classification déterministe des surfaces, quality-plan compilé, routage Claude/Gemini, contexts bornés, evidence partagée, tests crédibles, gates design/interaction/a11y/perf, production d'assets, vérification et mémoire durable.
 
 Le thread Claude principal agit comme **control plane** : il analyse, planifie, route, inspecte et arbitre, mais il ne modifie pas le code produit pendant un run orchestré. Les changements sont délégués à des workers et agents spécialisés, puis revus par le fournisseur opposé en mode `hybrid`. Un worker n'est candidat que s'il possède les MCP/outils externes requis par sa tâche.
 
@@ -16,7 +16,7 @@ Pour récupérer un comportement backend disparu depuis des traces HTTP, `/gearb
 
 ## Installation depuis GitHub
 
-Le repository `Bambijow/Gearbox` contient directement la source décompressée du plugin ainsi que son marketplace Claude Code.
+Le dépôt contient les plugins Claude Code et Antigravity. Construire le bundle Antigravity avec `python3 scripts/build_antigravity.py` avant l'installation via `agy plugin install dist/gearbox-antigravity`.
 
 Sur Claude Code v2.1.275 ou plus récent, le plus simple est une seule commande :
 
@@ -124,10 +124,10 @@ Pour continuer également après l'ouverture de la PR :
 | `/gearbox:dogfood <parcours>` | Avant livraison d'une UX, ou pour éprouver un produit comme un vrai utilisateur | Suit un persona et un parcours réels plutôt qu'une simple checklist de tests. Observe comportement, erreurs console/réseau, états vides/erreurs, accessibilité et frictions ; conserve captures et preuves ; distingue défaut fonctionnel, dette UX et polish. `--fix` délègue seulement les corrections acceptées. |
 | `/gearbox:test-harden <scope>` | Quand des tests verts protègent un invariant à fort coût d'échec | Complète le Test Credibility Gate par mutations ciblées, propriétés/invariants et fuzzing borné quand les outils du repo le permettent. Cherche surtout les tests qui survivent à une faute plausible ; ne transforme pas le coverage ou le mutation score en objectif vanity. |
 | `/gearbox:clean-tests [scope] [--apply]` | Quand une suite historique contient doublons, anciens tests ou cas devenus peu utiles | Audit indépendant via `test-curator`. Classe `KEEP/MERGE/DELETE/REWRITE/BLOCKED`, exige une preuve de comportement/invariant avant toute suppression, et reste report-only sans `--apply`. Avec `--apply`, ne modifie que tests/fixtures/helpers de test puis rerun les checks ciblés. |
-| `/gearbox:asset-image <brief>` | Créer une image 2D game-ready hors pixel art | Route forcée vers Gemini Gemini 4 Neon. Le brief fixe dimensions, alpha, art direction, cible moteur et chemins source/export ; aucun fallback Claude n'est autorisé. |
-| `/gearbox:pixel-art <brief>` | Sprites, tiles, icons ou animation pixel art | Route forcée Gemini Gemini 4 Neon. Utilise Aseprite MCP quand disponible ; sinon fallback génération directe Neon, avec dimensions/palette/frames vérifiées. |
-| `/gearbox:model-3d <brief>` | Créer un modèle/prop/scène 3D game-ready | Opus 5.5/high garde la direction, les choix de silhouette/topologie/rig et l'acceptation. La production 3D substantielle est confiée à Gemini Gemini 4 Carbon/high avec Blender/Godot disponible côté Gemini. Chaque asset passe ensuite obligatoirement le gate `/gearbox:review-3d`. |
-| `/gearbox:motion-design <brief>` | UI motion, caméra, boucles, animated props, transitions ou animation 2D/3D | Opus 5.5 dirige timing, hiérarchie et mouvement. Gemini Gemini 4 Carbon/high exécute les animations 3D via Blender/Godot ; Neon reste possible pour les animations non-3D. Les motions qui modifient un asset/rig 3D passent aussi par la review Carbon. |
+| `/gearbox:asset-image <brief>` | Créer une image 2D game-ready hors pixel art | Route forcée vers Gemini 4 Neon. Le brief fixe dimensions, alpha, art direction, cible moteur et chemins source/export ; aucun fallback Claude n'est autorisé. |
+| `/gearbox:pixel-art <brief>` | Sprites, tiles, icons ou animation pixel art | Route forcée Gemini 4 Neon. Utilise Aseprite MCP quand disponible ; sinon fallback génération directe Neon, avec dimensions/palette/frames vérifiées. |
+| `/gearbox:model-3d <brief>` | Créer un modèle/prop/scène 3D game-ready | Opus 5.5/high garde la direction, les choix de silhouette/topologie/rig et l'acceptation. La production 3D substantielle est confiée à Gemini 4 Carbon/high avec Blender/Godot disponible côté Gemini. Chaque asset passe ensuite obligatoirement le gate `/gearbox:review-3d`. |
+| `/gearbox:motion-design <brief>` | UI motion, caméra, boucles, animated props, transitions ou animation 2D/3D | Opus 5.5 dirige timing, hiérarchie et mouvement. Gemini 4 Carbon/high exécute les animations 3D via Blender/Godot ; Neon reste possible pour les animations non-3D. Les motions qui modifient un asset/rig 3D passent aussi par la review Carbon. |
 | `/gearbox:simplify [diff]` | Après intégration, pour réduire le code | Lance un agent frais de simplification. Utilise Ponytail s'il est installé ; sinon applique la discipline interne Gearbox : supprimer duplication, wrappers et abstractions inutiles, préférer stdlib/framework/existant, conserver validation, sécurité et accessibilité. Rejoue ensuite les checks nécessaires. |
 | `/gearbox:review [diff-ou-PR]` | Pour une review indépendante | Vérifie spec/correctness/sécurité/tests/opérations et calibre les findings par failure path + failure cost. Dans la boucle orchestrée, la review finale est routée `lite / focused / full` selon la conséquence : pas de nouveau reviewer si les task reviews suffisent, un adversarial reviewer pour le risque silencieux, spine complète uniquement sur les frontières à fort impact. |
 | `/gearbox:security-audit <scope>` | Pour auth, permissions, secrets, crypto, parsers, uploads, désérialisation, données sensibles ou autre frontière de confiance | Construit un mini threat model, cartographie entrées/trust boundaries/actifs, inspecte le diff et les appels adjacents, puis utilise les analyseurs disponibles (Semgrep/CodeQL/etc.) de façon ciblée. Les findings doivent décrire un chemin d'exploitation concret, l'impact et une preuve ; pas de pluie de best practices génériques. |
@@ -506,7 +506,7 @@ Gemini Neon comp pass (surface/redesign when available)
           ↓
 Opus approval
           ↓
-Gemini Gemini 4 Neon implementation
+Gemini 4 Neon implementation
           ↓
 desktop + mobile renders
           ↓
@@ -523,11 +523,11 @@ Quand la génération image est disponible, `surface`/`redesign` passe par une p
 
 Gearbox possède désormais des lanes d'assets et de conception de jeu :
 
-- image 2D : Gemini Gemini 4 Neon ;
-- pixel art : Gemini Gemini 4 Neon + Aseprite MCP quand disponible, sinon génération directe Neon ;
-- modélisation 3D : Opus 5.5 dirige, Gemini Gemini 4 Carbon/high exécute avec Blender/Godot côté Gemini ;
-- motion design : Opus 5.5 dirige, Gemini Gemini 4 Carbon/high pour la 3D, Neon pour le non-3D ;
-- review 3D : Gemini Gemini 4 Carbon/high en read-only ;
+- image 2D : Gemini 4 Neon ;
+- pixel art : Gemini 4 Neon + Aseprite MCP quand disponible, sinon génération directe Neon ;
+- modélisation 3D : Opus 5.5 dirige, Gemini 4 Carbon/high exécute avec Blender/Godot côté Gemini ;
+- motion design : Opus 5.5 dirige, Gemini 4 Carbon/high pour la 3D, Neon pour le non-3D ;
+- review 3D : Gemini 4 Carbon/high en read-only ;
 - art direction : Opus 5.5 maintient la cohérence cross-media ;
 - audio design : Opus dirige, Gemini câble les outils réellement disponibles ;
 - level design : Opus dirige, Gemini blockoute, PLAYTEST_GATE tranche.
@@ -538,7 +538,7 @@ Les identités spécialistes ne sont pas remplacées par le routing économique.
 
 Chaque tâche du DAG déclare `required_capabilities`, y compris `[]`. Gearbox élimine d'abord les providers qui n'ont pas les outils externes requis, puis choisit modèle/effort selon risque, ambiguïté, coût et vérifiabilité.
 
-Pour Gemini, `/setup` inventorie `gemini mcp list --json` sans persister commandes, URLs, variables d'environnement ou secrets. Juste avant chaque dispatch, Gearbox refait un preflight live. Avec `required-only`, `gemini_worker.py --prune-mcp` conserve la config globale mais désactive pour ce worker tous les MCP non demandés.
+Pour Gemini, `/setup` inspecte les configurations MCP Antigravity sans enregistrer les secrets. Cette découverte n'est pas un préflight live ; les tâches exigeant un MCP restent bloquées sans preuve de connexion. Juste avant chaque dispatch, Gearbox exige un contrôle live. Avec `required-only`, `gemini_worker.py --prune-mcp` conserve la config globale mais désactive pour ce worker tous les MCP non demandés.
 
 Chaque dispatch reçoit aussi un fingerprint stable (base SHA + packet + provider + modèle + effort + capacités). `children.json` bloque un doublon encore vivant/réutilisable et force une reconciliation. Les métadonnées Gemini enregistrent aussi CLI/version, hashes du contexte, ensemble MCP actif et fingerprint d'environnement.
 

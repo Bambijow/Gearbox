@@ -1,6 +1,6 @@
 # Model and effort routing
 
-Gearbox treats model choice as part of the execution plan, not an invisible runtime accident. The hybrid policy deliberately uses a **small Gemini registry** and varies effort before reaching for a more expensive frontier model.
+Gearbox treats model choice as part of the execution plan, not an invisible runtime accident. The hybrid policy uses a **small Gemini registry** and varies effort before reaching for a more expensive frontier model.
 
 ## Preflight
 
@@ -28,9 +28,9 @@ Direct calls to the three backend routers remain supported for specialist skills
 
 Read `references/capability-routing.md`. Every task records `required_capabilities`, including an explicit empty list. Capability eligibility is a hard gate before risk/cost/model scoring: a provider that cannot supply a required external capability is not a candidate, however cheap or capable its model is.
 
-Use `scripts/capabilities.py route` when the candidate capability sets are known. Gemini MCP availability comes from a sanitized setup snapshot for planning and a live `gemini mcp list --json` preflight immediately before dispatch. If exactly one provider satisfies the requirements, route there; if both do, continue with the normal risk/cost policy; if neither does, stop with `CAPABILITY_BLOCKED` instead of spending a worker to discover the missing tool.
+Use `scripts/capabilities.py route` when the candidate capability sets are known. Gemini MCP availability comes from a sanitized setup snapshot for planning and a separately verified live MCP check immediately before dispatch; the configuration inventory is not live proof. If exactly one provider satisfies the requirements, route there; if both do, continue with the normal risk/cost policy; if neither does, stop with `CAPABILITY_BLOCKED` instead of spending a worker to discover the missing tool.
 
-For Gemini dispatches, pass every required MCP as `--required-capability <name>` and use `--prune-mcp` under the default `required-only` policy. The wrapper disables other configured MCP servers only for that invocation, while retaining the user's Gemini config and credentials. A task with `required_capabilities: []` therefore gets no MCP tool schemas unless the run explicitly overrides the policy.
+For Gemini dispatches, declare every MCP via `--required-capability`; the worker blocks them until live verification exists. Antigravity does not use legacy TOML pruning switches. For tasks without external capabilities, use a clean worktree and provider-native tool restrictions.
 
 ## Forced game-asset specialist routes
 
@@ -40,11 +40,11 @@ Game-asset task kinds bypass the ordinary economy/risk router. Resolve them with
 |---|---|---|
 | `asset-image` | Gemini `gemini-4-neon-medium` / medium | direct model generation |
 | `pixel-art` | Gemini `gemini-4-neon-medium` / medium | prefer live Aseprite MCP; direct Neon fallback |
-| `model-3d` | Claude `claude-opus-5-5` / high directs; Gemini `gemini-4-carbon-high` / high executes | Blender/Godot required on Gemini; independent Carbon review |
+| `model-3d` | Gemini Carbon/high executes; Claude creative direction optional | Blender/Godot on Gemini, plus fresh independent Gemini review |
 | `motion-design` | Claude `claude-opus-5-5` / high directs; Gemini `gemini-4-carbon-high` / high for `--three-d`, otherwise Neon | 3D requires Blender/Godot on Gemini; non-3D may use other capabilities |
 | `review-3d` | Gemini `gemini-4-carbon-high` / high, read-only | Blender or Godot must be available to Gemini |
 
-These specialist identities bypass ordinary economy routing. For `model-3d` and `motion-design --three-d`, Opus remains the director/acceptance owner but Gemini Carbon/high is the mandatory substantive execution worker, with a live Gemini Blender/Godot capability. For non-3D motion, Neon remains eligible. This is a forced specialist route, not ordinary frontier escalation. Missing 3D capability on Gemini returns `GAME_ASSET_ROUTE_BLOCKED`, even when Claude has a tool. Run independent Carbon review for 3D assets.
+These specialist identities bypass ordinary economy routing. For `model-3d` and `motion-design --three-d`, Gemini Carbon/high owns substantive 3D execution; Claude can direct creative decisions, with a live Gemini Blender/Godot capability required. For non-3D motion, Neon remains eligible. This is a forced specialist route, not ordinary frontier escalation. Missing 3D capability on Gemini returns `GAME_ASSET_ROUTE_BLOCKED`, even when Claude has a tool. Run independent Carbon review for 3D assets.
 
 A completed `model-3d` task always receives the dedicated `review-3d` Carbon gate before asset readiness. When the same task also changes product code, the normal code/task review policy still applies to that code; the 3D gate is additional.
 
@@ -93,7 +93,7 @@ These routes are role contracts, not excuses to bypass capability preflight or n
 
 ## Preferred Gemini registry
 
-Use only three configured Gemini model slots by default (verified Gemini CLI identifiers: `gemini-4-hydrogen-low`, `gemini-4-neon-medium`, `gemini-4-carbon-high`):
+Use only three configurable Gemini model slots (candidate IDs, verify with `agy models`: `gemini-4-hydrogen-low`, `gemini-4-neon-medium`, `gemini-4-carbon-high`):
 
 ```yaml
 gemini_models:
@@ -292,3 +292,7 @@ Routing optimizes successful-work cost, not raw cheapness. A cheap model that fa
 4. never retry the same unchanged packet on the same model/effort more than once;
 5. Carbon requires the explicit gate above;
 6. count every dispatch and model escalation against the run budget.
+
+## Architecture-specialist routing
+
+On Antigravity use `scripts/gemini_claude_router.py`: Gemini Neon handles ordinary architecture, Gemini Carbon proposes critical/high-complexity designs, and a fresh Claude Opus independently challenges critical decisions. Never accept a critical design without its required second-provider review. Model slugs are configurable candidates, not verified entitlements.

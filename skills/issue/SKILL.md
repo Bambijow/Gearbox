@@ -15,7 +15,7 @@ This is the GitHub-specific front door to the shared Gearbox engineering loop. R
 - `references/token-efficiency.md`, `references/model-routing.md`, `references/state-machine.md`, `references/evidence-ledger.md`, and `references/risk-budget-policy.md` for context/review budgets;
 - `references/pr-reporting.md` for the final PR contract.
 
-Claude Code remains the architecture owner, scheduler and final judge, but the main thread is **not an implementation worker**. It must not author product code, tests, migrations, application config, public docs, or solution notes. Integration, verification, knowledge mutation and shipping are delegated to dedicated role agents. The plugin hook enforces this boundary during the command turn.
+The active host (Gemini in Antigravity, Claude in Claude Code) schedules and adjudicates the run; the main thread is **not an implementation worker**. It must not author product code, tests, migrations, application config, public docs, or solution notes. Integration, verification, knowledge mutation and shipping are delegated to dedicated role agents. The plugin hook enforces this boundary during the command turn.
 
 `--auto` authorizes ordinary engineering decisions/repairs and bypasses human plan approval after the exact DAG/routing is persisted. Without it, stop at `PLAN_APPROVAL_REQUIRED` before implementation/review dispatch. It never authorizes destructive production actions, merge/deploy, secret access, irreversible data changes, or invented product semantics.
 
