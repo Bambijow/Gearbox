@@ -1,0 +1,14 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "gearbox",
+  "displayName": "Gearbox",
+  "version": "0.1.0",
+  "description": "Engineering workflows with Gemini orchestration, Claude review, isolated workers and evidence-driven gates.",
+  "repository": "https://github.com/Bambijow/Gearbox",
+  "license": "MIT",
+  "suggestedPrompts": [
+    "Plan a Gearbox engineering change",
+    "Review a code change with an independent provider",
+    "Configure Gemini and Claude model routing"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "gearbox-control-plane": {
+    "enabled": true,
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "python3 ./scripts/antigravity_guard.py activate",
+        "timeout": 5
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "run_command|write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ./scripts/antigravity_guard.py check",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "python3 ./scripts/antigravity_guard.py deactivate",
+        "timeout": 5
+      }
+    ]
+  }
+}
