@@ -7,9 +7,9 @@ argument-hint: "[optional setup preferences]"
 
 ## Legacy migration
 
-Before reading project configuration, Gearbox automatically checks for the former `.steelthread/` project directory. If `.gearbox/` does not exist and no legacy run lock is active, the plugin renames `.steelthread/` to `.gearbox/` and rewrites only internal path references from `.steelthread/` to `.gearbox/`. Do not ask the user to rename it manually. Branch names, issue/PR identifiers, evidence, and historical run IDs are preserved. If both directories already exist, stop and ask the user which one is authoritative instead of merging them silently.
+Before setup, check for the former `.steelthread/` project directory. If `.gearbox/` does not exist and no legacy run lock is active, the plugin renames `.steelthread/` to `.gearbox/` and rewrites only internal path references from `.steelthread/` to `.gearbox/`. Do not ask the user to rename it manually. Branch names, issue/PR identifiers, evidence, and historical run IDs are preserved. If both directories already exist, stop and ask the user which one is authoritative instead of merging them silently.
 
-Read repository instructions, build/CI manifests and existing docs. Reuse conventions rather than creating a parallel bureaucracy.
+Read repository instructions and build/CI manifests; reuse existing conventions.
 
 Detect specs/ADR/runbook locations, existing `GLOSSARY.md` / `GLOSSARY-MAP.md` contexts, any established research-note convention, repository-native tests/lint/typecheck/build/e2e commands, GitHub remote/base branch, UI evidence tooling, `gemini`, external capabilities/MCPs, and Ponytail availability. Do not create glossary/ADR/research docs during setup merely because Gearbox supports them. Keep `docs/solutions/` canonical.
 
@@ -19,7 +19,7 @@ Read `references/capability-routing.md`; for REA setup use `references/rea-integ
 
 ## Model preflight
 
-If the user has not already stated a preference, ask once which worker policy to persist: `auto`, `hybrid` (recommended), `claude-heavy`, `gemini-heavy`, or `custom`. For custom policy, record allowed Claude model aliases/full IDs, allowed Gemini model IDs, and any role constraints. The preferred Gemini registry is intentionally small: Gemini 4 Hydrogen for cheap bounded work, Gemini 4 Neon (`gemini-4-neon-medium`) for normal/deep engineering with effort scaling, and Gemini 4 Carbon (`gemini-4-carbon-high`) only for exceptional escalation. Verify or adjust the exact CLI model IDs if the local Gemini installation exposes different identifiers. Do not silently fall back to Gemini's default model. The main Claude session remains the control-plane orchestrator; task routes are chosen later from risk/complexity. During orchestrated runs it does not author product code. Read `references/control-plane.md`.
+If the user has not already stated a preference, ask once which worker policy to persist: `auto`, `hybrid` (recommended), `claude-heavy`, `gemini-heavy`, or `custom`. For custom policy, record allowed Claude model aliases/full IDs, allowed Gemini model IDs, and any role constraints. The preferred Gemini registry is intentionally small: Gemini 4 Hydrogen for cheap bounded work, Gemini 4 Neon (`gemini-4-neon-medium`) for normal/deep engineering with effort scaling, and Gemini 4 Carbon (`gemini-4-carbon-high`) only for exceptional escalation. Verify or adjust the exact CLI model IDs if the local Gemini installation exposes different identifiers. Do not silently fall back to Gemini's default model. The main Gemini session orchestrates; select workers by risk. It must never author product code. Read `references/control-plane.md`.
 
 ## Config
 
