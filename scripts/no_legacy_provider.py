@@ -23,6 +23,15 @@ def check(root):
             errors.append(f"missing runtime {relative}")
         elif "codex" in path.read_text(encoding="utf-8").lower():
             errors.append(f"legacy provider string in executable route {relative}")
+    # User-facing instructions must not route back to the retired engine.
+    for folder in ("skills", "agents", "references"):
+        for path in (root/folder).rglob("*.md"):
+            if "codex" in path.read_text(encoding="utf-8").lower():
+                errors.append(f"legacy provider instruction: {path.relative_to(root)}")
+    for file in ("README.md", "GEMINI.md", "rules/AGENTS.md"):
+        path=root/file
+        if path.is_file() and "codex" in path.read_text(encoding="utf-8").lower():
+            errors.append(f"legacy provider instruction: {file}")
     return errors
 
 def main():

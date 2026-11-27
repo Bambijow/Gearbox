@@ -34,11 +34,16 @@ def git(repo, *args):
     return proc.stdout.strip()
 
 
-def command(bin_name, prompt, model, schema, mode):
+def command(bin_name, prompt, model, schema, mode, effort=None):
     if not model or not model.strip():
         fail("Explicit model ID required (verify with agy models)")
-    return [bin_name, "-p", prompt, "--model", model, "--mode", mode,
-            "--output-format", "json", "--json-schema", str(schema)]
+    cmd = [bin_name, "-p", prompt, "--model", model, "--mode", mode,
+           "--output-format", "json", "--json-schema", str(schema)]
+    if mode == "auto":
+        cmd.append("--sandbox")
+    if effort:
+        cmd += ["--effort", effort]
+    return cmd
 
 
 def parse_response(raw, kind):
@@ -68,7 +73,8 @@ def outside_ownership(paths, owned):
 
 def self_test():
     c = command("agy", "test", "gemini-4-neon-medium", Path("/tmp/schema.json"), "auto")
-    assert c[:3] == ["agy", "-p", "test"] and "--json-schema" in c
+    assert c[:3] == ["agy", "-p", "test"] and "--json-schema" in c and "--sandbox" in c
+    assert "--effort" in command("agy", "test", "gemini", Path("/tmp/s.json"), "plan", "high")
     payload = {k: [] for k in REQUIRED["review"]}
     assert parse_response(json.dumps({"status":"SUCCESS","structured_output":payload}), "review")[1] == payload
     try:
@@ -89,6 +95,7 @@ def main():
     ap.add_argument("--meta", type=Path)
     ap.add_argument("--kind", choices=tuple(REQUIRED), default="implementation")
     ap.add_argument("--model")
+    ap.add_argument("--effort", choices=["low","medium","high","xhigh","max"])
     ap.add_argument("--agy-bin", default="agy")
     ap.add_argument("--owned-path", action="append", default=[])
     ap.add_argument("--required-capability", action="append", default=[])
@@ -114,7 +121,7 @@ def main():
     schema = SCHEMAS[args.kind]
     prompt = args.prompt.read_text(encoding="utf-8")
     mode = "plan" if args.kind == "review" else "auto"
-    cmd = command(args.agy_bin, prompt, args.model, schema, mode)
+    cmd = command(args.agy_bin, prompt, args.model, schema, mode, args.effort)
     started = time.time()
     proc = subprocess.run(cmd, cwd=repo, capture_output=True, text=True)
     if proc.returncode:
@@ -131,7 +138,7 @@ def main():
     metadata = args.meta or args.result.with_suffix(".meta.json")
     metadata.parent.mkdir(parents=True, exist_ok=True)
     metadata.write_text(json.dumps({
-        "provider":"gemini", "model":args.model, "mode":mode, "base_sha":base,
+        "provider":"gemini", "model":args.model, "effort":args.effort, "mode":mode, "base_sha":base,
         "prompt_sha256":hashlib.sha256(prompt.encode()).hexdigest(),
         "result_sha256":hashlib.sha256(args.result.read_bytes()).hexdigest(),
         "usage":envelope.get("usage", {}), "duration_seconds":round(time.time()-started, 3),
