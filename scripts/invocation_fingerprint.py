@@ -50,7 +50,7 @@ def self_test() -> None:
     a = canonical_payload(
         base_sha="abc",
         prompt_sha256="def",
-        provider="codex",
+        provider="gemini",
         model="sol",
         effort="medium",
         kind="implementation",
@@ -60,7 +60,7 @@ def self_test() -> None:
     b = canonical_payload(
         base_sha="abc",
         prompt_sha256="def",
-        provider="codex",
+        provider="gemini",
         model="sol",
         effort="medium",
         kind="implementation",
