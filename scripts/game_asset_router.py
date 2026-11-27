@@ -143,7 +143,7 @@ def self_test()->None:
     assert route("model-3d",[],[]).blocked
     assert route("model-3d",["blender"],[]).blocked
     motion=route("motion-design",["godot"],["blender"])
-    assert motion.delegate_model=="gemini-4-neon-medium" and motion.delegation_available
+    assert motion.delegate_model=="gemini-4-neon-high" and motion.delegation_available
     motion3d=route("motion-design",["godot"],["blender"],three_d=True)
     assert motion3d.delegate_model=="gemini-4-carbon-high" and motion3d.delegation_required and motion3d.delegate_required_capabilities==["blender"]
     assert route("motion-design",["godot"],[],three_d=True).blocked
