@@ -2,7 +2,7 @@
 
 For marketing footage, premium website hero loops, cinematic product backgrounds. Use `video-create` rather than native UI/3D `motion-design`. Do not incur video inference charges merely because a web site is described as premium.
 
-DAG: requested video → inspect licensed source still(s) → missing? `asset-image` through Codex Sol → approve source image → classify movement/subject/story → select cheapest capable fal model → verify current tariff and schema → explicit spend authorization → render → inspect playback → optimize and ship.
+DAG: requested video → inspect licensed source still(s) → missing? `asset-image` through Gemini Neon → approve source image → classify movement/subject/story → select cheapest capable fal model → verify current tariff and schema → explicit spend authorization → render → inspect playback → optimize and ship.
 
 Image reference is a hard dependency. If absent and image generation fails, block `IMAGE_REFERENCE_REQUIRED`. Track asset provenance, user acceptance, actual image URI, generation settings, input revision, chosen model and fal request ID. Do not let video agent invent image references.
 
