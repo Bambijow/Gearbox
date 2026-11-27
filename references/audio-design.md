@@ -41,7 +41,7 @@ Project-specific direction overrides this example.
 
 ## Execution
 
-Opus 5.5 owns sonic direction and event/mix architecture. Codex Sol may implement bounded engine/middleware wiring, import settings, event hookups, buses, attenuation, concurrency and deterministic variations.
+Opus 5.5 owns sonic direction and event/mix architecture. Gemini Neon may implement bounded engine/middleware wiring, import settings, event hookups, buses, attenuation, concurrency and deterministic variations.
 
 Use live capabilities such as Godot, FMOD, Wwise, Reaper or other audio tooling when available. Do not invent an unavailable audio-generation capability.
 
