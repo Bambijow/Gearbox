@@ -33,10 +33,10 @@ human_gate:
 
 In `hybrid`, provider diversity is mandatory for every implementation task before integration:
 
-- Claude implementation → one task-scoped Codex review;
-- Codex implementation → one task-scoped Claude review.
+- Claude implementation → one task-scoped Gemini review;
+- Gemini implementation → one task-scoped Claude review.
 
-Scale the **reviewer model/effort** with task risk rather than skipping the review: bounded work uses Luna/low or Haiku/low; normal work uses Sol/medium or Sonnet/medium; deep work uses Sol/high or Opus/high; exceptional work may use Astra or Opus/xhigh.
+Scale the **reviewer model/effort** with task risk rather than skipping the review: bounded work uses Hydrogen/low or Haiku/low; normal work uses Neon/medium or Sonnet/medium; deep work uses Neon/high or Opus/high; exceptional work may use Carbon or Opus/xhigh.
 
 For non-hybrid policies:
 
@@ -63,7 +63,7 @@ Default bounded resources:
 budget:
   max_cycles: 3
   max_worker_dispatches: 10
-  max_codex_dispatches: 12
+  max_gemini_dispatches: 12
   max_review_dispatches: 14
   max_model_escalations: 3
   max_pr_repair_cycles: 3
