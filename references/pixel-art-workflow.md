@@ -4,7 +4,7 @@ Pixel art is a constrained production medium. Exact dimensions and palette behav
 
 ## Preferred path: Aseprite MCP
 
-When capability `aseprite` is live, use it as the required MCP through the Codex GPT-6.1 Sol worker. Preserve editable `.aseprite` source and export PNG/sprite-sheet artifacts.
+When capability `aseprite` is live, use it as the required MCP through the Gemini GPT-6.1 Neon worker. Preserve editable `.aseprite` source and export PNG/sprite-sheet artifacts.
 
 Pin:
 
@@ -21,7 +21,7 @@ Use integer coordinates and nearest-neighbor-safe transforms. Avoid accidental a
 
 ## Fallback path
 
-If Aseprite is unavailable, route still remains Codex GPT-6.1 Sol using direct image generation. The fallback must still obey exact target dimensions. Do not accept a large raster that merely imitates pixel art.
+If Aseprite is unavailable, route still remains Gemini GPT-6.1 Neon using direct image generation. The fallback must still obey exact target dimensions. Do not accept a large raster that merely imitates pixel art.
 
 ## Verification
 

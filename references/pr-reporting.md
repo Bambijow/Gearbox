@@ -154,7 +154,7 @@ Recommended shape:
 - forced route: provider + model + effort
 - tool/MCP used: Aseprite / Blender / Godot / direct generation
 - import/render/metadata evidence: ...
-- 3D Astra review verdict: PASS / REPAIR / BLOCKED / not applicable
+- 3D Carbon review verdict: PASS / REPAIR / BLOCKED / not applicable
 ````
 
 ### Critical-code rule
