@@ -1,6 +1,6 @@
 ---
 name: web-design-reviewer
-description: "Use this fresh read-only reviewer after Codex implements a material web-design task. <example>Context: A new landing page has an approved design contract, optional visual comps, and desktop/mobile renders. user: Review it. assistant: Launch web-design-reviewer. <commentary>The reviewer judges rendered evidence, comp fidelity, anti-slop behavior, responsive quality and accessibility without inheriting the director/builder conversation.</commentary></example>"
+description: "Use this fresh read-only reviewer after Gemini implements a material web-design task. <example>Context: A new landing page has an approved design contract, optional visual comps, and desktop/mobile renders. user: Review it. assistant: Launch web-design-reviewer. <commentary>The reviewer judges rendered evidence, comp fidelity, anti-slop behavior, responsive quality and accessibility without inheriting the director/builder conversation.</commentary></example>"
 model: inherit
 effort: high
 color: red
