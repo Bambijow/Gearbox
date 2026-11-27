@@ -32,6 +32,13 @@ def check(root):
         path=root/file
         if path.is_file() and "codex" in path.read_text(encoding="utf-8").lower():
             errors.append(f"legacy provider instruction: {file}")
+    # Sweep committed fixtures and tests too: migration must not keep hidden
+    # references to retired providers in active validation contracts.
+    for folder in ("evals", "tests", "benchmarks", ".claude-plugin", ".antigravity-plugin"):
+        for path in (root/folder).rglob("*"):
+            if path.is_file() and path.suffix in (".md", ".py", ".json", ".yaml", ".yml"):
+                if "codex" in path.read_text(encoding="utf-8").lower():
+                    errors.append(f"legacy provider fixture: {path.relative_to(root)}")
     return errors
 
 def main():
