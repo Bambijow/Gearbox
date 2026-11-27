@@ -27,43 +27,43 @@ def route(args: argparse.Namespace) -> ReviewRoute:
 
     if impl == "claude":
         if tier == "bounded":
-            return ReviewRoute(impl, "codex", "economy", args.luna_model, "low", None,
-                               "hybrid cross-provider review: bounded Claude work is checked by Codex Luna/low")
+            return ReviewRoute(impl, "gemini", "economy", args.hydrogen_model, "low", None,
+                               "hybrid cross-provider review: bounded Claude work is checked by Gemini Hydrogen/low")
         if tier == "normal":
-            return ReviewRoute(impl, "codex", "standard", args.sol_model, "medium", None,
-                               "hybrid cross-provider review: normal Claude work is checked by Codex Sol/medium")
+            return ReviewRoute(impl, "gemini", "standard", args.neon_model, "medium", None,
+                               "hybrid cross-provider review: normal Claude work is checked by Gemini Neon/medium")
         if tier == "deep":
-            return ReviewRoute(impl, "codex", "standard", args.sol_model, "high", None,
-                               "hybrid cross-provider review: deep Claude work is checked by Codex Sol/high")
+            return ReviewRoute(impl, "gemini", "standard", args.neon_model, "high", None,
+                               "hybrid cross-provider review: deep Claude work is checked by Gemini Neon/high")
         effort = "high" if risk == "critical" or args.escalated else "medium"
-        return ReviewRoute(impl, "codex", "frontier", args.astra_model, effort, None,
-                           "hybrid cross-provider review: exceptional Claude work receives an independent Codex Astra review")
+        return ReviewRoute(impl, "gemini", "frontier", args.carbon_model, effort, None,
+                           "hybrid cross-provider review: exceptional Claude work receives an independent Gemini Carbon review")
 
-    if impl == "codex":
+    if impl == "gemini":
         if tier == "bounded":
             return ReviewRoute(impl, "claude", "economy", args.haiku_model, "low", "task-reviewer-low",
-                               "hybrid cross-provider review: bounded Codex work is checked by Claude Haiku/low")
+                               "hybrid cross-provider review: bounded Gemini work is checked by Claude Haiku/low")
         if tier == "normal":
             return ReviewRoute(impl, "claude", "standard", args.sonnet_model, "medium", "task-reviewer",
-                               "hybrid cross-provider review: normal Codex work is checked by Claude Sonnet/medium")
+                               "hybrid cross-provider review: normal Gemini work is checked by Claude Sonnet/medium")
         if tier == "deep":
             return ReviewRoute(impl, "claude", "deep", args.opus_model, "high", "task-reviewer-high",
-                               "hybrid cross-provider review: deep Codex work is checked by Claude Opus/high")
+                               "hybrid cross-provider review: deep Gemini work is checked by Claude Opus/high")
         return ReviewRoute(impl, "claude", "deep", args.opus_model, "xhigh", "task-reviewer-xhigh",
-                           "hybrid cross-provider review: exceptional Codex work is checked by Claude Opus/xhigh")
+                           "hybrid cross-provider review: exceptional Gemini work is checked by Claude Opus/xhigh")
 
     raise ValueError(f"unsupported implementation engine: {impl}")
 
 
 def parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Choose the opposite-provider task reviewer for Gearbox hybrid mode.")
-    p.add_argument("--implementation-engine", default="codex", choices=["claude", "codex"])
+    p.add_argument("--implementation-engine", default="gemini", choices=["claude", "gemini"])
     p.add_argument("--task-tier", default="normal", choices=sorted(TIERS))
     p.add_argument("--risk", default="medium", choices=sorted(RISKS))
     p.add_argument("--escalated", action="store_true")
-    p.add_argument("--luna-model", default="gpt-6-luna")
-    p.add_argument("--sol-model", default="gpt-6.2-sol")
-    p.add_argument("--astra-model", default="gpt-6.2-astra")
+    p.add_argument("--hydrogen-model", default="gemini-4-hydrogen-low")
+    p.add_argument("--neon-model", default="gemini-4-neon-medium")
+    p.add_argument("--carbon-model", default="gemini-4-carbon-high")
     p.add_argument("--haiku-model", default="haiku")
     p.add_argument("--sonnet-model", default="sonnet")
     p.add_argument("--opus-model", default="opus")
@@ -75,14 +75,14 @@ def parser() -> argparse.ArgumentParser:
 def self_test() -> None:
     p = parser()
     cases = [
-        (["--implementation-engine", "claude", "--task-tier", "bounded", "--risk", "low"], "codex", "gpt-6-luna", "low", None),
-        (["--implementation-engine", "claude", "--task-tier", "normal", "--risk", "medium"], "codex", "gpt-6.2-sol", "medium", None),
-        (["--implementation-engine", "claude", "--task-tier", "deep", "--risk", "high"], "codex", "gpt-6.2-sol", "high", None),
-        (["--implementation-engine", "claude", "--task-tier", "exceptional", "--risk", "critical"], "codex", "gpt-6.2-astra", "high", None),
-        (["--implementation-engine", "codex", "--task-tier", "bounded", "--risk", "low"], "claude", "haiku", "low", "task-reviewer-low"),
-        (["--implementation-engine", "codex", "--task-tier", "normal", "--risk", "medium"], "claude", "sonnet", "medium", "task-reviewer"),
-        (["--implementation-engine", "codex", "--task-tier", "deep", "--risk", "high"], "claude", "opus", "high", "task-reviewer-high"),
-        (["--implementation-engine", "codex", "--task-tier", "exceptional", "--risk", "critical"], "claude", "opus", "xhigh", "task-reviewer-xhigh"),
+        (["--implementation-engine", "claude", "--task-tier", "bounded", "--risk", "low"], "gemini", "gemini-4-hydrogen-low", "low", None),
+        (["--implementation-engine", "claude", "--task-tier", "normal", "--risk", "medium"], "gemini", "gemini-4-neon-medium", "medium", None),
+        (["--implementation-engine", "claude", "--task-tier", "deep", "--risk", "high"], "gemini", "gemini-4-neon-medium", "high", None),
+        (["--implementation-engine", "claude", "--task-tier", "exceptional", "--risk", "critical"], "gemini", "gemini-4-carbon-high", "high", None),
+        (["--implementation-engine", "gemini", "--task-tier", "bounded", "--risk", "low"], "claude", "haiku", "low", "task-reviewer-low"),
+        (["--implementation-engine", "gemini", "--task-tier", "normal", "--risk", "medium"], "claude", "sonnet", "medium", "task-reviewer"),
+        (["--implementation-engine", "gemini", "--task-tier", "deep", "--risk", "high"], "claude", "opus", "high", "task-reviewer-high"),
+        (["--implementation-engine", "gemini", "--task-tier", "exceptional", "--risk", "critical"], "claude", "opus", "xhigh", "task-reviewer-xhigh"),
     ]
     for argv, engine, model, effort, agent in cases:
         r = route(p.parse_args(argv))

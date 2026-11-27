@@ -56,44 +56,44 @@
   "routing_defaults": {
     "game_asset": {
       "asset-image": {
-        "engine": "codex",
-        "model": "gpt-6.2-sol",
+        "engine": "gemini",
+        "model": "gemini-4-neon-medium",
         "effort": "medium"
       },
       "pixel-art": {
-        "engine": "codex",
-        "model": "gpt-6.2-sol",
+        "engine": "gemini",
+        "model": "gemini-4-neon-medium",
         "effort": "medium"
       },
       "model-3d": {
-        "engine": "claude",
-        "model": "claude-opus-5-5",
+        "engine": "gemini",
+        "model": "gemini-4-carbon-high",
         "effort": "high",
-        "review_engine": "codex",
-        "review_model": "gpt-6.2-astra",
-        "delegate_engine": "codex",
-        "delegate_model": "gpt-6.2-astra",
-        "delegate_effort": "high"
+        "review_engine": "gemini",
+        "review_model": "gemini-4-carbon-high",
+        "delegate_engine": null,
+        "delegate_model": null,
+        "delegate_effort": null
       },
       "motion-design": {
         "engine": "claude",
         "model": "claude-opus-5-5",
         "effort": "high",
-        "delegate_engine": "codex",
-        "delegate_model": "gpt-6.2-sol",
+        "delegate_engine": "gemini",
+        "delegate_model": "gemini-4-neon-high",
         "delegate_effort": "high"
       },
       "review-3d": {
-        "engine": "codex",
-        "model": "gpt-6.2-astra",
+        "engine": "gemini",
+        "model": "gemini-4-carbon-high",
         "effort": "high"
       },
       "video-create": {
         "engine": "claude",
         "model": "claude-opus-5-5",
         "effort": "high",
-        "delegate_engine": "codex",
-        "delegate_model": "gpt-6.2-sol",
+        "delegate_engine": "gemini",
+        "delegate_model": "gemini-4-neon-medium",
         "delegate_effort": "medium"
       }
     },
@@ -104,8 +104,8 @@
         "effort": "high"
       },
       "comp_generator": {
-        "engine": "codex",
-        "model": "gpt-6.2-sol",
+        "engine": "gemini",
+        "model": "gemini-4-neon-medium",
         "effort_by_scope": {
           "refine": "medium",
           "surface": "medium",
@@ -114,8 +114,8 @@
         }
       },
       "builder": {
-        "engine": "codex",
-        "model": "gpt-6.2-sol",
+        "engine": "gemini",
+        "model": "gemini-4-neon-medium",
         "effort_by_scope": {
           "refine": "medium",
           "surface": "medium",
@@ -155,8 +155,8 @@
         "owner_engine": "claude",
         "owner_model": "claude-opus-5-5",
         "owner_effort": "high",
-        "executor_engine": "codex",
-        "executor_model": "gpt-6.2-sol",
+        "executor_engine": "gemini",
+        "executor_model": "gemini-4-neon-medium",
         "executor_effort": "medium",
         "reviewer_engine": "claude",
         "reviewer_model": "sonnet",
@@ -166,8 +166,8 @@
         "owner_engine": "claude",
         "owner_model": "sonnet",
         "owner_effort": "high",
-        "executor_engine": "codex",
-        "executor_model": "gpt-6.2-sol",
+        "executor_engine": "gemini",
+        "executor_model": "gemini-4-neon-medium",
         "executor_effort": "medium"
       },
       "visual-regression": {
@@ -179,16 +179,16 @@
         "owner_engine": "claude",
         "owner_model": "sonnet",
         "owner_effort": "high",
-        "executor_engine": "codex",
-        "executor_model": "gpt-6.2-sol",
+        "executor_engine": "gemini",
+        "executor_model": "gemini-4-neon-medium",
         "executor_effort": "medium"
       },
       "experience-perf": {
-        "owner_engine": "codex",
-        "owner_model": "gpt-6.2-sol",
+        "owner_engine": "gemini",
+        "owner_model": "gemini-4-neon-medium",
         "owner_effort": "high",
-        "executor_engine": "codex",
-        "executor_model": "gpt-6.2-sol",
+        "executor_engine": "gemini",
+        "executor_model": "gemini-4-neon-medium",
         "executor_effort": "high",
         "reviewer_engine": "claude",
         "reviewer_model": "sonnet",
@@ -206,8 +206,8 @@
         "owner_engine": "claude",
         "owner_model": "claude-opus-5-5",
         "owner_effort": "high",
-        "executor_engine": "codex",
-        "executor_model": "gpt-6.2-sol",
+        "executor_engine": "gemini",
+        "executor_model": "gemini-4-neon-medium",
         "executor_effort": "high",
         "reviewer_engine": "claude",
         "reviewer_model": "sonnet",
@@ -217,8 +217,8 @@
         "owner_engine": "claude",
         "owner_model": "claude-opus-5-5",
         "owner_effort": "high",
-        "executor_engine": "codex",
-        "executor_model": "gpt-6.2-sol",
+        "executor_engine": "gemini",
+        "executor_model": "gemini-4-neon-medium",
         "executor_effort": "high",
         "reviewer_engine": "claude",
         "reviewer_model": "claude-opus-5-5",

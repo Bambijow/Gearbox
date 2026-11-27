@@ -57,12 +57,12 @@ def _keys(values:list[str])->set[str]:
 def route(
     scope:str,
     claude_capabilities:list[str],
-    codex_capabilities:list[str],
+    gemini_capabilities:list[str],
     *,
     comp_policy:str="auto",
     image_generation_available:bool=False,
-    image_generation_model:str="gpt-image-2.5-flare",
-    image_edit_model:str="gpt-image-2.5-sunburst",
+    image_generation_model:str="configured-gemini-image-model",
+    image_edit_model:str="configured-gemini-image-edit-model",
     creative:bool=False,
 )->Route:
     if scope not in AUTO_COMP:
@@ -71,9 +71,9 @@ def route(
     director=defaults["director"]; comp=defaults["comp_generator"]; builder=defaults["builder"]
     review_key="creative" if creative else scope
     reviewer=defaults["reviewer"][review_key]
-    claude=_keys(claude_capabilities); codex=_keys(codex_capabilities)
+    claude=_keys(claude_capabilities); gemini=_keys(gemini_capabilities)
     browser_names={"browser","playwright","chrome","chromium"}
-    visual_evidence=bool((claude|codex)&browser_names)
+    visual_evidence=bool((claude|gemini)&browser_names)
 
     comp_required=comp_policy=="require"
     auto_comp=True if creative else AUTO_COMP[scope]
@@ -103,15 +103,15 @@ def route(
         interaction_gate_required=True,creative_gate_required=creative,
         preferred_director_capabilities=["inspo"],preferred_builder_capabilities=["browser"],preferred_reviewer_capabilities=["browser"],
         inspo_available="inspo" in claude,visual_evidence_available=visual_evidence,
-        rationale="Opus owns visual/interaction direction; optional Codex comp generation visualizes the approved system; Codex builds; fresh Claude judges rendered evidence. Static model identities come from orchestration-registry.json.",
+        rationale="Opus owns visual/interaction direction; optional Gemini comp generation visualizes the approved system; Gemini builds; fresh Claude judges rendered evidence. Static model identities come from orchestration-registry.json.",
     )
 
 def self_test()->None:
     refine=route("refine",["inspo"],["browser"],image_generation_available=True)
-    assert refine.director_model=="claude-opus-5-5" and refine.builder_model=="gpt-6.2-sol"
+    assert refine.director_model=="claude-opus-5-5" and refine.builder_model=="gemini-4-neon-medium"
     assert refine.reviewer_model=="sonnet" and not refine.comp_enabled
     surface=route("surface",[],["browser"],image_generation_available=True)
-    assert surface.comp_enabled and surface.comp_generator_model=="gpt-6.2-sol"
+    assert surface.comp_enabled and surface.comp_generator_model=="gemini-4-neon-medium"
     creative=route("surface",["inspo"],["browser"],creative=True,image_generation_available=True)
     assert creative.task_kind=="creative-web" and creative.builder_effort=="high"
     assert creative.reviewer_model=="claude-opus-5-5" and creative.creative_gate_required
@@ -125,17 +125,17 @@ def main()->int:
     ap.add_argument("--scope",choices=sorted(AUTO_COMP),default="surface")
     ap.add_argument("--creative",action="store_true")
     ap.add_argument("--claude-capability",action="append",default=[])
-    ap.add_argument("--codex-capability",action="append",default=[])
+    ap.add_argument("--gemini-capability",action="append",default=[])
     ap.add_argument("--comp",choices=("auto","require","skip"),default="auto")
     ap.add_argument("--image-generation-available",action="store_true")
-    ap.add_argument("--image-model",default="gpt-image-2.5-flare")
-    ap.add_argument("--image-edit-model",default="gpt-image-2.5-sunburst")
+    ap.add_argument("--image-model",default="configured-gemini-image-model")
+    ap.add_argument("--image-edit-model",default="configured-gemini-image-edit-model")
     ap.add_argument("--json",action="store_true")
     args=ap.parse_args()
     if args.self_test:
         self_test(); return 0
     result=route(
-        args.scope,args.claude_capability,args.codex_capability,
+        args.scope,args.claude_capability,args.gemini_capability,
         comp_policy=args.comp,image_generation_available=args.image_generation_available,
         image_generation_model=args.image_model,image_edit_model=args.image_edit_model,creative=args.creative,
     )

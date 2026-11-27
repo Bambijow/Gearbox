@@ -54,11 +54,11 @@ def route(args: argparse.Namespace) -> Route:
         return Route(
             tier="bounded",
             model_class="economy",
-            model=args.luna_model,
+            model=args.hydrogen_model,
             effort=effort,
             score=score,
             frontier=False,
-            rationale=f"{kind} is hard-capped to Luna-class work; expensive reasoning is not justified for the deliverable",
+            rationale=f"{kind} is hard-capped to Hydrogen-class work; expensive reasoning is not justified for the deliverable",
         )
 
     exceptional_shape = (
@@ -79,33 +79,33 @@ def route(args: argparse.Namespace) -> Route:
         return Route(
             tier="exceptional",
             model_class="frontier",
-            model=args.astra_model,
+            model=args.carbon_model,
             effort=effort,
             score=score,
             frontier=True,
-            rationale=f"{reason}; Astra is reserved for exceptional escalation only",
+            rationale=f"{reason}; Carbon is reserved for exceptional escalation only",
         )
 
     if score <= 2:
-        return Route("bounded", "economy", args.luna_model, "low", score, False, "bounded deterministic work")
+        return Route("bounded", "economy", args.hydrogen_model, "low", score, False, "bounded deterministic work")
     if score <= 6:
-        return Route("normal", "standard", args.sol_model, "medium", score, False, "ordinary engineering work; Sol is the default coding model")
-    return Route("deep", "standard", args.sol_model, "high", score, False, "deep engineering task; stay on Sol and raise effort before considering Astra")
+        return Route("normal", "standard", args.neon_model, "medium", score, False, "ordinary engineering work; Neon is the default coding model")
+    return Route("deep", "standard", args.neon_model, "high", score, False, "deep engineering task; stay on Neon and raise effort before considering Carbon")
 
 
 def parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Deterministic Codex model/effort router for Gearbox.")
+    p = argparse.ArgumentParser(description="Deterministic Gemini model/effort router for Gearbox.")
     p.add_argument("--task-kind", default="implementation", choices=sorted(CHEAP_KINDS | NORMAL_KINDS | DEEP_KINDS))
     p.add_argument("--risk", default="medium", choices=RISK)
     p.add_argument("--ambiguity", default="low", choices=AMBIGUITY)
     p.add_argument("--breadth", default="moderate", choices=BREADTH)
     p.add_argument("--verification", default="strong", choices=VERIFICATION)
     p.add_argument("--failed-attempts", type=int, default=0)
-    p.add_argument("--luna-model", default="gpt-6-luna")
-    p.add_argument("--sol-model", default="gpt-6.2-sol")
-    p.add_argument("--astra-model", default="gpt-6.2-astra")
+    p.add_argument("--hydrogen-model", default="gemini-4-hydrogen-low")
+    p.add_argument("--neon-model", default="gemini-4-neon-medium")
+    p.add_argument("--carbon-model", default="gemini-4-carbon-high")
     p.add_argument("--force-frontier", action="store_true")
-    p.add_argument("--frontier-high", action="store_true", help="Allow Astra/high on an already frontier-worthy task.")
+    p.add_argument("--frontier-high", action="store_true", help="Allow Carbon/high on an already frontier-worthy task.")
     p.add_argument("--json", action="store_true")
     p.add_argument("--self-test", action="store_true")
     return p
@@ -114,10 +114,10 @@ def parser() -> argparse.ArgumentParser:
 def self_test() -> None:
     p = parser()
     cases = [
-        (["--task-kind", "docs", "--risk", "critical", "--ambiguity", "high", "--breadth", "broad", "--verification", "weak"], "gpt-6-luna", "low_or_medium"),
-        (["--task-kind", "feature", "--risk", "medium", "--ambiguity", "low", "--breadth", "moderate", "--verification", "strong"], "gpt-6.2-sol", "medium"),
-        (["--task-kind", "migration", "--risk", "high", "--ambiguity", "medium", "--breadth", "broad", "--verification", "weak"], "gpt-6.2-sol", "high"),
-        (["--task-kind", "debug", "--risk", "high", "--ambiguity", "high", "--breadth", "broad", "--verification", "weak", "--failed-attempts", "2"], "gpt-6.2-astra", "medium"),
+        (["--task-kind", "docs", "--risk", "critical", "--ambiguity", "high", "--breadth", "broad", "--verification", "weak"], "gemini-4-hydrogen-low", "low_or_medium"),
+        (["--task-kind", "feature", "--risk", "medium", "--ambiguity", "low", "--breadth", "moderate", "--verification", "strong"], "gemini-4-neon-medium", "medium"),
+        (["--task-kind", "migration", "--risk", "high", "--ambiguity", "medium", "--breadth", "broad", "--verification", "weak"], "gemini-4-neon-medium", "high"),
+        (["--task-kind", "debug", "--risk", "high", "--ambiguity", "high", "--breadth", "broad", "--verification", "weak", "--failed-attempts", "2"], "gemini-4-carbon-high", "medium"),
     ]
     for argv, model, effort in cases:
         a = p.parse_args(argv)
