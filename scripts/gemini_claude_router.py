@@ -10,7 +10,8 @@ MODELS = {
     "frontier": "gemini-4-carbon-high",
 }
 CRITICAL = {"security", "auth", "concurrency", "persistence", "migration"}
-CREATIVE = {"architecture", "art-direction", "domain-modeling"}
+CREATIVE = {"art-direction", "creative-direction"}
+ARCHITECTURE = {"architecture", "domain-modeling", "architecture-decision", "architecture-review"}
 THREE_D = {"model-3d", "review-3d", "motion-3d"}
 
 
@@ -18,6 +19,12 @@ def route(kind, risk="medium", complexity="medium", gemini=True, claude=True, ca
     models = {**MODELS, **(models or {})}
     if kind in CREATIVE:
         provider, model, reviewer = "claude", "claude-opus-5-5", "gemini"
+    elif kind in ARCHITECTURE:
+        # Ordinary, reversible design stays on Neon. Critical/high-complexity
+        # design uses Carbon with an independent Opus adversarial review.
+        provider = "gemini"
+        model = models["frontier"] if risk == "critical" or complexity == "high" else models["standard"]
+        reviewer = "claude"
     elif kind in THREE_D:
         provider, model, reviewer = "gemini", models["frontier"], "gemini"
     elif kind in {"docs", "changelog", "metadata", "formatting", "simple-test"} and risk == "low":
@@ -34,7 +41,10 @@ def route(kind, risk="medium", complexity="medium", gemini=True, claude=True, ca
     return {
         "task_kind": kind, "provider": provider, "model": model,
         "review_provider": reviewer, "review_model": model if reviewer == "gemini" and requires3d
-            else ("gemini-4-neon-high" if reviewer == "gemini" else "claude-sonnet-5-5" if reviewer else None),
+            else (models["deep"] if reviewer == "gemini" else
+                  "claude-opus-5-5" if reviewer == "claude" and
+                  (kind in ARCHITECTURE and (risk == "critical" or complexity == "high"))
+                  else "claude-sonnet-5-5" if reviewer else None),
         "independent_review": bool(reviewer), "status": "BLOCKED" if blocked else "READY",
         "blocker": "provider/reviewer missing" if unavailable or unavailable_review else
             "Gemini Blender/Godot capability required" if blocked3d else None,
@@ -45,7 +55,16 @@ def route(kind, risk="medium", complexity="medium", gemini=True, claude=True, ca
 def self_test():
     assert route("feature")["model"] == MODELS["standard"]
     assert route("docs", risk="low")["model"] == MODELS["economy"]
-    assert route("architecture")["provider"] == "claude"
+    assert route("architecture")["provider"] == "gemini"
+    assert route("architecture")["model"] == MODELS["standard"]
+    critical = route("architecture", risk="critical")
+    assert critical["provider"] == "gemini" and critical["model"] == MODELS["frontier"]
+    assert critical["review_provider"] == "claude" and critical["review_model"] == "claude-opus-5-5"
+    assert critical["independent_review"] is True
+    assert route("domain-modeling", complexity="high")["model"] == MODELS["frontier"]
+    assert route("architecture", complexity="high", claude=False)["status"] == "BLOCKED"
+    assert route("art-direction")["provider"] == "claude"
+    assert route("architecture", models={"frontier": "my-carbon-id"}, risk="critical")["model"] == "my-carbon-id"
     assert route("feature", claude=False)["status"] == "BLOCKED"
     assert route("model-3d")["status"] == "BLOCKED"
     assert route("model-3d", capabilities=["blender"])["model"] == MODELS["frontier"]
